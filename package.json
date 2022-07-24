@@ -18,6 +18,7 @@
     "dotenv": "^14.2.0",
     "express": "^4.17.2",
     "express-async-errors": "^3.1.1",
+    "mongoose": "^6.4.6",
     "yarn-upgrade-all": "^0.6.1"
   },
   "devDependencies": {
