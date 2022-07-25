@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const logger = require('../utils/logger');
 
 const url = process.env.DB_URL;
 
@@ -8,11 +9,11 @@ const connectToMongoAtlas = () => {
   const db = mongoose.connection;
 
   db.once('open', () => {
-    console.log('Database connected: ', url);
+    logger.info('Database connected: ', url);
   });
 
   db.on('error', (err) => {
-    console.error('Database connection error: ', err);
+    logger.error('Database connection error: ', err);
   });
 };
 
