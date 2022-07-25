@@ -1,50 +1,53 @@
 const mongoose = require('mongoose');
 
-const orderSchema = new mongoose.Schema({
+const orderSchema = new mongoose.Schema(
+  {
     buyer: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Buyer',
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
     },
-    orderData: {
-        type: Data,
-        required: true,
-        default: Date.now
+    orderDate: {
+      type: Date,
+      required: true,
+      default: Date.now,
     },
-
     totalPrice: {
-        type: Number,
-        required: true,
+      type: Number,
+      required: true,
     },
     orderStatus: {
-        type: String, 
-        required: true, 
-        default: 'pending', 
-        enum: ['pending', 'completed', 'cancelled']
+      type: String,
+      required: true,
+      default: 'pending',
+      enum: ['pending', 'completed', 'cancelled'],
     },
-    orderItems: [{
-        item: {type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product'},
+    orderItems: [
+      {
+        item: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
         quantity: {
-            type: Number,
-            required: true}
-
-        }],
+          type: Number,
+          required: true,
+        },
+      },
+    ],
     notes: {
-        type: String,}
-
-})
+      type: String,
+    },
+  },
+  { timestamps: true }
+);
 module.exports = mongoose.model('Order', orderSchema);
 
 // const mongoose = require('mongoose');
 
 // const orderSchema = mongoose.Schema({
-//     total: {  
-//         type: Number, 
-//         required: true 
+//     total: {
+//         type: Number,
+//         required: true
 //     },
 //     shopItems: {
 //         type: [{
-//             shopItemId: { 
+//             shopItemId: {
 //                 type: mongoose.Schema.Types.ObjectId,
 //                 ref: 'Product',
 //             },
