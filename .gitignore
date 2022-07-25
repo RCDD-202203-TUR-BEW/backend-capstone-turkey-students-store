@@ -26,3 +26,6 @@ yarn-error.log*
 
 # ide folder
 .idea
+
+# logs folder
+logs
