@@ -1,19 +1,30 @@
-const winston = require('winston');
+const { transports, format, createLogger } = require('winston');
 
-const logger = winston.createLogger({
-  level: 'error',
-  format: winston.format.json(),
-  defaultMeta: { service: 'user-service' },
+const { combine, timestamp, prettyPrint, printf } = format;
+
+const logger = createLogger({
+  level: 'info',
+  format: combine(timestamp(), prettyPrint()),
   transports: [
-    new winston.transports.File({
-      filename: 'error.log',
-      level: 'error',
-      format: winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.json()
-      ),
-    }),
+    new transports.File({ filename: 'logs/error.log', level: 'error' }),
+    new transports.File({ filename: 'logs/combined.log' }),
   ],
+  exceptionHandlers: [new transports.File({ filename: 'logs/exceptions.log' })],
 });
+
+const consoleTransportFormat = printf(
+  ({ level, message, logTimestamp }) => `${logTimestamp} - ${level}: ${message}`
+);
+
+logger.add(
+  new transports.Console({
+    // format: format.combine(format.colorize(), format.simple()),
+    format: format.combine(
+      format.colorize(),
+      combine(timestamp(), consoleTransportFormat)
+    ),
+    handleExceptions: true,
+  })
+);
 
 module.exports = logger;

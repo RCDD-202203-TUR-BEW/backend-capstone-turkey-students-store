@@ -28,4 +28,4 @@ yarn-error.log*
 .idea
 
 # logs folder
-.logs
+logs
