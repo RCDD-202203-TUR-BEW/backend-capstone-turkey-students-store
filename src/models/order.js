@@ -37,31 +37,3 @@ const orderSchema = new mongoose.Schema(
   { timestamps: true }
 );
 module.exports = mongoose.model('Order', orderSchema);
-
-// const mongoose = require('mongoose');
-
-// const orderSchema = mongoose.Schema({
-//     total: {
-//         type: Number,
-//         required: true
-//     },
-//     shopItems: {
-//         type: [{
-//             shopItemId: {
-//                 type: mongoose.Schema.Types.ObjectId,
-//                 ref: 'Product',
-//             },
-//             quantity: {
-//                 type: Number,
-//                 required: true
-//             }
-//         }],
-//     default: []
-// },
-// customerRef: {
-//     type: mongoose.Schema.Types.ObjectId,
-//     ref: 'Customer'
-// }
-// })
-
-// module.exports = mongoose.model('Order', orderSchema);
