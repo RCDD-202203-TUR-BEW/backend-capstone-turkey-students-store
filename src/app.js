@@ -15,6 +15,6 @@ app.use('/api', routes);
 app.use(errorHandler);
 
 app.listen(port, () => {
-  logger.info('listening on port 3000');
+  logger.info('[+] listening on port 3000');
   connectToMongoAtlas();
 });
