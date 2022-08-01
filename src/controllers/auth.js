@@ -81,9 +81,3 @@ exports.signin = async (req, res, next) => {
     return res.status(500).json(error);
   }
 };
-
-exports.signout = async (req, res, next) => {
-  // const { user } = req;
-  console.log('USER:', req.user);
-  return res.status(200).send('Logged out success!');
-};
