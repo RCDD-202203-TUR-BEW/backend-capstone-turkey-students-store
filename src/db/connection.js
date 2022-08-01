@@ -9,7 +9,7 @@ const connectToMongoAtlas = () => {
   const db = mongoose.connection;
 
   db.once('open', () => {
-    logger.info('Database connected: ', url);
+    logger.info('[+] Database connected');
   });
 
   db.on('error', (err) => {
