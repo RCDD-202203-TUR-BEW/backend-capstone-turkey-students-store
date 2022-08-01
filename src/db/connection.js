@@ -1,7 +1,11 @@
 const mongoose = require('mongoose');
 const logger = require('../utils/logger');
 
-const url = process.env.DB_URL;
+// const url = process.env.DB_URL;
+// Use a separate test db when running jest
+const isJest = process.env.IS_JEST;
+let url = process.env.DB_URL;
+if (isJest) url = process.env.TEST_DB_URL;
 
 const connectToMongoAtlas = () => {
   mongoose.connect(url, { useNewUrlParser: true });
@@ -17,4 +21,22 @@ const connectToMongoAtlas = () => {
   });
 };
 
-module.exports = connectToMongoAtlas;
+const closeDatabase = async () => {
+  // await mongoose.connection.dropDatabase();
+  await mongoose.connection.close();
+};
+
+const clearDatabase = async () => {
+  const { collections } = mongoose.connection;
+  // eslint-disable-next-line no-restricted-syntax, guard-for-in
+  for (const key in collections) {
+    // eslint-disable-next-line no-await-in-loop
+    await collections[key].deleteMany();
+  }
+};
+
+module.exports = {
+  connectToMongoAtlas,
+  closeDatabase,
+  clearDatabase,
+};

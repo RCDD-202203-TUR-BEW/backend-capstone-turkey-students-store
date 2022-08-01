@@ -17,6 +17,7 @@
     "no-console": "warn",
     "func-names": "off",
     "no-process-exit": "off",
-    "class-methods-use-this": "off"
+    "class-methods-use-this": "off",
+    "no-underscore-dangle": ["error", { "allow": ["_id"] }] // I added this config
   }
 }
