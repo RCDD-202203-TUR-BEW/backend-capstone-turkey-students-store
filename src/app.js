@@ -6,6 +6,9 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const cookieParser = require('cookie-parser');
 const { encryptCookieNodeMiddleware } = require('encrypt-cookie');
 const { expressjwt: jwt } = require('express-jwt');
+// eslint-disable-next-line import/no-unresolved
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('../swagger.json');
 const routes = require('./routes');
 const authRoute = require('./routes/auth');
 const logger = require('./utils/logger');
@@ -73,6 +76,8 @@ app.use('/api', routes);
 app.use('/api/auth', authRoute);
 
 app.use(errorHandler);
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.listen(port, () => {
   logger.info(`listening on ${port}`);

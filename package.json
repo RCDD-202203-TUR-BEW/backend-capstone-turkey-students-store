@@ -26,6 +26,7 @@
     "mongoose": "^6.4.6",
     "passport": "^0.6.0",
     "passport-google-oauth20": "^2.0.0",
+    "swagger-ui-express": "^4.5.0",
     "winston": "^3.8.1",
     "yarn": "^1.22.19",
     "yarn-upgrade-all": "^0.6.1"
