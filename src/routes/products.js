@@ -1,8 +1,8 @@
 const router = require('express').Router();
 const ErrorResponse = require('../utils/errorResponse');
 
-const usersController = require('../controllers/users');
+const productsController = require('../controllers/products');
 
-router.get('/', usersController.getUser);
+router.patch('/:id', productsController.updateProduct);
 
 module.exports = router;
