@@ -13,7 +13,8 @@ const logger = createLogger({
 });
 
 const consoleTransportFormat = printf(
-  ({ level, message, logTimestamp }) => `${logTimestamp} - ${level}: ${message}`
+  ({ level, message, timestamp: logTimestamp }) =>
+    `${logTimestamp} - ${level}: ${message}`
 );
 
 logger.add(
