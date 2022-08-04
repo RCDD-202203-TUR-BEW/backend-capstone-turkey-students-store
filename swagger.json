@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "version": "3.0.0",
+    "version": "1.0.0",
     "title": "Student Store CRUD",
     "description": "Studen Store Application API",
     "license": {
@@ -27,11 +27,20 @@
         "tags": ["Auth"],
         "description": "Register user for the system",
         "produces": ["application/json"],
+        "parameters": {
+          "name": "user",
+          "in": "body",
+          "description": "user to add to the system",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/user"
+          }
+        },
         "responses": {
           "201": {
             "description": "New user object created.",
             "schema": {
-              "$ref": "#/components/schemas/user"
+              "$ref": "#/components/schemas/userWithoutPassword"
             }
           },
           "400": {
@@ -45,11 +54,20 @@
         "tags": ["Auth"],
         "description": "Log the user in with credentials.",
         "produces": ["application/json"],
+        "parameters": {
+          "name": "user",
+          "in": "body",
+          "description": "user to add to the system",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/user"
+          }
+        },
         "responses": {
           "200": {
             "description": "User successfully logged in.",
             "schema": {
-              "$ref": "#/components/schemas/user"
+              "$ref": "#/components/schemas/userWithoutPassword"
             }
           },
           "401": {
@@ -79,6 +97,31 @@
             "type": "string"
           },
           "password": {
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "number"
+          },
+          "address": {
+            "type": "string"
+          }
+        }
+      },
+      "userWithoutPassword": {
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "schoolName": {
             "type": "string"
           },
           "phoneNumber": {
