@@ -4,29 +4,37 @@ const userSchema = new mongoose.Schema(
   {
     firstName: {
       type: String,
-      required: true,
+      required: false,
     },
     lastName: {
       type: String,
-      required: true,
+      required: false,
     },
     email: {
       type: String,
-      required: true,
+      required: false,
     },
     schoolName: {
       type: String,
-      required: true,
+      required: false,
     },
     password: {
       type: String,
-      required: true,
+      required: false,
     },
     phoneNumber: {
       type: Number,
       required: false,
     },
     address: {
+      type: String,
+      required: false,
+    },
+    providerId: {
+      type: String,
+      required: false,
+    },
+    provider: {
       type: String,
       required: false,
     },

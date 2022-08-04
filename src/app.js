@@ -1,20 +1,38 @@
 const express = require('express');
 require('express-async-errors');
-const routes = require('./routes');
-const logger = require('./utils/logger');
-const errorHandler = require('./middlewares/error');
 require('dotenv').config();
+const passport = require('passport');
+require('./middlewares/passport.config');
+const session = require('express-session');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const errorHandler = require('./middlewares/error');
+const logger = require('./utils/logger');
 const connectToMongoAtlas = require('./db/connection');
-
-const app = express();
+const routes = require('./routes');
 
 const port = process.env.PORT || 3000;
-
-app.use('/api', routes);
+const app = express();
+app.use(cookieParser());
+app.use(bodyParser.json());
+app.use(
+  session({
+    resave: false,
+    saveUninitialized: true,
+    secret: process.env.SECRET_KEY,
+  })
+);
 
 app.use(errorHandler);
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use('/api', routes);
+app.use('/profile', (req, res, next) => {
+  res.send('Hello World from profile');
+});
 
 app.listen(port, () => {
-  logger.info('listening on port 3000');
+  logger.info(`listening on port ${port}`);
   connectToMongoAtlas();
 });
