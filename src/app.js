@@ -30,10 +30,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use('/api', routes);
-app.use('/profile', (req, res, next) => {
-  res.send('Hello World from profile');
-});
-
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.listen(port, () => {

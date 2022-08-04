@@ -20,45 +20,41 @@
   "schemes": ["http"],
   "consumes": ["application/json"],
   "produces": ["application/json"],
-  "paths": [
-    {
-      "/api/auth/facebook": {
-        "get": {
-          "tags": ["auth"],
-          "summary": "Facebook login",
-          "description": "Provide Facebook login to users",
-          "responses": {
-            "200": {
-              "description": "Successful login",
-              "schema": {
-                "$ref": "#/definitions/Profile"
-              }
-            },
-            "400": {
-              "description": "Invalid request"
+  "paths": {
+    "/api/auth/facebook": {
+      "get": {
+        "tags": ["auth"],
+        "summary": "Facebook login",
+        "description": "Provide Facebook login to users",
+        "responses": {
+          "200": {
+            "description": "Successful login",
+            "schema": {
+              "$ref": "#/definitions/Profile"
             }
+          },
+          "400": {
+            "description": "Invalid request"
           }
         }
       }
     },
-    {
-      "/api/auth/facebook/callback": {
-        "get": {
-          "tags": ["auth"],
-          "summary": "Facebook login callback",
-          "description": "Retrive user profile from Facebook",
-          "responses": {
-            "200": {
-              "description": "Fetched user profile",
-              "schema": {
-                "$ref": "#/definitions/Profile"
-              }
+    "/api/auth/facebook/callback": {
+      "get": {
+        "tags": ["auth"],
+        "summary": "Facebook login callback",
+        "description": "Retrive user profile from Facebook",
+        "responses": {
+          "200": {
+            "description": "Fetched user profile",
+            "schema": {
+              "$ref": "#/definitions/Profile"
             }
           }
         }
       }
     }
-  ],
+  },
   "definitions": {
     "Profile": {
       "type": "object",
