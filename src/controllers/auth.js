@@ -16,7 +16,7 @@ exports.signup = async (req, res, next) => {
     req.body;
 
   // Check if email is unique
-  let user = await User.findOne();
+  let user = await User.findOne({ email: emailAddress });
   if (user) {
     return next(new ErrorResponse('Email already exists!', 400));
   }
