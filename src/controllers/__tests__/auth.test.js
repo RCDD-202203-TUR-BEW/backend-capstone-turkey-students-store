@@ -8,8 +8,8 @@ const mUser = {
   surname: 'Aksakal',
   emailAddress: 'cba@mail.com',
   schoolName: 'Anadolu University',
-  password: '123456',
-  confirmPassword: '123456',
+  password: 'cbA123',
+  confirmPassword: 'cbA123',
 };
 
 afterAll(async () => {
@@ -43,8 +43,8 @@ describe('Auth routes', () => {
         surname: 'Aksakal',
         emailAddress: 'xyz@mail.com',
         schoolName: 'Anadolu University',
-        password: '123456',
-        confirmPassword: 'xyz',
+        password: 'cbA123',
+        confirmPassword: 'cbA12345',
       };
 
       const expectedResponse = {
@@ -63,8 +63,8 @@ describe('Auth routes', () => {
         surname: 'Tyson',
         emailAddress: 'mike@mail.com',
         schoolName: 'Princeton University',
-        password: '12345',
-        confirmPassword: '12345',
+        password: 'mikE123',
+        confirmPassword: 'mikE123',
       };
 
       const expectedResponse = {
@@ -88,7 +88,7 @@ describe('Auth routes', () => {
     test('If user email does not exist, should return an error with status code 401', async () => {
       const mReq = {
         email: 'xyz@mail.com',
-        password: '123456',
+        password: 'xyz123',
       };
 
       const expectedResponse = {
@@ -105,7 +105,7 @@ describe('Auth routes', () => {
     test('If password is incorrect, should return an error with status code 401', async () => {
       const mReq = {
         email: 'cba@mail.com',
-        password: 'xyz',
+        password: 'cbA12345',
       };
 
       const expectedResponse = {
@@ -122,7 +122,7 @@ describe('Auth routes', () => {
     test('If user credentials are valid, put token into cookie and return with status code 200', async () => {
       const mReq = {
         email: 'cba@mail.com',
-        password: '123456',
+        password: 'cbA123',
       };
 
       const expectedResponse = {
