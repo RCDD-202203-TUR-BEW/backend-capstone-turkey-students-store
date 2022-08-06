@@ -4,12 +4,11 @@ const app = require('../../app');
 const { closeDatabase, clearDatabase } = require('../../db/connection');
 
 const mUser = {
-  name: 'Cengiz',
-  surname: 'Aksakal',
-  emailAddress: 'cba@mail.com',
+  firstName: 'Cengiz',
+  lastName: 'Aksakal',
+  email: 'cba@mail.com',
   schoolName: 'Anadolu University',
   password: 'cbA123',
-  confirmPassword: 'cbA123',
 };
 
 afterAll(async () => {
@@ -26,6 +25,19 @@ describe('Auth routes', () => {
   });
 
   describe('POST /signup', () => {
+    test('If any of required fields are not passed, should return an error with status code 400', async () => {
+      // note that only "firstName" property is passed
+      const mReqBody = {
+        firstName: 'Cengiz',
+      };
+
+      const res = await request(app).post('/api/auth/signup').send(mReqBody);
+      expect(res.status).toBe(400);
+      expect(res.headers['content-type']).toMatch('application/json');
+      expect(res.body.success).toBe(false);
+      expect(res.body.errors).toBeDefined();
+    });
+
     test('If user email exists, should return an error with status code 400', async () => {
       const expectedResponse = {
         success: false,
@@ -37,34 +49,13 @@ describe('Auth routes', () => {
       expect(res.body).toEqual(expect.objectContaining(expectedResponse));
     });
 
-    test('If passwords do not match, should return an error with status code 400', async () => {
-      const mReqBody = {
-        name: 'Cengiz',
-        surname: 'Aksakal',
-        emailAddress: 'xyz@mail.com',
-        schoolName: 'Anadolu University',
-        password: 'cbA123',
-        confirmPassword: 'cbA12345',
-      };
-
-      const expectedResponse = {
-        success: false,
-        error: 'Passwords do not match!',
-      };
-      const res = await request(app).post('/api/auth/signup').send(mReqBody);
-      expect(res.status).toBe(400);
-      expect(res.headers['content-type']).toMatch('application/json');
-      expect(res.body).toEqual(expect.objectContaining(expectedResponse));
-    });
-
     test('If user data is valid, should create a user, return its data with status code 201', async () => {
       const mValidRequest = {
-        name: 'Mike',
-        surname: 'Tyson',
-        emailAddress: 'mike@mail.com',
+        firstName: 'Mike',
+        lastName: 'Tyson',
+        email: 'mike@mail.com',
         schoolName: 'Princeton University',
         password: 'mikE123',
-        confirmPassword: 'mikE123',
       };
 
       const expectedResponse = {
@@ -85,6 +76,17 @@ describe('Auth routes', () => {
   });
 
   describe('POST /signin', () => {
+    test('If any of required fields are not passed, should return an error with status code 400', async () => {
+      // note that no fields are passed
+      const mReqBody = {};
+
+      const res = await request(app).post('/api/auth/signin').send(mReqBody);
+      expect(res.status).toBe(400);
+      expect(res.headers['content-type']).toMatch('application/json');
+      expect(res.body.success).toBe(false);
+      expect(res.body.errors).toBeDefined();
+    });
+
     test('If user email does not exist, should return an error with status code 401', async () => {
       const mReq = {
         email: 'xyz@mail.com',

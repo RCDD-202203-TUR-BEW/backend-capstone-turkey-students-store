@@ -6,10 +6,10 @@ const authController = require('../controllers/auth');
 router.post(
   '/signup',
   [
-    body('emailAddress')
+    body('email')
       .not()
       .isEmpty()
-      .withMessage('Email should not be empty!')
+      .withMessage('Email cannot be empty!')
       .isEmail()
       .withMessage('Invalid email format!'),
     body('password')
@@ -17,11 +17,18 @@ router.post(
       .withMessage('Password must be at least 5 characters long!')
       .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\w\W]{0,}$/)
       .withMessage('Password must contain a number, uppercase and lowercase')
-      .custom((val, { req }) => val === req.body.confirmPassword)
-      .withMessage('Passwords do not match!')
       .not()
       .isEmpty()
-      .withMessage('Password should not be empty!'),
+      .withMessage('Password cannot be empty!'),
+    body('firstName')
+      .not()
+      .isEmpty()
+      .withMessage('First name cannot be empty!'),
+    body('lastName').not().isEmpty().withMessage('Last name cannot be empty!'),
+    body('schoolName')
+      .not()
+      .isEmpty()
+      .withMessage('School name cannot be empty!'),
   ],
   authController.signup
 );
