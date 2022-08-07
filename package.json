@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "start": "nodemon src/app.js",
-    "test": "yarn validate && jest --passWithNoTests",
+    "test": "yarn validate && IS_JEST=1 jest --passWithNoTests",
     "lint": "eslint --ignore-path .gitignore .",
     "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|json)\"",
     "validate": "yarn format && yarn lint",
@@ -19,11 +19,13 @@
     "express": "^4.17.2",
     "express-async-errors": "^3.1.1",
     "mongoose": "^6.4.6",
+    "supertest": "^6.2.4",
     "swagger-ui-express": "^4.5.0",
     "winston": "^3.8.1",
     "yarn-upgrade-all": "^0.6.1"
   },
   "devDependencies": {
+    "@babel/eslint-parser": "^7.18.9",
     "eslint": "^8.7.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-node": "^4.1.0",

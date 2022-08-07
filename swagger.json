@@ -9,7 +9,7 @@
       "url": "https://opensource.org/licenses/MIT"
     }
   },
-  "host": "localhost:8000",
+  "host": "localhost:3000",
   "basePath": "/",
   "tags": [
     {
@@ -19,5 +19,32 @@
   ],
   "schemes": ["http"],
   "consumes": ["application/json"],
-  "produces": ["application/json"]
+  "produces": ["application/json"],
+  "paths": {
+    "/api/products/{id}": {
+      "delete": {
+        "tags": ["Products"],
+        "summary": "Delete a product",
+        "description": "Delete a product",
+        "operationId": "deleteProduct",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of product to delete",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product deleted successfully"
+          },
+          "404": {
+            "description": "Product not found"
+          }
+        }
+      }
+    }
+  }
 }

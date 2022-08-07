@@ -13,6 +13,9 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use('/api', routes);
+// app.use('/', (req, res, next) => {
+//   res.send('Hello World!');
+// });
 
 app.use(errorHandler);
 
@@ -22,3 +25,5 @@ app.listen(port, () => {
   logger.info('[+] listening on port 3000');
   connectToMongoAtlas();
 });
+
+module.exports = app;
