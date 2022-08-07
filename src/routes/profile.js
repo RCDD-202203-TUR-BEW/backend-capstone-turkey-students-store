@@ -1,8 +1,8 @@
 const router = require('express').Router();
 const ErrorResponse = require('../utils/errorResponse');
 
-const usersController = require('../controllers/users');
+const profilesController = require('../controllers/profiles');
 
-router.get('/', usersController.getUser);
+router.get('/', profilesController.getAllProfiles);
 
 module.exports = router;
