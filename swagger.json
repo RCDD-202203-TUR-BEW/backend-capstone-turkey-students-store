@@ -1,23 +1,171 @@
 {
-  "swagger": "2.0",
+  "openapi": "3.0.0",
   "info": {
     "version": "1.0.0",
-    "title": "My User Project CRUD",
-    "description": "My User Project Application API",
+    "title": "Student Store CRUD",
+    "description": "Studen Store Application API",
     "license": {
       "name": "MIT",
       "url": "https://opensource.org/licenses/MIT"
     }
   },
-  "host": "localhost:8000",
+  "host": "localhost:3000",
   "basePath": "/",
   "tags": [
     {
-      "name": "Users",
-      "description": "API for users in the system"
+      "name": "Products",
+      "description": "API for products endpoints"
     }
   ],
-  "schemes": ["http"],
-  "consumes": ["application/json"],
-  "produces": ["application/json"]
+  "paths": {
+    "/api/products/": {
+      "post": {
+        "tags": ["Products"],
+        "description": "Add new product.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/productRequestBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "New product added.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/returnedProduct"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "productRequestBody": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Leyden Cheese"
+          },
+          "description": {
+            "type": "string",
+            "example": "Cumin spiced cheese that originates from the Leiden area in the Netherlands."
+          },
+          "price": {
+            "type": "number",
+            "example": 200
+          },
+          "category": {
+            "type": "string",
+            "example": "Food"
+          },
+          "coverImage": {
+            "type": "string",
+            "example": "http://www.cheese.com/leyden"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["Product", "Service"]
+          },
+          "location": {
+            "type": "string",
+            "example": "Netherlands"
+          }
+        }
+      },
+      "returnedProduct": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string",
+                "example": "62ee685e158e683e851eccea"
+              },
+              "title": {
+                "type": "string",
+                "example": "Leyden Cheese"
+              },
+              "description": {
+                "type": "string",
+                "example": "Cumin spiced cheese that originates from the Leiden area in the Netherlands."
+              },
+              "price": {
+                "type": "number",
+                "example": 200
+              },
+              "category": {
+                "type": "string",
+                "example": "Food"
+              },
+              "coverImage": {
+                "type": "string",
+                "example": "http://www.cheese.com/leyden"
+              },
+              "images": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "example": "http://www.cheese.com/leyden/img1"
+                }
+              },
+              "type": {
+                "type": "string",
+                "enum": ["Product", "Service"]
+              },
+              "status": {
+                "type": "string",
+                "enum": ["Active", "Sold"]
+              },
+              "condition": {
+                "type": "string",
+                "enum": ["New", "Used"]
+              },
+              "location": {
+                "type": "string",
+                "example": "Netherlands"
+              },
+              "seller": {
+                "type": "string",
+                "example": "62ee685e158e683e851ecceF"
+              },
+              "buyer": {
+                "type": "string",
+                "example": "63ee685e158e683e851ecceF"
+              },
+              "requestedBuyers": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "example": "64ee685e158e683e851ecceF"
+                }
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }
