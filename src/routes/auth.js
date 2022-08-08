@@ -32,9 +32,9 @@ router.get(
 
     console.log('req.user:', req.user);
     const payload = {
+      name,
       firstName,
       lastName,
-      name,
       email,
       providerId,
       avatar: profilePicture,

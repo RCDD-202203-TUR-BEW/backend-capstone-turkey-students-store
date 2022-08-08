@@ -53,8 +53,8 @@ passport.use(
               0,
               profile.emails[0].value.indexOf('@')
             ),
-            firstName: profile.givenName,
-            lastName: profile.familyName,
+            firstName: profile.name.givenName,
+            lastName: profile.name.familyName,
             profilePhoto: profile.photos[0].value,
             provider: 'Google',
             providerId: `google-${profile.id}`,
