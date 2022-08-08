@@ -5,6 +5,7 @@ const { body } = require('express-validator');
 
 const authController = require('../controllers/auth');
 const { verifyUser } = require('../middlewares/authenticate');
+const { googleAuthJWT } = require('../controllers/auth');
 
 const router = express.Router();
 
@@ -18,35 +19,9 @@ router.get(
 router.get(
   '/google/callback',
   passport.authenticate('google', {
-    failureRedirect: '/login',
     session: false,
   }),
-  (req, res) => {
-    // Successful authentication, redirect home.
-    const { name, firstName, lastName, email, providerId, profilePicture } =
-      req.user;
-
-    const payload = {
-      name,
-      firstName,
-      lastName,
-      email,
-      providerId,
-      avatar: profilePicture,
-    };
-
-    const token = jwt.sign(payload, process.env.SECRET_KEY, {
-      expiresIn: '14 days',
-    });
-
-    res.cookie('token', token, {
-      signed: true,
-      httpOnly: true,
-      maxAge: 1000 * 3600 * 24 * 14,
-    });
-
-    res.json({ success: true, data: req.user });
-  }
+  googleAuthJWT
 );
 
 router.get('/profile', verifyUser, (req, res) => {
