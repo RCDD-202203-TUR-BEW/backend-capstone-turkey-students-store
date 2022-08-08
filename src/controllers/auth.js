@@ -21,12 +21,10 @@ const googleAuthJWT = (req, res) => {
 
   // 1st token is the cookies name
   res.cookie('token', token, {
-    // added the signed
     signed: true,
     httpOnly: true,
     maxAge: 1000 * 3600 * 24 * 14,
   });
-  // res.redirect('/api/auth/profile');
   return res.status(200).send(req.user);
 };
 
