@@ -14,8 +14,8 @@ router.get(
   })
 );
 
-router.get('/me', (req, res) => {
-  console.log('GET /me req.user', req.user);
+router.get('/profile', (req, res) => {
+  console.log('GET /profile req.user', req.user);
   res.json(req.user);
 });
 
@@ -27,10 +27,13 @@ router.get(
   }),
   (req, res) => {
     // Successful authentication, redirect home.
-    const { name, email, providerId, profilePicture } = req.user;
+    const { name, firstName, lastName, email, providerId, profilePicture } =
+      req.user;
 
     console.log('req.user:', req.user);
     const payload = {
+      firstName,
+      lastName,
       name,
       email,
       providerId,
@@ -48,7 +51,7 @@ router.get(
       httpOnly: true,
       maxAge: 1000 * 3600 * 24 * 14,
     });
-    res.redirect('/');
+    res.redirect('/api/auth/profile');
   }
 );
 
