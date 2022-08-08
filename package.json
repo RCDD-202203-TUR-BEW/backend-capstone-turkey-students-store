@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "start": "nodemon src/app.js",
-    "test": "yarn validate && jest --passWithNoTests",
+    "test": "yarn validate && jest --detectOpenHandles --forceExit --verbose",
     "lint": "eslint --ignore-path .gitignore .",
     "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|json)\"",
     "validate": "yarn format && yarn lint",
@@ -15,20 +15,23 @@
     "postinstall": "husky install && husky add .husky/pre-commit \"yarn validate-staged\" && husky add .husky/pre-push \"yarn test\""
   },
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "cookie-parser": "^1.4.6",
     "cookie-signature": "^1.2.0",
     "dotenv": "^14.2.0",
     "encrypt-cookie": "^1.1.5",
-    "express": "^4.18.1",
+    "express": "^4.17.2",
     "express-async-errors": "^3.1.1",
     "express-jwt": "^7.7.5",
+    "express-session": "^1.17.3",
+    "express-validator": "^6.14.2",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.4.6",
     "passport": "^0.6.0",
     "passport-google-oauth20": "^2.0.0",
+    "passport-jwt": "^4.0.0",
     "swagger-ui-express": "^4.5.0",
     "winston": "^3.8.1",
-    "yarn": "^1.22.19",
     "yarn-upgrade-all": "^0.6.1"
   },
   "devDependencies": {
@@ -47,6 +50,10 @@
     "jest": "^27.4.7",
     "lint-staged": "^12.3.1",
     "nodemon": "^2.0.15",
-    "prettier": "^2.5.1"
+    "prettier": "^2.5.1",
+    "supertest": "^6.2.4"
+  },
+  "engines": {
+    "node": ">=8.3.0"
   }
 }
