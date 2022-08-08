@@ -52,11 +52,6 @@ router.get(
   }
 );
 
-// router.get('/google/callback', (req, res) => {
-//   console.log('CB triggerd');
-//   res.end();
-// });
-
 router.get('/logout', (req, res) => {
   res.end();
 });

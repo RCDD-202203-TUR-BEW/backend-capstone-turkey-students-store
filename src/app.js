@@ -9,7 +9,6 @@ const { expressjwt: jwt } = require('express-jwt');
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('../swagger.json');
 const routes = require('./routes');
-const authRoute = require('./routes/auth');
 const logger = require('./utils/logger');
 const errorHandler = require('./middlewares/error');
 require('dotenv').config();
@@ -18,8 +17,6 @@ const User = require('./models/user');
 
 const app = express();
 app.use(express.json());
-app.use('/api', routes);
-app.use('/auth', authRoute);
 
 const port = process.env.PORT || 3000;
 
@@ -72,7 +69,6 @@ passport.use(
 );
 
 app.use('/api', routes);
-app.use('/api/auth', authRoute);
 
 app.use(errorHandler);
 
