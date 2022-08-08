@@ -1,7 +1,38 @@
-const router = require('express').Router();
+const passport = require('passport');
+const jwt = require('jsonwebtoken');
+const express = require('express');
 const { body } = require('express-validator');
 
 const authController = require('../controllers/auth');
+const { verifyUser } = require('../middlewares/authenticate');
+const { googleAuthJWT } = require('../controllers/auth');
+
+const router = express.Router();
+
+router.get(
+  '/google',
+  passport.authenticate('google', {
+    scope: ['profile', 'email', 'openid'],
+  })
+);
+
+router.get(
+  '/google/callback',
+  passport.authenticate('google', {
+    session: false,
+  }),
+  googleAuthJWT
+);
+
+router.get('/profile', verifyUser, (req, res) => {
+  res.json({ success: true, data: req.user });
+});
+
+/* TODO: add documentation for logout */
+router.post('/logout', verifyUser, (req, res) => {
+  res.clearCookie('token');
+  res.status(205).json({ success: true });
+});
 
 router.post(
   '/signup',
