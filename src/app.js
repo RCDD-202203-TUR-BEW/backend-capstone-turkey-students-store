@@ -14,6 +14,8 @@ require('dotenv').config();
 const { connectToMongoAtlas } = require('./db/connection');
 const User = require('./models/user');
 
+connectToMongoAtlas();
+
 const app = express();
 app.use(express.json());
 
@@ -32,9 +34,10 @@ app.use(errorHandler);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-app.listen(port, () => {
-  logger.info(`listening on ${port}`);
-  connectToMongoAtlas();
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(port, () => {
+    logger.info(`listening on ${port}`);
+  });
+}
 
 module.exports = app;
