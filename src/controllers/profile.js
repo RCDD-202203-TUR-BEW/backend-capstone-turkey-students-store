@@ -1,0 +1,5 @@
+const ErrorResponse = require('../utils/errorResponse');
+const User = require('../models/user');
+
+exports.getMyProfile = async (req, res) =>
+  res.json({ success: true, data: req.user });
