@@ -9,8 +9,6 @@ const passport = require('passport');
 const session = require('express-session');
 const { encryptCookieNodeMiddleware } = require('encrypt-cookie');
 
-require('express-async-errors');
-
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 const { expressjwt: jwt } = require('express-jwt');
@@ -25,10 +23,6 @@ const { connectToMongoAtlas } = require('./db/connection');
 const User = require('./models/user');
 
 connectToMongoAtlas();
-
-require('express-async-errors');
-
-require('dotenv').config();
 
 passport.use(
   new TwitterStrategy(
@@ -77,7 +71,7 @@ app.use(passport.initialize());
 app.use('/api', routes);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
+
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
 app.use(passport.session());
