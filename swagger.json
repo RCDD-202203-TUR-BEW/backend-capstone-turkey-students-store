@@ -1,0 +1,280 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "My User Project CRUD",
+    "description": "My User Project Application API",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "host": "localhost:8000",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "Users",
+      "description": "API for users in the system"
+    }
+  ],
+  "paths": {
+    "/api/auth/google": {
+      "get": {
+        "tags": ["OAuth2"],
+        "summary": "Authenticates user using google 3rd party authentication service",
+        "responses": {
+          "200": {
+            "description": "Redirects verified user to the home page",
+            "schema": {
+              "$ref": "#/definitions/profile"
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/auth/google/callback": {
+      "get": {
+        "tags": ["auth"],
+        "summary": "Login using google",
+        "description": "Retrive user profile from Google",
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/Profile"
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/signup": {
+      "post": {
+        "tags": ["Auth"],
+        "description": "Register user for the system",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/userRequestBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "New user object created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/returnedUser"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Email already exists!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/signin": {
+      "post": {
+        "tags": ["Auth"],
+        "description": "Log the user in with credentials.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "griffin@mail.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "abC123"
+                  }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User successfully logged in.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/returnedUser"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User credentials are invalid!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "userRequestBody": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Peter"
+          },
+          "surname": {
+            "type": "string",
+            "example": "Griffin"
+          },
+          "emailAddress": {
+            "type": "string",
+            "example": "griffin@mail.com"
+          },
+          "schoolName": {
+            "type": "string",
+            "example": "Princeton University"
+          },
+          "password": {
+            "type": "string",
+            "example": "abC123"
+          },
+          "confirmPassword": {
+            "type": "string",
+            "example": "abC123"
+          }
+        },
+        "required": [
+          "name",
+          "surname",
+          "emailAddress",
+          "schoolName",
+          "password",
+          "confirmPassword"
+        ]
+      },
+      "returnedUser": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string",
+                "example": "62ed149a0785e2f2a4ff07b3"
+              },
+              "firstName": {
+                "type": "string",
+                "example": "Peter"
+              },
+              "lastName": {
+                "type": "string",
+                "example": "Griffin"
+              },
+              "fullName": {
+                "type": "string",
+                "example": "Peter Griffin"
+              },
+              "email": {
+                "type": "string",
+                "example": "griffin@mail.com"
+              },
+              "schoolName": {
+                "type": "string",
+                "example": "Princeton University"
+              },
+              "phoneNumber": {
+                "type": "number",
+                "example": 123456798
+              },
+              "address": {
+                "type": "string",
+                "example": "New Jersey"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Profile": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "provider": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "profilePhoto": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "schemes": ["http"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"]
+}
