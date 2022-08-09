@@ -1,4 +1,4 @@
-const { body, validationResult } = require('express-validator');
+const { validationResult } = require('express-validator');
 const ErrorResponse = require('../utils/errorResponse');
 const Product = require('../models/product');
 
@@ -26,18 +26,12 @@ exports.createProduct = async (req, res) => {
 };
 
 exports.updateProduct = async (req, res) => {
-  body('title').isLength({ max: 150 });
-  body('description').isEmpty();
-  body('price').isEmpty();
-  body('category').isEmpty();
-  body('coverImage').isEmpty();
-  // do I need to add validation for all fields in product??
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+  const validationErrors = validationResult(req);
+  if (!validationErrors.isEmpty()) {
+    return res
+      .status(400)
+      .json({ success: false, errors: validationErrors.array() });
   }
-
   const product = await Product.findByIdAndUpdate(
     req.params.id,
     {

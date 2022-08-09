@@ -49,6 +49,40 @@
         }
       }
     },
+    "/api/products/:id": {
+      "patch": {
+        "tags": ["patch"],
+        "summary": "Update product",
+        "description": "Updates existing product and returns new product",
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/Product"
+            }
+          },
+          "400": {
+            "description": "Validation error!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "No product exists!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/auth/signup": {
       "post": {
         "tags": ["Auth"],
@@ -269,6 +303,44 @@
           "type": "string"
         },
         "profilePhoto": {
+          "type": "string"
+        }
+      }
+    },
+    "Product": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "price": {
+          "type": "number"
+        },
+        "category": {
+          "type": "string"
+        },
+        "coverImage": {
+          "type": "string"
+        },
+        "Images": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "condition": {
+          "type": "string"
+        },
+        "seller": {
           "type": "string"
         }
       }

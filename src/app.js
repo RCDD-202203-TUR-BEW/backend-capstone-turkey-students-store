@@ -28,9 +28,6 @@ require('./middlewares/passport-auth');
 
 app.use(passport.initialize());
 
-app.use(cookieParser(process.env.SECRET));
-app.use(encryptCookieNodeMiddleware(process.env.SECRET));
-
 app.use('/api', routes);
 
 app.use(errorHandler);
