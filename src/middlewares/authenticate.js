@@ -5,8 +5,7 @@ require('dotenv').config();
 
 const opts = {};
 opts.jwtFromRequest = (req) => req.signedCookies.token ?? req.cookies.token;
-
-opts.secretOrKey = process.env.SECRET;
+opts.secretOrKey = process.env.SECRET_KEY;
 
 passport.use(
   new JwtStrategy(opts, (jwtPayload, done) => {
