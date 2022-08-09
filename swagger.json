@@ -1,15 +1,15 @@
 {
-  "swagger": "2.0",
+  "openapi": "3.0.0",
   "info": {
     "version": "1.0.0",
-    "title": "My User Project CRUD",
-    "description": "My User Project Application API",
+    "title": "Student Store CRUD",
+    "description": "Studen Store Application API",
     "license": {
       "name": "MIT",
       "url": "https://opensource.org/licenses/MIT"
     }
   },
-  "host": "localhost:8000",
+  "host": "localhost:3000",
   "basePath": "/",
   "tags": [
     {
@@ -155,6 +155,27 @@
           }
         }
       }
+    },
+    "/api/products/": {
+      "get": {
+        "tags": ["Products"],
+        "description": "Fetch all products from database.",
+        "responses": {
+          "200": {
+            "description": "All users in the system are successfully fetched.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/returnedProduct"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -237,6 +258,90 @@
               "address": {
                 "type": "string",
                 "example": "New Jersey"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      },
+      "returnedProduct": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string",
+                "example": "62ee685e158e683e851eccea"
+              },
+              "title": {
+                "type": "string",
+                "example": "Leyden Cheese"
+              },
+              "description": {
+                "type": "string",
+                "example": "Cumin spiced cheese that originates from the Leiden area in the Netherlands."
+              },
+              "price": {
+                "type": "number",
+                "example": 200
+              },
+              "category": {
+                "type": "string",
+                "example": "Food"
+              },
+              "coverImage": {
+                "type": "string",
+                "example": "http://www.cheese.com/leyden"
+              },
+              "images": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "example": "http://www.cheese.com/leyden/img1"
+                }
+              },
+              "type": {
+                "type": "string",
+                "enum": ["Product", "Service"]
+              },
+              "status": {
+                "type": "string",
+                "enum": ["Active", "Sold"]
+              },
+              "condition": {
+                "type": "string",
+                "enum": ["New", "Used"]
+              },
+              "location": {
+                "type": "string",
+                "example": "Netherlands"
+              },
+              "seller": {
+                "type": "string",
+                "example": "62ee685e158e683e851ecceF"
+              },
+              "buyer": {
+                "type": "string",
+                "example": "63ee685e158e683e851ecceF"
+              },
+              "requestedBuyers": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "example": "64ee685e158e683e851ecceF"
+                }
               },
               "createdAt": {
                 "type": "string",

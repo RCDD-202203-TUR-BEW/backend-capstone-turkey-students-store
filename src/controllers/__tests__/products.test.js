@@ -6,6 +6,7 @@ const {
   clearDatabase,
   connectToMongoAtlas,
 } = require('../../db/connection');
+const Product = require('../../models/product');
 
 const mProduct = {
   title: 'Cheese',
@@ -35,7 +36,7 @@ describe('Products routes', () => {
   describe('GET /', () => {
     test('Fetch all products, return with 200 status code', async () => {
       // first create a product
-      await request(app).post('/api/products/').send(mProduct);
+      await Product.create(mProduct);
       // now get all products
       const res = await request(app).get('/api/products/');
       expect(res.status).toBe(200);
