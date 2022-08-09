@@ -1,7 +1,11 @@
 // eslint-disable-next-line node/no-unpublished-require
 const request = require('supertest');
 const app = require('../../app');
-const { closeDatabase, clearDatabase } = require('../../db/connection');
+const {
+  connectToMongoAtlas,
+  closeDatabase,
+  clearDatabase,
+} = require('../../db/connection');
 
 const mUser = {
   firstName: 'Cengiz',
@@ -13,6 +17,10 @@ const mUser = {
 
 afterAll(async () => {
   await closeDatabase();
+});
+
+beforeAll(async () => {
+  await connectToMongoAtlas();
 });
 
 describe('Auth routes', () => {
