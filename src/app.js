@@ -38,7 +38,6 @@ passport.use(
 passport.serializeUser((user, cb) => cb(null, user));
 passport.deserializeUser((obj, cb) => cb(null, obj));
 const app = express();
-app.use(express.json());
 
 const port = process.env.PORT || 3000;
 // app.use
@@ -58,8 +57,7 @@ app.use(
 
 // sessionToken
 // app.use(sessionToken);
-app.use('/api', routes);
-app.use(errorHandler);
+
 app.use(express.json());
 app.use(cookieParser(process.env.SECRET_KEY));
 app.use(encryptCookieNodeMiddleware(process.env.SECRET_KEY));
@@ -73,7 +71,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(passport.initialize());
+
 app.use(passport.session());
 
 app.get('/auth/twitter', passport.authenticate('twitter'));
