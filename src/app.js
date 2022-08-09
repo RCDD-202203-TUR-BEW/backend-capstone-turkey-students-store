@@ -18,7 +18,6 @@ const logger = require('./utils/logger');
 const swaggerDocument = require('../swagger.json');
 const routes = require('./routes');
 
-app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(
   session({
