@@ -41,6 +41,19 @@ const userSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    toJSON: {
+      virtuals: true,
+      transform(doc, ret) {
+        delete ret.password;
+        delete ret.id;
+        delete ret.__v;
+      },
+    },
   }
 );
+
+userSchema.virtual('fullName').get(function () {
+  return `${this.firstName} ${this.lastName}`;
+});
+
 module.exports = mongoose.model('User', userSchema);
