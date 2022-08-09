@@ -2,7 +2,7 @@ const router = require('express').Router();
 const passport = require('passport');
 
 const jwt = require('jsonwebtoken');
-const express = require('express');
+
 const { body } = require('express-validator');
 
 const authController = require('../controllers/auth');
