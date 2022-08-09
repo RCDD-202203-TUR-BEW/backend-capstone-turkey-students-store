@@ -6,7 +6,8 @@
   "author": "Ammar-64",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon src/app.js",
+    "start": "node src/app.js",
+    "watch": "nodemon src/app.js",
     "test": "yarn validate && jest --detectOpenHandles --forceExit --verbose",
     "lint": "eslint --ignore-path .gitignore .",
     "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|json)\"",
