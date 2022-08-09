@@ -18,13 +18,8 @@ passport.use(
         if (!user) {
           user = await User.create({
             email: profile.emails[0].value,
-            username: profile.emails[0].value.substring(
-              0,
-              profile.emails[0].value.indexOf('@')
-            ),
             firstName: profile.name.givenName,
             lastName: profile.name.familyName,
-            profilePhoto: profile.photos[0].value,
             provider: 'Google',
             providerId: `google-${profile.id}`,
           });

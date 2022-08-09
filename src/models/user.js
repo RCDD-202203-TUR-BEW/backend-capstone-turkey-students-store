@@ -30,6 +30,13 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
+    provider: {
+      type: String,
+    },
+    providerId: {
+      type: String,
+      required: false,
+    },
   },
   {
     timestamps: true,
