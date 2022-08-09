@@ -10,12 +10,9 @@ exports.createProduct = async (req, res, next) => {
       .status(400)
       .json({ success: false, errors: validationErrors.array() });
   }
-  const productObject = { ...req.body };
-  if (!productObject.images || productObject.images.length === 0) {
-    delete productObject.images;
-  }
+
   // set seller as this user; get user's id from token -> req.user
-  productObject.seller = req.user._id;
-  const product = await Product.create(productObject);
+  req.body.seller = req.user._id;
+  const product = await Product.create(req.body);
   return res.status(201).json({ success: true, data: product });
 };
