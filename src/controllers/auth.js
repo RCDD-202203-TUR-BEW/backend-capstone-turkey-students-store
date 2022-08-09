@@ -89,16 +89,8 @@ exports.signin = async (req, res, next) => {
 };
 
 exports.googleAuthJWT = (req, res) => {
-  const { name, firstName, lastName, email, providerId, profilePicture } =
-    req.user;
-
   const payload = {
-    name,
-    firstName,
-    lastName,
-    email,
-    providerId,
-    avatar: profilePicture,
+    _id: req.user._id,
   };
 
   const token = jwt.sign(payload, process.env.SECRET_KEY, {
