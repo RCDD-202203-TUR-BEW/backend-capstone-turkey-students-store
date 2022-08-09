@@ -9,6 +9,11 @@ const passport = require('passport');
 const session = require('express-session');
 const { encryptCookieNodeMiddleware } = require('encrypt-cookie');
 
+require('express-async-errors');
+
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+
+const { expressjwt: jwt } = require('express-jwt');
 const swaggerUi = require('swagger-ui-express');
 // const sessionToken = require('session-token');
 const swaggerDocument = require('../swagger.json');
@@ -17,6 +22,9 @@ const logger = require('./utils/logger');
 const errorHandler = require('./middlewares/error');
 require('dotenv').config();
 const { connectToMongoAtlas } = require('./db/connection');
+const User = require('./models/user');
+
+connectToMongoAtlas();
 
 require('express-async-errors');
 
@@ -36,6 +44,8 @@ passport.use(
 passport.serializeUser((user, cb) => cb(null, user));
 passport.deserializeUser((obj, cb) => cb(null, obj));
 const app = express();
+app.use(express.json());
+
 const port = process.env.PORT || 3000;
 // app.use
 app.set('trust proxy', 1); // trust first proxy
@@ -57,9 +67,13 @@ app.use(
 app.use('/api', routes);
 app.use(errorHandler);
 app.use(express.json());
+app.use(cookieParser(process.env.SECRET_KEY));
+app.use(encryptCookieNodeMiddleware(process.env.SECRET_KEY));
 
-app.use(cookieParser(process.env.SECRET));
-app.use(encryptCookieNodeMiddleware(process.env.SECRET));
+require('./middlewares/passport-auth');
+
+app.use(passport.initialize());
+
 app.use('/api', routes);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -82,9 +96,10 @@ app.use(errorHandler);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-app.listen(port, () => {
-  logger.info('[+] listening on port 3000');
-  connectToMongoAtlas();
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(port, () => {
+    logger.info(`listening on ${port}`);
+  });
+}
 
 module.exports = app;

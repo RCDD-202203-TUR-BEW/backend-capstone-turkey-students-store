@@ -1,23 +1,85 @@
 {
-  "openapi": "3.0.0",
+  "swagger": "2.0",
   "info": {
     "version": "1.0.0",
-    "title": "Student Store CRUD",
-    "description": "Studen Store Application API",
+    "title": "My User Project CRUD",
+    "description": "My User Project Application API",
     "license": {
       "name": "MIT",
       "url": "https://opensource.org/licenses/MIT"
     }
   },
-  "host": "localhost:3000",
+  "host": "localhost:8000",
   "basePath": "/",
   "tags": [
     {
-      "name": "Auth",
-      "description": "API for auth endpoints"
+      "name": "Users",
+      "description": "API for users in the system"
     }
   ],
   "paths": {
+    "/api/auth/google": {
+      "get": {
+        "tags": ["OAuth2"],
+        "summary": "Authenticates user using google 3rd party authentication service",
+        "responses": {
+          "200": {
+            "description": "Redirects verified user to the home page",
+            "schema": {
+              "$ref": "#/definitions/profile"
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/auth/google/callback": {
+      "get": {
+        "tags": ["auth"],
+        "summary": "Login using google",
+        "description": "Retrive user profile from Google",
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/Profile"
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/twitter": {
+      "get": {
+        "tags": ["OAuth1"],
+        "summary": "Authenticates user using twitter 3rd party authentication service",
+        "responses": {
+          "200": {
+            "description": "Redirects verified user to the home page",
+            "schema": {
+              "$ref": "#/definitions/profile"
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/auth/twitter/callback": {
+      "get": {
+        "tags": ["auth"],
+        "summary": "Login using twitter",
+        "description": "Retrive user profile from Twitter",
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/Profile"
+            }
+          }
+        }
+      }
+    },
     "/api/auth/signup": {
       "post": {
         "tags": ["Auth"],
@@ -220,5 +282,30 @@
         }
       }
     }
-  }
+  },
+  "definitions": {
+    "Profile": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "provider": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "profilePhoto": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "schemes": ["http"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"]
 }
