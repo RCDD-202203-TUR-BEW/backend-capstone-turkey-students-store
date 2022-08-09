@@ -74,9 +74,9 @@ exports.signin = async (req, res, next) => {
 
   // login successful, create jwt
   const payload = {
-    id: user._id,
+    _id: user._id,
   };
-  const token = jwt.sign(payload, process.env.SECRET, {
+  const token = jwt.sign(payload, process.env.SECRET_KEY, {
     expiresIn: '14 days',
   });
 
@@ -87,4 +87,30 @@ exports.signin = async (req, res, next) => {
   });
 
   return res.status(200).json({ success: true, data: user });
+};
+
+exports.googleAuthJWT = (req, res) => {
+  const { name, firstName, lastName, email, providerId, profilePicture } =
+    req.user;
+
+  const payload = {
+    name,
+    firstName,
+    lastName,
+    email,
+    providerId,
+    avatar: profilePicture,
+  };
+
+  const token = jwt.sign(payload, process.env.SECRET_KEY, {
+    expiresIn: '14 days',
+  });
+
+  res.cookie('token', token, {
+    httpOnly: true,
+    signed: true,
+    maxAge: 14 * 24 * 60 * 60 * 1000, // 14 days
+  });
+
+  return res.status(200).json({ success: true, data: req.user });
 };
