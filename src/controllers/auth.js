@@ -31,7 +31,19 @@ exports.signup = async (req, res, next) => {
     schoolName,
     password: hashedPassword,
   });
+  // create jwt
+  const payload = {
+    _id: user._id,
+  };
+  const token = jwt.sign(payload, process.env.SECRET_KEY, {
+    expiresIn: '14 days',
+  });
 
+  res.cookie('token', token, {
+    httpOnly: true,
+    signed: true,
+    maxAge: 14 * 24 * 60 * 60 * 1000, // 14 days
+  });
   return res.status(201).json({ success: true, data: user });
 };
 

@@ -26,24 +26,23 @@ router.patch(
       .isLength({ min: 1 })
       .withMessage('category should not be empty!'),
 
-    body('coverImage')
-      .not()
-      .isEmpty()
+    /* body('coverImage')
+      .optional()
+      .isLength({ min: 1 })
       .withMessage('Cover image cannot be empty!'),
     body('images')
       .optional()
-      .isArray({ max: 3 })
+      .isLength({ min: 1 })
       .withMessage('You cannot add more than three additional images!'),
     body('location')
-      .not()
-      .isEmpty()
-      .withMessage('Location cannot be empty!')
-      .isLength({ max: 50 })
+      .optional()
+      .isLength({ min: 1 })
       .withMessage('Location cannot be more than 50 characters!'),
     body('condition')
-      .not()
-      .isEmpty()
-      .withMessage('Please select the condition of the product!'),
+      .optional()
+      .isLength({ min: 1 })
+      .withMessage('Please select New or Used')
+      */
   ],
   productsController.updateProduct
 );
