@@ -44,6 +44,7 @@ exports.signup = async (req, res, next) => {
     signed: true,
     maxAge: 14 * 24 * 60 * 60 * 1000, // 14 days
   });
+
   return res.status(201).json({ success: true, data: user });
 };
 
@@ -88,16 +89,8 @@ exports.signin = async (req, res, next) => {
 };
 
 exports.googleAuthJWT = (req, res) => {
-  const { name, firstName, lastName, email, providerId, profilePicture } =
-    req.user;
-
   const payload = {
-    name,
-    firstName,
-    lastName,
-    email,
-    providerId,
-    avatar: profilePicture,
+    _id: req.user._id,
   };
 
   const token = jwt.sign(payload, process.env.SECRET_KEY, {

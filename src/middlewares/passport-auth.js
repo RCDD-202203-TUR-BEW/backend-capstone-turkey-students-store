@@ -7,7 +7,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: 'http://localhost:3000/api/auth/google/callback',
+      callbackURL: process.env.GOOGLE_CALLBACK_URL,
       // Fixed 'Missing required parameter: scope
       scope: ['profile', 'email', 'openid'],
     },
@@ -18,13 +18,8 @@ passport.use(
         if (!user) {
           user = await User.create({
             email: profile.emails[0].value,
-            username: profile.emails[0].value.substring(
-              0,
-              profile.emails[0].value.indexOf('@')
-            ),
             firstName: profile.name.givenName,
             lastName: profile.name.familyName,
-            profilePhoto: profile.photos[0].value,
             provider: 'Google',
             providerId: `google-${profile.id}`,
           });
