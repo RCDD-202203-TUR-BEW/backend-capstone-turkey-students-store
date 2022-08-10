@@ -25,9 +25,27 @@ router.patch(
       .optional()
       .isLength({ min: 1 })
       .withMessage('category should not be empty!'),
+
+    body('coverImage')
+      .not()
+      .isEmpty()
+      .withMessage('Cover image cannot be empty!'),
+    body('images')
+      .optional()
+      .isArray({ max: 3 })
+      .withMessage('You cannot add more than three additional images!'),
+    body('location')
+      .not()
+      .isEmpty()
+      .withMessage('Location cannot be empty!')
+      .isLength({ max: 50 })
+      .withMessage('Location cannot be more than 50 characters!'),
+    body('condition')
+      .not()
+      .isEmpty()
+      .withMessage('Please select the condition of the product!'),
   ],
   productsController.updateProduct
 );
-router.post('/', productsController.createProduct);
 
 module.exports = router;
