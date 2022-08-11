@@ -40,7 +40,7 @@ router.patch(
       .withMessage('Location cannot be more than 50 characters!'),
     body('condition')
       .optional()
-      .isLength({ min: 1 })
+      .isIn(['New', 'Used'])
       .withMessage('Please select New or Used'),
   ],
   productsController.updateProduct
