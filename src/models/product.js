@@ -69,6 +69,7 @@ const productSchema = new mongoose.Schema(
         message: '{VALUE} is not supported!',
       },
       required: [true, 'Please select the condition of the product!'],
+      default: 'New',
     },
     seller: {
       type: mongoose.Schema.Types.ObjectId,

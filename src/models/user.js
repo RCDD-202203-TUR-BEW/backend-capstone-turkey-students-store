@@ -4,23 +4,23 @@ const userSchema = new mongoose.Schema(
   {
     firstName: {
       type: String,
-      required: true,
+      required: false,
     },
     lastName: {
       type: String,
-      required: true,
+      required: false,
     },
     email: {
       type: String,
-      required: true,
+      required: false,
     },
     schoolName: {
       type: String,
-      required: true,
+      required: false,
     },
     password: {
       type: String,
-      required: true,
+      required: false,
     },
     phoneNumber: {
       type: Number,
@@ -30,20 +30,27 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
+    provider: {
+      type: String,
+    },
+    providerId: {
+      type: String,
+      required: false,
+    },
   },
   {
     timestamps: true,
     toJSON: {
       virtuals: true,
       transform(doc, ret) {
-        // eslint-disable-next-line no-param-reassign
         delete ret.password;
+        delete ret.id;
+        delete ret.__v;
       },
     },
   }
 );
 
-// virtual field; full name
 userSchema.virtual('fullName').get(function () {
   return `${this.firstName} ${this.lastName}`;
 });
