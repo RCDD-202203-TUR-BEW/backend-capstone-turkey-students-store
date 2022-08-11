@@ -1,6 +1,4 @@
 // eslint-disable-next-line node/no-unpublished-require
-
-// eslint-disable-next-line node/no-unpublished-require
 const request = require('supertest');
 const app = require('../../app');
 
