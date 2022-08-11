@@ -6,13 +6,14 @@
   "author": "Ammar-64",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon src/app.js",
+    "start": "node src/app.js",
+    "watch": "nodemon src/app.js",
     "test": "yarn validate && jest --detectOpenHandles --forceExit --verbose",
     "lint": "eslint --ignore-path .gitignore .",
     "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|json)\"",
     "validate": "yarn format && yarn lint",
     "validate-staged": "lint-staged",
-    "postinstall": "husky install && husky add .husky/pre-commit \"yarn validate-staged\" && husky add .husky/pre-push \"yarn test\""
+    "postinstall": "if test \\\"$NODE_ENV\\\" != \\\"production\\\"; then husky install && husky add .husky/pre-commit \"yarn validate-staged\" && husky add .husky/pre-push \"yarn test\" ; fi"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
@@ -31,7 +32,9 @@
     "passport": "^0.6.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.0",
+    "passport-oauth2": "^1.6.1",
     "passport-twitter": "^1.0.4",
+    "passport-twitter-oauth2.0": "^1.0.2",
     "swagger-ui-express": "^4.5.0",
     "winston": "^3.8.1",
     "yarn-upgrade-all": "^0.6.1"

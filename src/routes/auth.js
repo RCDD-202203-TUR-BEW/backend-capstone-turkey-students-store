@@ -8,6 +8,7 @@ const { body } = require('express-validator');
 const authController = require('../controllers/auth');
 const { verifyUser } = require('../middlewares/authenticate');
 const { googleAuthJWT } = require('../controllers/auth');
+const { twitterAuthJWT } = require('../controllers/auth');
 
 router.get(
   '/google',
@@ -34,19 +35,14 @@ router.post('/logout', verifyUser, (req, res) => {
   res.status(205).json({ success: true });
 });
 
-// const jwt = require('jsonwebtoken');
-
-// const User = require('../models/user');
-
-router.get('/twitter', passport.authenticate('twitter'));
+router.get(
+  '/twitter',
+  passport.authenticate('twitter', { scope: ['profile', 'email', 'openid'] })
+);
 router.get(
   '/twitter/callback',
-  passport.authenticate('twitter', { failureRedirect: '/login' }),
-  // eslint-disable-next-line prefer-arrow-callback
-  function (req, res) {
-    // Successful authentication, redirect home.
-    res.redirect('/');
-  }
+  passport.authenticate('twitter', { session: false }),
+  twitterAuthJWT
 );
 
 router.post(
