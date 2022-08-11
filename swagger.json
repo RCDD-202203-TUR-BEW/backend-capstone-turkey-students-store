@@ -57,6 +57,54 @@
         }
       }
     },
+    "/api/products/:id": {
+      "patch": {
+        "tags": ["Products"],
+        "summary": "Update product",
+        "description": "Updates existing product and returns new product",
+        "parameters": [
+          {
+            "name": "product id",
+            "in": "query",
+            "type": "string",
+            "format": "number",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns updated product!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/Product"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "No product exists!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/auth/signup": {
       "post": {
         "tags": ["Auth"],
@@ -436,6 +484,45 @@
           "type": "string"
         },
         "profilePhoto": {
+          "type": "string"
+        }
+      }
+    },
+    "Product": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "example": "book"
+        },
+        "description": {
+          "type": "string"
+        },
+        "price": {
+          "type": "number"
+        },
+        "category": {
+          "type": "string"
+        },
+        "coverImage": {
+          "type": "string"
+        },
+        "images": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "condition": {
+          "type": "string"
+        },
+        "seller": {
           "type": "string"
         }
       }
