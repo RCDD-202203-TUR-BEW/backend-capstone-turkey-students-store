@@ -23,6 +23,10 @@
     {
       "name": "Users",
       "description": "API for users in the system"
+    },
+    {
+      "name": "Profiles",
+      "description": "API for users in the system"
     }
   ],
   "paths": {
@@ -52,6 +56,45 @@
           "200": {
             "schema": {
               "$ref": "#/definitions/Profile"
+            }
+          }
+        }
+      }
+    },
+    "/api/profile/": {
+      "patch": {
+        "tags": ["Profiles"],
+        "summary": "Update profile",
+        "description": "Updates existing logged in profile and returns new profile",
+        "responses": {
+          "200": {
+            "description": "Returns updated profile!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/Profile"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Email already exists!"
+                    }
+                  }
+                }
+              }
             }
           }
         }
