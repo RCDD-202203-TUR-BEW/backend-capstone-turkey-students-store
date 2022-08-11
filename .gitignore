@@ -30,3 +30,6 @@ yarn-error.log*
 
 # logs folder
 logs
+
+# google cloud storage service
+student-store-gcs.json
