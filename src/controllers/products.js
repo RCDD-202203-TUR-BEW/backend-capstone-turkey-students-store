@@ -17,6 +17,13 @@ exports.createProduct = async (req, res) => {
 };
 
 exports.updateProduct = async (req, res) => {
+  // check for validation errors first
+  const validationErrors = validationResult(req);
+  if (!validationErrors.isEmpty()) {
+    return res
+      .status(400)
+      .json({ success: false, errors: validationErrors.array() });
+  }
   const product = await Product.findByIdAndUpdate(
     req.params.id,
     {

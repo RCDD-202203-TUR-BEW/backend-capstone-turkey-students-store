@@ -26,13 +26,13 @@ router.patch(
       .isLength({ min: 1 })
       .withMessage('category should not be empty!'),
 
-    /* body('coverImage')
+    body('coverImage')
       .optional()
       .isLength({ min: 1 })
       .withMessage('Cover image cannot be empty!'),
     body('images')
       .optional()
-      .isLength({ min: 1 })
+      .isArray({ max: 3 })
       .withMessage('You cannot add more than three additional images!'),
     body('location')
       .optional()
@@ -41,8 +41,7 @@ router.patch(
     body('condition')
       .optional()
       .isLength({ min: 1 })
-      .withMessage('Please select New or Used')
-      */
+      .withMessage('Please select New or Used'),
   ],
   productsController.updateProduct
 );

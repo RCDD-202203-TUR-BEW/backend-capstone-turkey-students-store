@@ -59,13 +59,18 @@
     },
     "/api/products/:id": {
       "patch": {
-        "tags": ["patch"],
+        "tags": ["Products"],
         "summary": "Update product",
         "description": "Updates existing product and returns new product",
         "responses": {
           "200": {
-            "schema": {
-              "$ref": "#/definitions/Product"
+            "description": "Returns updated product!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/Product"
+                }
+              }
             }
           },
           "400": {
@@ -478,7 +483,8 @@
       "type": "object",
       "properties": {
         "title": {
-          "type": "string"
+          "type": "string",
+          "example": "book"
         },
         "description": {
           "type": "string"
@@ -492,7 +498,7 @@
         "coverImage": {
           "type": "string"
         },
-        "Images": {
+        "images": {
           "type": "string"
         },
         "type": {
