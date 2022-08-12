@@ -2,6 +2,14 @@ const router = require('express').Router();
 const { body } = require('express-validator');
 const productsController = require('../controllers/products');
 const auth = require('../middlewares/authenticate');
+const productsMiddleware = require('../middlewares/products');
+
+router.get(
+  '/:id/requsted-buyers',
+  auth.verifyUser,
+  productsMiddleware.verifyOwner,
+  productsController.getRequstedBuyers
+);
 
 router.post(
   '/',
