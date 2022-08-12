@@ -3,10 +3,6 @@ const auth = require('../middlewares/authenticate');
 
 const profileController = require('../controllers/profile');
 
-router.get(
-  '/products',
-  auth.verifyUser,
-  profileController.getMyProductsForSale
-);
+router.get('/products', auth.verifyUser, profileController.getUserProducts);
 
 module.exports = router;
