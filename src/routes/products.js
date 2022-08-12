@@ -32,11 +32,25 @@ router.post(
       .isEmpty()
       .withMessage('Please select the type of the product!'),
     body('location')
+      .isObject()
+      .withMessage(
+        'Location format is as follows; location{ lat: Number, lng: Number }'
+      )
       .not()
       .isEmpty()
-      .withMessage('Location cannot be empty!')
-      .isLength({ max: 50 })
-      .withMessage('Location cannot be more than 50 characters!'),
+      .withMessage('Location cannot be empty!'),
+    body('location.lat')
+      .not()
+      .isEmpty()
+      .withMessage('Latitude cannot be empty!')
+      .isNumeric()
+      .withMessage('Latitude should be a number!'),
+    body('location.lng')
+      .not()
+      .isEmpty()
+      .withMessage('Longitude cannot be empty!')
+      .isNumeric()
+      .withMessage('Longitude should be a number!'),
   ],
   productsController.createProduct
 );
