@@ -227,6 +227,30 @@
           }
         }
       }
+    },
+    "/api/profile/products": {
+      "get": {
+        "tags": ["Users"],
+        "description": "Get all products of a user for sale.",
+        "responses": {
+          "200": {
+            "description": "All products of a user that is for sale are successfully fetched.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/returnedProduct"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized user!"
+          }
+        }
+      }
     }
   },
   "components": {
