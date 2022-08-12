@@ -10,13 +10,6 @@ const {
   clearDatabase,
 } = require('../../db/connection');
 
-// const mProfile = {
-//   firstName: 'İrem',
-//   lastName: 'Kurt',
-//   email: 'ikurt@mail.com',
-//   schoolName: 'Bogazici University',
-//   password: 'ikurt123',
-// };
 const user = {
   firstName: 'Glenn',
   lastName: 'Quagmire',
@@ -42,15 +35,6 @@ describe('Profile routes', () => {
     beforeEach(async () => {
       await server.post('/api/auth/signup').send(user);
     });
-    //   test('If any of required fields are not passed, should return an error with status code 400', async () => {
-    //     const mProfileWithoutFirstName = JSON.parse(JSON.stringify(mProfile));
-    //     delete mProfileWithoutFirstName.firstName;
-    //     const res = await server.get('/profile').send(mProfileWithoutFirstName);
-    //     expect(res.status).toBe(400);
-    //     expect(res.headers['content-type']).toMatch('application/json');
-    //     expect(res.body.success).toBe(false);
-    //     expect(res.body.errors[0].msg).toBe('"firstName" is required');
-    //   });
     test('If all required fields are correct, return with status code 200', async () => {
       const expectedResponse = JSON.parse(JSON.stringify(user));
       delete expectedResponse.password;
