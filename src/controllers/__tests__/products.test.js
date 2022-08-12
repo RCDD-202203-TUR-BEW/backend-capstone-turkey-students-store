@@ -1,6 +1,8 @@
 // eslint-disable-next-line node/no-unpublished-require
 const request = require('supertest');
 const app = require('../../app');
+const Product = require('../../models/product');
+const User = require('../../models/user');
 
 const server = request.agent(app);
 
@@ -68,6 +70,68 @@ describe('Products routes', () => {
       expect(res.headers['content-type']).toMatch('application/json');
       expect(res.body.success).toBe(true);
       expect(res.body.data).toEqual(expect.objectContaining(mProduct));
+    });
+  });
+
+  describe('delete product', () => {
+    const mockProduct = {
+      title: 'Test product',
+      description: 'Test description',
+      price: 100,
+      category: 'Test category',
+      coverImage: 'Test cover image',
+      images: ['Test image 1', 'Test image 2', 'Test image 3'],
+      type: 'Product',
+      location: 'Test location',
+      status: 'Active',
+      condition: 'New',
+    };
+
+    const mockUser = {
+      firstName: 'Test',
+      lastName: 'User',
+      email: 'testuser@test.com',
+      schoolName: 'Test school',
+      password: 'P@ssw0rd',
+      phoneNumber: 123456789,
+      address: 'Test address',
+    };
+
+    let productId;
+    let user;
+
+    beforeEach(async () => {
+      await Product.deleteMany();
+      await User.deleteMany();
+      user = await User.create(mockUser);
+      mockProduct.seller = user._id;
+      productId = await Product.create(mockProduct);
+      // await clearDatabase();
+    });
+
+    // afterAll(async () => {
+    //   await Product.deleteMany();
+    //   await User.deleteMany();
+    //   await mongoose.connection.close();
+    // });
+
+    it('DELETE /api/products/:id Should delete one product with provided ID', async () => {
+      const expectedResponse = {
+        success: true,
+        data: 'Product deleted successfully.',
+      };
+      const res = await server.delete(`/api/products/${productId._id}`);
+      expect(res.status).toBe(200);
+      expect(res.body).toEqual(expectedResponse);
+    });
+    it('DELETE /api/products/:id - 404', async () => {
+      const expectedResponse = {
+        success: false,
+        error: 'Product not found',
+      };
+      const res = await server.delete('/api/products/5e9f8f8f8f8f8f8f8f8f8f8');
+      expect(res.status).toBe(404);
+      expect(res.body).toEqual(expectedResponse);
     });
   });
 });
