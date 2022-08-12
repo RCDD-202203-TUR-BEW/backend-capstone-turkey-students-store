@@ -1,6 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 const request = require('supertest');
 const mongoose = require('mongoose');
+const { clearDatabase } = require('../../db/connection');
 const Product = require('../../models/product');
 const User = require('../../models/user');
 const app = require('../../app');
@@ -32,18 +33,19 @@ let productId;
 let userId;
 
 beforeEach(async () => {
-  await Product.deleteMany();
-  await User.deleteMany();
-  userId = await User.create(mockUser);
-  mockProduct.seller = userId;
-  productId = await Product.create(mockProduct);
+  // Product.deleteMany();
+  // User.deleteMany();
+  // userId = await User.create(mockUser);
+  // mockProduct.seller = userId;
+  // productId = await Product.create(mockProduct);
+  await clearDatabase();
 });
 
-afterAll(async () => {
-  await Product.deleteMany();
-  await User.deleteMany();
-  await mongoose.connection.close();
-});
+// afterAll(async () => {
+//   await Product.deleteMany();
+//   await User.deleteMany();
+//   await mongoose.connection.close();
+// });
 
 describe('delete product', () => {
   it('DELETE /api/products/:id Should delete one product with provided ID', async () => {
