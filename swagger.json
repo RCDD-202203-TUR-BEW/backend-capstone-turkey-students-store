@@ -332,8 +332,17 @@
             "enum": ["Product", "Service"]
           },
           "location": {
-            "type": "string",
-            "example": "Netherlands"
+            "type": "object",
+            "properties": {
+              "lat": {
+                "type": "number",
+                "example": 38.355
+              },
+              "lng": {
+                "type": "number",
+                "example": 25.369
+              }
+            }
           }
         }
       },
@@ -390,8 +399,17 @@
                 "enum": ["New", "Used"]
               },
               "location": {
-                "type": "string",
-                "example": "Netherlands"
+                "type": "object",
+                "properties": {
+                  "lat": {
+                    "type": "number",
+                    "example": 38.355
+                  },
+                  "lng": {
+                    "type": "number",
+                    "example": 25.369
+                  }
+                }
               },
               "seller": {
                 "type": "string",

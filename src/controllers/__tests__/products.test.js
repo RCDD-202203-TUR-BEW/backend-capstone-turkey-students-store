@@ -20,7 +20,10 @@ const mProduct = {
   coverImage:
     'https://www.artvinyoresel.com/image/cache/catalog/images%20-%202020-04-30T043931.448-270x270.jpeg',
   type: 'Product',
-  location: 'Artvin',
+  location: {
+    lat: 22.355,
+    lng: 38.399,
+  },
 };
 
 afterAll(async () => {
