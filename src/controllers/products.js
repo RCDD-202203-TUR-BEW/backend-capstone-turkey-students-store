@@ -2,6 +2,11 @@ const { validationResult } = require('express-validator');
 const ErrorResponse = require('../utils/errorResponse');
 const Product = require('../models/product');
 
+exports.getAllProducts = async (req, res, next) => {
+  const allProducts = await Product.find();
+  return res.status(200).json({ success: true, data: allProducts });
+};
+
 exports.createProduct = async (req, res, next) => {
   // check for validation errors first
   const validationErrors = validationResult(req);

@@ -5,6 +5,7 @@ const app = require('../../app');
 const Product = require('../../models/product');
 
 const server = request.agent(app);
+const Product = require('../../models/product');
 
 const {
   connectToMongoAtlas,
@@ -38,6 +39,19 @@ beforeAll(async () => {
 describe('Products routes', () => {
   afterEach(async () => {
     await clearDatabase();
+  });
+
+  describe('GET /', () => {
+    test('Fetch all products, return with 200 status code', async () => {
+      // first create a product
+      await Product.create(mProduct);
+      // now get all products
+      const res = await request(app).get('/api/products/');
+      expect(res.status).toBe(200);
+      expect(res.headers['content-type']).toMatch('application/json');
+      expect(res.body.success).toBe(true);
+      expect(res.body.data[0]).toEqual(expect.objectContaining(mProduct));
+    });
   });
 
   describe('POST /', () => {
