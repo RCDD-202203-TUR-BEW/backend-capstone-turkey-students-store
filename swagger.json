@@ -246,6 +246,79 @@
           }
         }
       }
+    },
+    "/api/profile/products": {
+      "get": {
+        "tags": ["Users"],
+        "description": "Get all products of a user for sale.",
+        "responses": {
+          "200": {
+            "description": "All products of a user that is for sale are successfully fetched.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/returnedProduct"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized user!"
+          }
+        }
+      }
+    },
+    "/api/products/{id}": {
+      "get": {
+        "tags": ["Products"],
+        "description": "Fetch the product specified by id.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the product to be fetched",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product specified by id is successfully fetched.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/returnedProduct"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Product not found!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Product not found!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -278,8 +351,99 @@
             "enum": ["Product", "Service"]
           },
           "location": {
-            "type": "string",
-            "example": "Netherlands"
+            "type": "object",
+            "properties": {
+              "lat": {
+                "type": "number",
+                "example": 38.355
+              },
+              "lng": {
+                "type": "number",
+                "example": 25.369
+              }
+            }
+          }
+        }
+      },
+      "returnedProduct": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string",
+                "example": "62ee685e158e683e851eccea"
+              },
+              "title": {
+                "type": "string",
+                "example": "Leyden Cheese"
+              },
+              "description": {
+                "type": "string",
+                "example": "Cumin spiced cheese that originates from the Leiden area in the Netherlands."
+              },
+              "price": {
+                "type": "number",
+                "example": 200
+              },
+              "category": {
+                "type": "string",
+                "example": "Food"
+              },
+              "coverImage": {
+                "type": "string",
+                "example": "http://www.cheese.com/leyden"
+              },
+              "images": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "type": {
+                "type": "string",
+                "enum": ["Product", "Service"]
+              },
+              "status": {
+                "type": "string",
+                "enum": ["Active", "Sold"]
+              },
+              "condition": {
+                "type": "string",
+                "enum": ["New", "Used"]
+              },
+              "location": {
+                "type": "object",
+                "properties": {
+                  "lat": {
+                    "type": "number",
+                    "example": 38.355
+                  },
+                  "lng": {
+                    "type": "number",
+                    "example": 25.369
+                  }
+                }
+              },
+              "seller": {
+                "type": "string",
+                "example": "62ee685e158e683e851ecceF"
+              },
+              "buyer": {
+                "type": "string"
+              },
+              "requestedBuyers": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
           }
         }
       },

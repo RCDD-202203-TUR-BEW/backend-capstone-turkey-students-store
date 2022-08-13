@@ -21,3 +21,11 @@ exports.createProduct = async (req, res, next) => {
   const product = await Product.create(req.body);
   return res.status(201).json({ success: true, data: product });
 };
+
+exports.getProduct = async (req, res, next) => {
+  const product = await Product.findById(req.params.id);
+  if (!product) {
+    return next(new ErrorResponse('Product not found!', 404));
+  }
+  return res.status(200).json({ success: true, data: product });
+};
