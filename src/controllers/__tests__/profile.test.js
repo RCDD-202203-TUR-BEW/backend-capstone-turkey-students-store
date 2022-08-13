@@ -18,7 +18,10 @@ const mProduct = {
   coverImage:
     'https://www.artvinyoresel.com/image/cache/catalog/images%20-%202020-04-30T043931.448-270x270.jpeg',
   type: 'Product',
-  location: 'Artvin',
+  location: {
+    lat: 33.455,
+    lng: 48.957,
+  },
 };
 
 afterAll(async () => {
@@ -56,7 +59,7 @@ describe('Profile routes', () => {
       // then create a product
       await server.post('/api/products/').send(mProduct);
 
-      const res = await server.get('/api/profile/products/').send(mProduct);
+      const res = await server.get('/api/profile/products/');
       expect(res.status).toBe(200);
       expect(res.headers['content-type']).toMatch('application/json');
       expect(res.body.success).toBe(true);

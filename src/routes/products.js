@@ -44,13 +44,17 @@ router.post(
       .isEmpty()
       .withMessage('Latitude cannot be empty!')
       .isNumeric()
-      .withMessage('Latitude should be a number!'),
+      .withMessage('Latitude should be a number!')
+      .custom((lat) => lat >= -90 && lat <= 90)
+      .withMessage('Latitude should be between -90 and 90!'),
     body('location.lng')
       .not()
       .isEmpty()
       .withMessage('Longitude cannot be empty!')
       .isNumeric()
-      .withMessage('Longitude should be a number!'),
+      .withMessage('Longitude should be a number!')
+      .custom((lng) => lng >= -180 && lng <= 180)
+      .withMessage('Longitude should be between -180 and 180!'),
   ],
   productsController.createProduct
 );
