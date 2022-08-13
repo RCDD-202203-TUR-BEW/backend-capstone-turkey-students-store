@@ -251,6 +251,55 @@
           }
         }
       }
+    },
+    "/api/products/{id}": {
+      "get": {
+        "tags": ["Products"],
+        "description": "Fetch the product specified by id.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the product to be fetched",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product specified by id is successfully fetched.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/returnedProduct"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Product not found!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Product not found!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
