@@ -36,6 +36,14 @@ router.patch(
       .optional()
       .isLength({ min: 1 })
       .withMessage('School name cannot be empty!'),
+    body('phoneNumber')
+      .optional()
+      .isLength({ min: 1 })
+      .withMessage('School name cannot be empty!'),
+    body('address')
+      .optional()
+      .isLength({ min: 1 })
+      .withMessage('School name cannot be empty!'),
   ],
   usersController.updateProfile
 );

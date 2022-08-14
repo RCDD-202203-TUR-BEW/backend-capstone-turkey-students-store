@@ -16,16 +16,30 @@ exports.updateProfile = async (req, res, next) => {
       .json({ success: false, errors: validationErrors.array() });
   }
 
-  let hashedPassword;
+  let user = await User.findById(req.user._id);
 
-  if (req.body.password) {
-    hashedPassword = await bcrypt.hash(req.body.password, 10);
+  if (!user) {
+    return new ErrorResponse('user does not exists!', 400);
   }
   const userexist = await User.findOne({ email: req.body.email });
   if (userexist) {
     return next(new ErrorResponse('Email already exists!', 400));
   }
-  const user = await User.findByIdAndUpdate(
+
+  if (req.body.password) {
+    if (!(await bcrypt.compare(req.body.oldpassword, user.password))) {
+      return next(
+        new ErrorResponse(
+          'Your old password is not correct please enter again!',
+          401
+        )
+      );
+    }
+    console.log(`l${req.body.password}`);
+    req.body.password = await bcrypt.hash(req.body.password, 10);
+  }
+
+  user = await User.findByIdAndUpdate(
     req.user._id,
     {
       $set: {
@@ -33,11 +47,9 @@ exports.updateProfile = async (req, res, next) => {
         lastName: req.body.lastName,
         email: req.body.email,
         schoolName: req.body.schoolName,
-        password: hashedPassword,
+        password: req.body.password,
         phoneNumber: req.body.phoneNumber,
         address: req.body.address,
-        provider: req.body.provider,
-        providerId: req.body.providerId,
       },
     },
     { new: true }

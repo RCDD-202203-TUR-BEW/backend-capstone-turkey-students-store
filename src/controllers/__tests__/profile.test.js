@@ -52,6 +52,21 @@ describe('User routes', () => {
       expect(res.headers['content-type']).toMatch('application/json');
       expect(res.body).toEqual(expect.objectContaining(expectedResponse));
     });
+    test('If user email exists, should return an error with status code 400', async () => {
+      const expectedResponse = {
+        success: false,
+        error: 'Your old password is not correct please enter again!',
+      };
+      const user = {
+        firstName: 'Mikey',
+        oldpassword: 'Ma123445',
+        password: 'Ma123w',
+      };
+      const res = await server.patch('/api/profile/').send(user);
+      expect(res.status).toBe(401);
+      expect(res.headers['content-type']).toMatch('application/json');
+      expect(res.body).toEqual(expect.objectContaining(expectedResponse));
+    });
 
     test('If user data is valid, should update user, return its data with status code 200', async () => {
       const mValidRequest = {
