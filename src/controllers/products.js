@@ -16,7 +16,7 @@ exports.createProduct = async (req, res, next) => {
   const product = await Product.create(req.body);
   return res.status(201).json({ success: true, data: product });
 };
-exports.updateProduct = async (req, res) => {
+exports.updateProduct = async (req, res, next) => {
   // check for validation errors first
   const validationErrors = validationResult(req);
   if (!validationErrors.isEmpty()) {
@@ -24,22 +24,20 @@ exports.updateProduct = async (req, res) => {
       .status(400)
       .json({ success: false, errors: validationErrors.array() });
   }
+  // eslint-disable-next-line no-cond-assign, no-undef
+  const myproduct = await Product.findById(req.params.id);
+  if (!myproduct) {
+    return next(new ErrorResponse('No such product exists!', 404));
+  }
+
+  if (myproduct.seller.toString() !== req.user._id.toString()) {
+    return next(new ErrorResponse('Unauthorized!', 403));
+  }
+
   const product = await Product.findByIdAndUpdate(
     req.params.id,
     {
-      $set: {
-        title: req.body.title,
-        description: req.body.description,
-        price: req.body.price,
-        category: req.body.category,
-        coverImage: req.body.coverImage,
-        images: req.body.images,
-        type: req.body.type,
-        location: req.body.location,
-        status: req.body.status,
-        condition: req.body.condition,
-        seller: req.body.seller,
-      },
+      $set: req.body,
     },
     { new: true }
   );

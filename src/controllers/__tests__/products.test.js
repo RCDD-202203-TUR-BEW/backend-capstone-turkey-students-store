@@ -83,7 +83,7 @@ describe('Products routes', () => {
         schoolName: 'Yale University',
         password: 'gleN123',
       };
-      await server.post('/api/auth/signup').send(user);
+      const createdUser = await server.post('/api/auth/signup').send(user);
       // create product
       const product1 = {
         title: 'Javascript Book',
@@ -94,6 +94,7 @@ describe('Products routes', () => {
         type: 'Product',
         location: 'Ankara',
         condition: 'Used',
+        seller: createdUser.body.data._id,
       };
       const product2 = {
         title: 'Javascript Book2',
@@ -104,21 +105,38 @@ describe('Products routes', () => {
         type: 'Product',
         location: 'Ankara',
         condition: 'Used',
+        seller: createdUser.body.data._id,
       };
       myproduct1 = await Product.create(product1);
       myproduct2 = await Product.create(product2);
     });
 
     test('Update given field, return with 200 status code', async () => {
-      const toUpdate = { title: 'Potato' };
+      const toUpdate = {
+        title: 'potato',
+        description: 'Matehs',
+        price: 120,
+        category: 'Book',
+        coverImage: 'www.book.jpg',
+        type: 'Product',
+        location: 'Istanbul',
+        condition: 'Used',
+      };
+
       const res = await server
-        // eslint-disable-next-line no-undef
         .patch(`/api/products/${myproduct1._id}`)
         .send(toUpdate);
       expect(res.status).toBe(200);
       expect(res.headers['content-type']).toMatch('application/json');
       expect(res.body.success).toBe(true);
-      expect(res.body.data.title).toBe('Potato');
+      expect(res.body.data.title).toBe('potato');
+      expect(res.body.data.description).toBe('Matehs');
+      expect(res.body.data.price).toBe(120);
+      expect(res.body.data.category).toBe('Book');
+      expect(res.body.data.coverImage).toBe('www.book.jpg');
+      expect(res.body.data.type).toBe('Product');
+      expect(res.body.data.location).toBe('Istanbul');
+      expect(res.body.data.condition).toBe('Used');
     });
 
     test('If title with lenght more than 150 is passed, return error with status code 400', async () => {
