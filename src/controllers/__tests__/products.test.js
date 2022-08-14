@@ -1,6 +1,7 @@
 // eslint-disable-next-line node/no-unpublished-require
 const request = require('supertest');
 const mongoose = require('mongoose');
+const { application } = require('express');
 const app = require('../../app');
 const Product = require('../../models/product');
 
@@ -101,6 +102,44 @@ describe('Products routes', () => {
       expect(res.headers['content-type']).toMatch('application/json');
       expect(res.body.success).toBe(true);
       expect(res.body.data).toEqual(expect.objectContaining(mProduct));
+    });
+  });
+
+  describe('POST /:id/request', () => {
+    test('If product with passed id does not exist, return error with status code 400', async () => {
+      const expectedResponse = {
+        success: false,
+        error: 'Invalid request!',
+      };
+      // first create a product
+      await server.post('/api/products/').send(mProduct);
+      const product = await Product.create(mProduct);
+      const productId = product._id;
+      const res = await server.post(`/api/products/${productId}/request`);
+      expect(res.status).toBe(400);
+      expect(res.headers['content-type']).toMatch('application/json');
+      expect(res.body).toEqual(expect.objectContaining(expectedResponse));
+    });
+
+    test('Should create a new request to buy product and return with status code 200', async () => {
+      const mUser = {
+        firstName: 'Glenn',
+        lastName: 'Quagmire',
+        email: 'glennQQQ@email.com',
+        schoolName: 'Yale University',
+        password: 'gleN123',
+      };
+      const user = await server.post('/api/auth/signup').send(mUser);
+      const userId = user.body.data._id;
+      const product = await Product.create(mProduct);
+      const productId = product._id;
+      const res = await server
+        .post(`/api/products/${productId}/request`)
+        .send();
+      expect(res.status).toBe(200);
+      expect(res.headers['content-type']).toMatch('application/json');
+      expect(res.body.success).toBe(true);
+      expect(res.body.data.requestedBuyers[0]).toBe(userId);
     });
   });
 });

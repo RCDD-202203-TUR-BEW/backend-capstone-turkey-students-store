@@ -17,6 +17,22 @@ exports.createProduct = async (req, res, next) => {
   return res.status(201).json({ success: true, data: product });
 };
 
+// check if requestedBuyers doesn't have buyerId already. product.requestedBuyers.find(i => i.toHexString() === buyerId.toHexString())
+exports.requestProduct = async (req, res, next) => {
+  const productId = req.params.id;
+  const buyerId = req.user._id;
+  const product = await Product.findOne({ _id: productId });
+  // check if the product is not null
+  if (product) {
+    product.requestedBuyers.push(buyerId);
+    await product.save();
+    res.status(200).json({ success: true, data: product });
+  }
+  return res
+    .status(400)
+    .json({ success: false, data: { message: 'Invalid request!' } });
+};
+
 exports.getProduct = async (req, res, next) => {
   const product = await Product.findById(req.params.id);
   if (!product) {

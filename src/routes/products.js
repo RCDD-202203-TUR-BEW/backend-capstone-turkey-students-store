@@ -41,6 +41,8 @@ router.post(
   productsController.createProduct
 );
 
+router.post('/:id/request', auth.verifyUser, productsController.requestProduct);
+
 router.get('/:id', productsController.getProduct);
 
 module.exports = router;
