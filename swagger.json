@@ -23,6 +23,10 @@
     {
       "name": "Users",
       "description": "API for users in the system"
+    },
+    {
+      "name": "Orders",
+      "description": "API for the orders users have requested"
     }
   ],
   "paths": {
@@ -319,6 +323,63 @@
           }
         }
       }
+    },
+    "/api/auth/facebook": {
+      "get": {
+        "tags": ["auth"],
+        "summary": "Facebook login",
+        "description": "Provide Facebook login to users",
+        "responses": {
+          "200": {
+            "description": "Successful login",
+            "schema": {
+              "$ref": "#/definitions/Profile"
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/auth/facebook/callback": {
+      "get": {
+        "tags": ["auth"],
+        "summary": "Facebook login callback",
+        "description": "Retrive user profile from Facebook",
+        "responses": {
+          "200": {
+            "description": "Fetched user profile",
+            "schema": {
+              "$ref": "#/definitions/Profile"
+            }
+          }
+        }
+      }
+    },
+    "/api/order": {
+      "get": {
+        "tags": ["Orders"],
+        "description": "Fetch all the orders of the logged user.",
+        "responses": {
+          "200": {
+            "description": "All orders of the logged user are successfully fetched.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/returnedOrder"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized user!"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -527,7 +588,7 @@
           }
         }
       },
-      "returnedProduct": {
+      "returnedOrder": {
         "type": "object",
         "properties": {
           "success": {
@@ -539,65 +600,43 @@
             "properties": {
               "_id": {
                 "type": "string",
-                "example": "62ee685e158e683e851eccea"
-              },
-              "title": {
-                "type": "string",
-                "example": "Leyden Cheese"
-              },
-              "description": {
-                "type": "string",
-                "example": "Cumin spiced cheese that originates from the Leiden area in the Netherlands."
-              },
-              "price": {
-                "type": "number",
-                "example": 200
-              },
-              "category": {
-                "type": "string",
-                "example": "Food"
-              },
-              "coverImage": {
-                "type": "string",
-                "example": "http://www.cheese.com/leyden"
-              },
-              "images": {
-                "type": "array",
-                "items": {
-                  "type": "string",
-                  "example": "http://www.cheese.com/leyden/img1"
-                }
-              },
-              "type": {
-                "type": "string",
-                "enum": ["Product", "Service"]
-              },
-              "status": {
-                "type": "string",
-                "enum": ["Active", "Sold"]
-              },
-              "condition": {
-                "type": "string",
-                "enum": ["New", "Used"]
-              },
-              "location": {
-                "type": "string",
-                "example": "Netherlands"
-              },
-              "seller": {
-                "type": "string",
-                "example": "62ee685e158e683e851ecceF"
+                "example": "62ed149a0785e2f2a4ff07b3"
               },
               "buyer": {
                 "type": "string",
-                "example": "63ee685e158e683e851ecceF"
+                "example": "62fa728e15810a408c79f138"
               },
-              "requestedBuyers": {
+              "orderDate": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "totalPrice": {
+                "type": "number",
+                "example": 200
+              },
+              "orderStatus": {
+                "type": "string",
+                "enum": ["pending", "completed", "cancelled"]
+              },
+              "orderItems": {
                 "type": "array",
                 "items": {
-                  "type": "string",
-                  "example": "64ee685e158e683e851ecceF"
+                  "type": "object",
+                  "properties": {
+                    "item": {
+                      "type": "string",
+                      "example": "62fa729915810a408c79f13b"
+                    },
+                    "quantity": {
+                      "type": "number",
+                      "example": 7
+                    }
+                  }
                 }
+              },
+              "notes": {
+                "type": "string",
+                "example": "Please send this product asap!"
               },
               "createdAt": {
                 "type": "string",
@@ -607,66 +646,6 @@
                 "type": "string",
                 "format": "date-time"
               }
-            }
-          }
-        }
-      }
-    }
-  },
-  "definitions": {
-    "Profile": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "provider": {
-          "type": "string"
-        },
-        "firstName": {
-          "type": "string"
-        },
-        "lastName": {
-          "type": "string"
-        },
-        "profilePhoto": {
-          "type": "string"
-        }
-      }
-    }
-  },
-  "schemes": ["http"],
-  "consumes": ["application/json"],
-  "produces": ["application/json"],
-  "paths": {
-    "/api/auth/facebook": {
-      "get": {
-        "tags": ["auth"],
-        "summary": "Facebook login",
-        "description": "Provide Facebook login to users",
-        "responses": {
-          "200": {
-            "description": "Successful login",
-            "schema": {
-              "$ref": "#/definitions/Profile"
-            }
-          },
-          "400": {
-            "description": "Invalid request"
-          }
-        }
-      }
-    },
-    "/api/auth/facebook/callback": {
-      "get": {
-        "tags": ["auth"],
-        "summary": "Facebook login callback",
-        "description": "Retrive user profile from Facebook",
-        "responses": {
-          "200": {
-            "description": "Fetched user profile",
-            "schema": {
-              "$ref": "#/definitions/Profile"
             }
           }
         }
@@ -694,5 +673,8 @@
         }
       }
     }
-  }
+  },
+  "schemes": ["http"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"]
 }
