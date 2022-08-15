@@ -1,8 +1,8 @@
 // Import Node.js stream
 // const stream = require('stream');
 const { v4: uuidv4 } = require('uuid');
+const path = require('path');
 const storage = require('../config/index');
-const logger = require('../utils/logger');
 
 // The ID of your GCS bucket
 const bucketName = 'student_store_recoded';
@@ -18,17 +18,19 @@ function parseFileName(fileName) {
   return fileName;
 }
 
+function getExtension(filename) {
+  const ext = path.extname(filename || '').split('.');
+  return ext[ext.length - 1];
+}
+
 const uploadImage = (imageFile) =>
   new Promise((resolve, reject) => {
     const { buffer, mimetype, originalname } = imageFile;
     // make sure filename ends with .jpg
-    const fileName = parseFileName(originalname);
+    const fileName = `.${getExtension(originalname)}`;
 
     // The new ID for your GCS file
-    const destFileName = `g-${uuidv4()}-${fileName}`;
-
-    // test
-    // storage.getBuckets().then((buckets) => console.log('BUCKETS:', buckets));
+    const destFileName = `g-${uuidv4()}${fileName}`;
 
     // Get a reference to the bucket
     const myBucket = storage.bucket(bucketName);
@@ -46,7 +48,6 @@ const uploadImage = (imageFile) =>
 
     fileStream
       .on('finish', () => {
-        logger.info('Image successfully uploaded.');
         const url = `https://storage.googleapis.com/${myBucket.name}/${file.name}`;
         resolve(url);
       })

@@ -5,7 +5,8 @@ const Product = require('../models/product');
 const uploadImage = require('../services/gcs-service');
 
 exports.createProduct = async (req, res, next) => {
-  // check for validation errors first
+  delete req.body.images; // A workaround for issue #58/1
+
   const validationErrors = validationResult(req);
   if (!validationErrors.isEmpty()) {
     return res
@@ -14,7 +15,7 @@ exports.createProduct = async (req, res, next) => {
   }
 
   // check for coverImage (required)
-  if (!req.files.coverImage) {
+  if (!req.files?.coverImage) {
     return next(new ErrorResponse('Cover image cannot be empty!', 404));
   }
 
@@ -26,6 +27,7 @@ exports.createProduct = async (req, res, next) => {
 
   // if additional images exist, upload those images too
   let imageUrls = [];
+
   if (req.files.images && req.files.images.length > 0) {
     const uploadSingleImage = async (fileName) => {
       const url = await uploadImage(fileName);
@@ -42,7 +44,6 @@ exports.createProduct = async (req, res, next) => {
     // set images
     req.body.images = imageUrls;
   }
-
   // set seller as this user; get user's id from token -> req.user
   req.body.seller = req.user._id;
 

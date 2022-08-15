@@ -72,7 +72,7 @@ describe('Products routes', () => {
         .field('category', mProduct.category)
         .field('type', mProduct.type)
         .field('location', mProduct.location)
-        .attach('coverImage', path.join(__dirname, '../../uploads/image1.jpg'))
+        .attach('coverImage', path.join(__dirname, './uploads/image1.jpg'))
         .set('Content-Type', 'multipart/form-data');
       // copy mProduct and delete cover image
       const expectedResponse = JSON.parse(JSON.stringify(mProduct));
