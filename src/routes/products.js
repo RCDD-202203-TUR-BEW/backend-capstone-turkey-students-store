@@ -43,7 +43,6 @@ router.patch(
       .optional()
       .isLength({ min: 1, max: 150 })
       .withMessage('Length should be between 1-150 characters!'),
-
     body('description')
       .optional()
       .isLength({ min: 1 })
