@@ -31,12 +31,7 @@ router.post(
       .not()
       .isEmpty()
       .withMessage('Please select the type of the product!'),
-    body('location')
-      .not()
-      .isEmpty()
-      .withMessage('Location cannot be empty!')
-      .isLength({ max: 50 })
-      .withMessage('Location cannot be more than 50 characters!'),
+    body('location').not().isEmpty().withMessage('Location cannot be empty!'),
   ],
   productsController.createProduct
 );
@@ -72,8 +67,28 @@ router.patch(
       .withMessage('You cannot add more than three additional images!'),
     body('location')
       .optional()
+      .isObject()
+      .withMessage(
+        'Location format is as follows; location{ lat: Number, lng: Number }'
+      )
       .isLength({ min: 1 })
-      .withMessage('Location cannot be more than 50 characters!'),
+      .withMessage('Location cannot be empty!'),
+    body('location.lat')
+      .optional()
+      .isLength({ min: 1 })
+      .withMessage('Latitude cannot be empty!')
+      .isNumeric()
+      .withMessage('Latitude should be a number!')
+      .custom((lat) => lat >= -90 && lat <= 90)
+      .withMessage('Latitude should be between -90 and 90!'),
+    body('location.lng')
+      .optional()
+      .isLength({ min: 1 })
+      .withMessage('Longitude cannot be empty!')
+      .isNumeric()
+      .withMessage('Longitude should be a number!')
+      .custom((lng) => lng >= -180 && lng <= 180)
+      .withMessage('Longitude should be between -180 and 180!'),
     body('condition')
       .optional()
       .isIn(['New', 'Used'])

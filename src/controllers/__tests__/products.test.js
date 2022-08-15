@@ -92,7 +92,10 @@ describe('Products routes', () => {
         category: 'Book',
         coverImage: 'www.book.jpg',
         type: 'Product',
-        location: 'Ankara',
+        location: {
+          lat: 22.355,
+          lng: 38.399,
+        },
         condition: 'Used',
         seller: createdUser.body.data._id,
       };
@@ -103,7 +106,10 @@ describe('Products routes', () => {
         category: 'Book',
         coverImage: 'www.book.jpg',
         type: 'Product',
-        location: 'Ankara',
+        location: {
+          lat: 22.355,
+          lng: 38.399,
+        },
         condition: 'Used',
         seller: createdUser.body.data._id,
       };
@@ -119,7 +125,10 @@ describe('Products routes', () => {
         category: 'Book',
         coverImage: 'www.book.jpg',
         type: 'Product',
-        location: 'Istanbul',
+        location: {
+          lat: 22.355,
+          lng: 38.399,
+        },
         condition: 'Used',
       };
 
@@ -129,14 +138,7 @@ describe('Products routes', () => {
       expect(res.status).toBe(200);
       expect(res.headers['content-type']).toMatch('application/json');
       expect(res.body.success).toBe(true);
-      expect(res.body.data.title).toBe('potato');
-      expect(res.body.data.description).toBe('Matehs');
-      expect(res.body.data.price).toBe(120);
-      expect(res.body.data.category).toBe('Book');
-      expect(res.body.data.coverImage).toBe('www.book.jpg');
-      expect(res.body.data.type).toBe('Product');
-      expect(res.body.data.location).toBe('Istanbul');
-      expect(res.body.data.condition).toBe('Used');
+      expect(res.body.data).toEqual(expect.objectContaining(toUpdate));
     });
 
     test('If title with lenght more than 150 is passed, return error with status code 400', async () => {

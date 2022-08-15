@@ -25,12 +25,12 @@ exports.updateProduct = async (req, res, next) => {
       .json({ success: false, errors: validationErrors.array() });
   }
   // eslint-disable-next-line no-cond-assign, no-undef
-  const myproduct = await Product.findById(req.params.id);
-  if (!myproduct) {
+  const myProduct = await Product.findById(req.params.id);
+  if (!myProduct) {
     return next(new ErrorResponse('No such product exists!', 404));
   }
 
-  if (myproduct.seller.toString() !== req.user._id.toString()) {
+  if (myProduct.seller.toString() !== req.user._id.toString()) {
     return next(new ErrorResponse('Unauthorized!', 403));
   }
 
