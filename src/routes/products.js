@@ -44,5 +44,5 @@ router.post(
   productsController.createProduct
 );
 
-router.delete('/:id', auth.verifyUser, productsController.removeProduct);
+router.delete('/:id', productsController.removeProduct);
 module.exports = router;
