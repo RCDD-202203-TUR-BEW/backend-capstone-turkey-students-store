@@ -5,7 +5,6 @@ const app = require('../../app');
 const Product = require('../../models/product');
 
 const server = request.agent(app);
-const Product = require('../../models/product');
 
 const {
   connectToMongoAtlas,
