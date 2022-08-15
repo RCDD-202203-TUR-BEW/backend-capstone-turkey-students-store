@@ -227,6 +227,75 @@
           }
         }
       }
+    },
+    "/api/products/{id}/requsted-buyers": {
+      "get": {
+        "tags": ["Products"],
+        "description": "Get all the buyers for a product.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Product ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All the buyers for a product.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/returnedBuyers"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Product with {id} not found!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Product with {id} not found!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User ${req.user.id} is not authorized to access or modify this product details!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "User ${req.user.id} is not authorized to access or modify this product details!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
