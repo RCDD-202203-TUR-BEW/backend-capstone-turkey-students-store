@@ -3,43 +3,31 @@ const FacebookStrategy = require('passport-facebook').Strategy;
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const User = require('../models/user');
 
-passport.serializeUser((user, done) => {
-  done(null, user);
-});
-passport.deserializeUser((user, done) => {
-  done(null, user);
-});
-
 passport.use(
   new FacebookStrategy(
     {
       clientID: process.env.FACEBOOK_CLIENT_ID,
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-      callbackURL: `http://localhost:${process.env.PORT}/api/auth/facebook/callback`,
+      callbackURL: process.env.FACEBOOK_CALLBACK_URL,
     },
-    async (accessToken, refreshToken, profile, done) => {
-      // console.log(accessToken);
-      const currentUser = await User.find({ providerId: profile.id });
-
-      if (currentUser) {
-        // console.log('user found');
-        return done(null, currentUser);
-      }
+    async (accessToken, refreshToken, profile, cb) => {
       try {
-        const newUser = new User({
-          providerId: profile.id,
-          provider: profile.provider,
-          firstName:
-            profile.name.givenName || profile.displayName.split(' ')[0],
-          lastName:
-            profile.name.familyName || profile.displayName.split(' ')[1],
-        });
-        await newUser.save();
+        let user = await User.findOne({ providerId: `facebook-${profile.id}` });
+        if (!user) {
+          user = await User.create({
+            providerId: `facebook-${profile.id}`,
+            provider: 'facebook',
+            firstName:
+              profile.name.givenName || profile.displayName.split(' ')[0],
+            lastName:
+              profile.name.familyName || profile.displayName.split(' ')[1],
+          });
+        }
+
+        cb(null, user);
       } catch (error) {
-        done(error, null);
+        cb(error, null);
       }
-      // console.log(profile);
-      return done(null, profile);
     }
   )
 );

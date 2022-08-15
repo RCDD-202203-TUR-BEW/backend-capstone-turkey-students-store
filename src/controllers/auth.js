@@ -5,16 +5,21 @@ const ErrorResponse = require('../utils/errorResponse');
 const User = require('../models/user');
 
 exports.sendFacebookJwt = (req, res) => {
-  if (req.user) {
-    //     const token = auth.getToken({ _id: req.user._id });
-    const token = jwt.sign({ _id: req.user._id }, process.env.SECRET_KEY, {
-      expiresIn: '60s',
-    });
-    res.cookie('token', token, { secure: true, httpOnly: true });
-    return res.status(200).send(req.user);
-  }
+  const payload = {
+    _id: req.user._id,
+  };
 
-  return res.status(401).send('Unauthorized');
+  const token = jwt.sign(payload, process.env.SECRET_KEY, {
+    expiresIn: '14 days',
+  });
+
+  res.cookie('token', token, {
+    httpOnly: true,
+    signed: true,
+    maxAge: 14 * 24 * 60 * 60 * 1000, // 14 days
+  });
+
+  return res.status(200).json({ success: true, data: req.user });
 };
 
 exports.signup = async (req, res, next) => {
