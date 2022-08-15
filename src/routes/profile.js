@@ -17,13 +17,19 @@ router.patch(
       .isEmail()
       .withMessage('Invalid email format!'),
     body('password')
-      .optional()
+      .if(body('oldPassword').exists())
+      .notEmpty()
+      .withMessage('You have to enter new password!')
       .isLength({ min: 5 })
       .withMessage('Password must be at least 5 characters long!')
       .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\w\W]{0,}$/)
-      .withMessage('Password must contain a number, uppercase and lowercase')
-      .isLength({ min: 1 })
-      .withMessage('Password cannot be empty!'),
+      .withMessage('Password must contain a number, uppercase and lowercase'),
+
+    body('oldPassword')
+      .if(body('password').exists())
+      .notEmpty()
+      .withMessage('You have to enter oldPassword!'),
+
     body('firstName')
       .optional()
       .isLength({ min: 1 })

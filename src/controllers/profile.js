@@ -18,16 +18,13 @@ exports.updateProfile = async (req, res, next) => {
 
   let user = await User.findById(req.user._id);
 
-  if (!user) {
-    return new ErrorResponse('user does not exists!', 400);
-  }
   const userexist = await User.findOne({ email: req.body.email });
   if (userexist) {
     return next(new ErrorResponse('Email already exists!', 400));
   }
 
   if (req.body.password) {
-    if (!(await bcrypt.compare(req.body.oldpassword, user.password))) {
+    if (!(await bcrypt.compare(req.body.oldPassword, user.password))) {
       return next(
         new ErrorResponse(
           'Your old password is not correct please enter again!',
@@ -35,7 +32,7 @@ exports.updateProfile = async (req, res, next) => {
         )
       );
     }
-    console.log(`l${req.body.password}`);
+
     req.body.password = await bcrypt.hash(req.body.password, 10);
   }
 

@@ -480,10 +480,26 @@
         },
         "profilePhoto": {
           "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "schoolName": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "phoneNumber": {
+          "type": "number"
+        },
+        "address": {
+          "type": "string"
         }
       }
     }
   },
+
   "schemes": ["http"],
   "consumes": ["application/json"],
   "produces": ["application/json"]

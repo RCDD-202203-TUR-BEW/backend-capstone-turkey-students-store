@@ -52,14 +52,14 @@ describe('User routes', () => {
       expect(res.headers['content-type']).toMatch('application/json');
       expect(res.body).toEqual(expect.objectContaining(expectedResponse));
     });
-    test('If user email exists, should return an error with status code 400', async () => {
+    test('If old password is not correct , should return an error with status code 401', async () => {
       const expectedResponse = {
         success: false,
         error: 'Your old password is not correct please enter again!',
       };
       const user = {
         firstName: 'Mikey',
-        oldpassword: 'Ma123445',
+        oldPassword: 'Ma123445',
         password: 'Ma123w',
       };
       const res = await server.patch('/api/profile/').send(user);
