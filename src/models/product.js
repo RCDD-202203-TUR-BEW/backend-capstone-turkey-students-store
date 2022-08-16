@@ -49,9 +49,14 @@ const productSchema = new mongoose.Schema(
       required: [true, 'Please select the type of the product!'],
     },
     location: {
-      type: String,
-      required: [true, 'Location cannot be empty!'],
-      maxLength: 50,
+      lat: {
+        type: Number,
+        required: true,
+      },
+      lng: {
+        type: Number,
+        required: true,
+      },
     },
     status: {
       type: String,
