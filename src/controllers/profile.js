@@ -1,4 +1,6 @@
+/* eslint-disable no-unused-vars */
 const Product = require('../models/product');
+// eslint-disable-next-line no-unused-vars
 const ErrorResponse = require('../utils/errorResponse');
 
 exports.getUserProducts = async (req, res, next) => {

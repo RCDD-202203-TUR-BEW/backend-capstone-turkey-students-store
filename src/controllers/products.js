@@ -45,8 +45,12 @@ exports.sellProduct = async (req, res, next) => {
   const { id, userId } = req.params;
   const { notes } = req.body;
   const orderNotes = notes || '';
-  const product = await Product.findById(id);
-
+  let product;
+  try {
+    product = await Product.findById(id);
+  } catch (err) {
+    return next(new ErrorResponse(`Product not found!`, 404));
+  }
   const order = await Order.create({
     orderItems: [{ item: product._id, quantity: 1 }],
     buyer: userId,

@@ -120,3 +120,56 @@ describe('Products routes', () => {
     });
   });
 });
+
+let mProduct1;
+const mOrder = {
+  orderItems: [{ item: '62fbbdd7783da691bba410c2', quantity: 1 }],
+  buyer: '62fbbb448c9a38141e94ebfb',
+  totalPrice: 175,
+  notes: '',
+};
+
+describe('POST/:id/requested-buyers/:userId/sell', () => {
+  beforeEach(async () => {
+    // create user for authentication
+    const user = {
+      firstName: 'Glenn',
+      lastName: 'Quagmire',
+      email: 'glennQQQ@email.com',
+      schoolName: 'Yale University',
+      password: 'gleN123',
+    };
+    const mUser = await server.post('/api/auth/signup').send(user);
+    const product = mProduct;
+    product.seller = mUser._id;
+    mProduct1 = await Product.create(product);
+  });
+  test('If one of the required fields are not passed, return error with status code 400', async () => {
+    // pass a request body without required field 'orderItems'
+    // const mOrderWithoutOrderItems = JSON.parse(JSON.stringify(mOrder));
+    // delete mOrderWithoutOrderItems.orderItems;
+    // send post request
+    const res = await server
+      .post(
+        `/api/products/4949494949494949494/requested-buyers/${mOrder.buyer}/sell`
+      )
+      .send(mOrder);
+    expect(res.status).toBe(404);
+    expect(res.headers['content-type']).toMatch('application/json');
+    expect(res.body.success).toBe(false);
+    expect(res.body.error).toBe('Product not found!');
+  });
+  test('If all required fields are passed, create order, return with status code 200', async () => {
+    const res = await server
+      .post(
+        `/api/products/${mProduct1._id}/requested-buyers/${mOrder.buyer}/sell`
+      )
+      .send(mOrder);
+    expect(res.status).toBe(200);
+    expect(res.headers['content-type']).toMatch('application/json');
+    expect(res.body.success).toBe(true);
+    // expect(res.body.data).toEqual(expect.objectContaining(mOrder));
+    expect(res.body.data.buyer).toBe(mOrder.buyer);
+    expect(res.body.data.totalPrice).toBe(mOrder.totalPrice);
+  });
+});

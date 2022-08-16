@@ -6,7 +6,7 @@ const productsMiddleware = require('../middlewares/products');
 
 router.post(
   '/:id/requested-buyers/:userId/sell',
-  // auth.verifyUser,
+  auth.verifyUser,
   // productsMiddleware.verifyOwner,
   productsController.sellProduct
 );

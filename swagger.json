@@ -25,6 +25,399 @@
       "description": "API for users in the system"
     }
   ],
+  "paths": {
+    "/api/auth/google": {
+      "get": {
+        "tags": ["OAuth2"],
+        "summary": "Authenticates user using google 3rd party authentication service",
+        "responses": {
+          "200": {
+            "description": "Redirects verified user to the home page",
+            "schema": {
+              "$ref": "#/definitions/profile"
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/auth/google/callback": {
+      "get": {
+        "tags": ["auth"],
+        "summary": "Login using google",
+        "description": "Retrive user profile from Google",
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/Profile"
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/signup": {
+      "post": {
+        "tags": ["Auth"],
+        "description": "Register user for the system",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/userRequestBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "New user object created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/returnedUser"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Email already exists!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/signin": {
+      "post": {
+        "tags": ["Auth"],
+        "description": "Log the user in with credentials.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "griffin@mail.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "abC123"
+                  }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User successfully logged in.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/returnedUser"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User credentials are invalid!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/products/": {
+      "get": {
+        "tags": ["Products"],
+        "description": "Fetch all products from database.",
+        "responses": {
+          "200": {
+            "description": "All products in the system are successfully fetched.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/returnedProduct"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Products"],
+        "description": "Add new product.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/productRequestBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "New product added.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/returnedProduct"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "msg": {
+                            "type": "string",
+                            "example": "Product name cannot be empty!"
+                          },
+                          "param": {
+                            "type": "string",
+                            "example": "title"
+                          },
+                          "location": {
+                            "type": "string",
+                            "example": "body"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/profile/products": {
+      "get": {
+        "tags": ["Users"],
+        "description": "Get all products of a user for sale.",
+        "responses": {
+          "200": {
+            "description": "All products of a user that is for sale are successfully fetched.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/returnedProduct"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized user!"
+          }
+        }
+      }
+    },
+    "/api/products/{id}": {
+      "get": {
+        "tags": ["Products"],
+        "description": "Fetch the product specified by id.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the product to be fetched",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product specified by id is successfully fetched.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/returnedProduct"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Product not found!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Product not found!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/products/:id/requested-buyers/:userId/sell": {
+      "post": {
+        "tags": ["Products"],
+        "description": "Request to buy a product.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the product to be requested",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "id of the user requesting to buy the product",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product requested to buy successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Product not found!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Product not found!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/facebook": {
+      "get": {
+        "tags": ["auth"],
+        "summary": "Facebook login",
+        "description": "Provide Facebook login to users",
+        "responses": {
+          "200": {
+            "description": "Successful login",
+            "schema": {
+              "$ref": "#/definitions/Profile"
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/auth/facebook/callback": {
+      "get": {
+        "tags": ["auth"],
+        "summary": "Facebook login callback",
+        "description": "Retrive user profile from Facebook",
+        "responses": {
+          "200": {
+            "description": "Fetched user profile",
+            "schema": {
+              "$ref": "#/definitions/Profile"
+            }
+          }
+        }
+      }
+    }
+  },
   "components": {
     "schemas": {
       "productRequestBody": {
@@ -235,44 +628,6 @@
       }
     }
   },
-  "schemes": ["http"],
-  "consumes": ["application/json"],
-  "produces": ["application/json"],
-  "paths": {
-    "/api/auth/facebook": {
-      "get": {
-        "tags": ["auth"],
-        "summary": "Facebook login",
-        "description": "Provide Facebook login to users",
-        "responses": {
-          "200": {
-            "description": "Successful login",
-            "schema": {
-              "$ref": "#/definitions/Profile"
-            }
-          },
-          "400": {
-            "description": "Invalid request"
-          }
-        }
-      }
-    },
-    "/api/auth/facebook/callback": {
-      "get": {
-        "tags": ["auth"],
-        "summary": "Facebook login callback",
-        "description": "Retrive user profile from Facebook",
-        "responses": {
-          "200": {
-            "description": "Fetched user profile",
-            "schema": {
-              "$ref": "#/definitions/Profile"
-            }
-          }
-        }
-      }
-    }
-  },
   "definitions": {
     "Profile": {
       "type": "object",
@@ -283,16 +638,19 @@
         "provider": {
           "type": "string"
         },
-        "displayName": {
+        "firstName": {
           "type": "string"
         },
-        "givenName": {
+        "lastName": {
           "type": "string"
         },
-        "familyName": {
+        "profilePhoto": {
           "type": "string"
         }
       }
     }
-  }
+  },
+  "schemes": ["http"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"]
 }
