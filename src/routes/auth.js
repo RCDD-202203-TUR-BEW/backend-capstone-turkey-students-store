@@ -1,13 +1,19 @@
+const router = require('express').Router();
 const passport = require('passport');
-const jwt = require('jsonwebtoken');
-const express = require('express');
 const { body } = require('express-validator');
-
+const ErrorResponse = require('../utils/errorResponse');
 const authController = require('../controllers/auth');
 const { verifyUser } = require('../middlewares/authenticate');
-const { googleAuthJWT } = require('../controllers/auth');
 
-const router = express.Router();
+router.get('/facebook', passport.authenticate('facebook'));
+
+router.get(
+  '/facebook/callback',
+  passport.authenticate('facebook', {
+    session: false,
+  }),
+  authController.sendFacebookJwt
+);
 
 router.get(
   '/google',
@@ -21,7 +27,7 @@ router.get(
   passport.authenticate('google', {
     session: false,
   }),
-  googleAuthJWT
+  authController.googleAuthJWT
 );
 
 router.get('/profile', verifyUser, (req, res) => {
