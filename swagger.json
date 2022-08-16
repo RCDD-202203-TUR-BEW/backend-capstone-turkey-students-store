@@ -302,6 +302,25 @@
       }
     }
   },
+  "/api/products/:id/request": {
+    "post": {
+      "tags": ["Request"],
+      "summary": "Create a new request",
+      "requestBody": {
+        "required": true,
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/components/schemas/productRequestBody"
+            }
+          }
+        }
+      }
+    },
+    "400": {
+      "description": "Invalid request"
+    }
+  },
   "components": {
     "schemas": {
       "productRequestBody": {

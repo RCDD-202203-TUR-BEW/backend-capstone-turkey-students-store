@@ -106,6 +106,22 @@ describe('Products routes', () => {
   });
 
   describe('POST /:id/request', () => {
+    test('If product with passed id does not exist, return error with status code 400', async () => {
+      const mUser = {
+        firstName: 'Glenn',
+        lastName: 'Quagmire',
+        email: 'glennQQQ@email.com',
+        schoolName: 'Yale University',
+        password: 'gleN123',
+      };
+      await server.post('/api/auth/signup').send(mUser);
+      const productId = new mongoose.Types.ObjectId();
+      const res = await server.post(`/api/products/${productId}/request`);
+      expect(res.status).toBe(400);
+      expect(res.headers['content-type']).toMatch('application/json');
+      expect(res.body.success).toBe(false);
+      expect(res.body.data.message).toBe('Invalid request!');
+    });
     test('Should create a new request to buy product and return with status code 200', async () => {
       const mUser = {
         firstName: 'Glenn',
