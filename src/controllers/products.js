@@ -1,6 +1,8 @@
+/* eslint-disable no-unused-vars */
 const { validationResult } = require('express-validator');
 const ErrorResponse = require('../utils/errorResponse');
 const Product = require('../models/product');
+const Order = require('../models/order');
 
 exports.getAllProducts = async (req, res, next) => {
   const allProducts = await Product.find();
@@ -28,4 +30,29 @@ exports.getProduct = async (req, res, next) => {
     return next(new ErrorResponse('Product not found!', 404));
   }
   return res.status(200).json({ success: true, data: product });
+};
+
+exports.getRequstedBuyers = async (req, res, next) => {
+  const { id } = req.params;
+  const product = await Product.findById(id).populate('requstedBuyers');
+  if (!product) {
+    return next(new ErrorResponse(`Product with id ${id} not found!`, 404));
+  }
+  return res.status(200).json({ success: true, data: product.requstedBuyers });
+};
+
+exports.sellProduct = async (req, res, next) => {
+  const { id, userId } = req.params;
+  const { notes } = req.body;
+  const orderNotes = notes || '';
+  const product = await Product.findById(id);
+
+  const order = await Order.create({
+    orderItems: [{ item: product._id, quantity: 1 }],
+    buyer: userId,
+    totalPrice: product.price,
+    notes: orderNotes,
+  });
+  // const deletedProduct = await Product.findByIdAndDelete(id);
+  return res.status(200).json({ success: true, data: order });
 };

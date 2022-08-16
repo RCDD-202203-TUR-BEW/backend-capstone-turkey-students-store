@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+// order model doesnt have seller!
 const orderSchema = new mongoose.Schema(
   {
     buyer: {
