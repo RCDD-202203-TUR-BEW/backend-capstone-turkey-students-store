@@ -6,7 +6,7 @@ const cookieParser = require('cookie-parser');
 const { encryptCookieNodeMiddleware } = require('encrypt-cookie');
 const { expressjwt: jwt } = require('express-jwt');
 const swaggerUi = require('swagger-ui-express');
-
+const cors = require('cors');
 const swaggerDocument = require('../swagger.json');
 const routes = require('./routes');
 const logger = require('./utils/logger');
@@ -20,6 +20,9 @@ connectToMongoAtlas();
 const app = express();
 
 const port = process.env.PORT || 3000;
+
+// use cors
+app.use(cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
