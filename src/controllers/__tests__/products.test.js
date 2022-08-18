@@ -1,6 +1,5 @@
 // eslint-disable-next-line node/no-unpublished-require
 const request = require('supertest');
-const path = require('path');
 const mongoose = require('mongoose');
 const { application } = require('express');
 const app = require('../../app');
@@ -82,28 +81,13 @@ describe('Products routes', () => {
       expect(res.body.errors[0].msg).toBe('Product name cannot be empty!');
     });
 
-    /* TODO: fix this test */
-    /* test('If all required fields are passed, create product, return with status code 201', async () => {
-      const res = await server
-        .post('/api/products/')
-        .field('title', mProduct.title)
-        .field('description', mProduct.description)
-        .field('price', mProduct.price)
-        .field('category', mProduct.category)
-        .field('type', mProduct.type)
-        .field('location', mProduct.location)
-        .attach('coverImage', path.join(__dirname, './uploads/image1.jpg'))
-        .set('Content-Type', 'multipart/form-data');
-      // copy mProduct and delete cover image
-      const expectedResponse = JSON.parse(JSON.stringify(mProduct));
-      delete expectedResponse.coverImage;
-
-      expect(res.status).toBe(201);
-      expect(res.headers['content-type']).toMatch('application/json');
-      expect(res.body.success).toBe(true);
-      expect(res.body.data).toEqual(expect.objectContaining(expectedResponse));
-      expect(res.body.data.coverImage).toBeDefined();
-    }); */
+    // test('If all required fields are passed, create product, return with status code 201', async () => {
+    //   const res = await server.post('/api/products/').send(mProduct);
+    //   expect(res.status).toBe(201);
+    //   expect(res.headers['content-type']).toMatch('application/json');
+    //   expect(res.body.success).toBe(true);
+    //   expect(res.body.data).toEqual(expect.objectContaining(mProduct));
+    // });
   });
 
   describe('GET /:id', () => {
@@ -124,8 +108,6 @@ describe('Products routes', () => {
       expect(res.body).toEqual(expect.objectContaining(expectedResponse));
     });
 
-    /* TODO: fix this test */
-    /*
     test('If product with passed id exists, return the product with status code 200', async () => {
       // first create a product
       const product = await Product.create(mProduct);
@@ -137,11 +119,12 @@ describe('Products routes', () => {
       expect(res.body.success).toBe(true);
       expect(res.body.data).toEqual(expect.objectContaining(mProduct));
     });
-*/
   });
 
+  // 1st one fixed
   describe('POST /:id/request', () => {
-    test('If product with passed id does not exist, return error with status code 400', async () => {
+    let user;
+    beforeEach(async () => {
       const mUser = {
         firstName: 'Glenn',
         lastName: 'Quagmire',
@@ -149,7 +132,9 @@ describe('Products routes', () => {
         schoolName: 'Yale University',
         password: 'gleN123',
       };
-      await server.post('/api/auth/signup').send(mUser);
+      user = await server.post('/api/auth/signup').send(mUser);
+    });
+    test('If product with passed id does not exist, return error with status code 400', async () => {
       const productId = new mongoose.Types.ObjectId();
       const res = await server.post(`/api/products/${productId}/request`);
       expect(res.status).toBe(400);
@@ -158,14 +143,6 @@ describe('Products routes', () => {
       expect(res.body.data.message).toBe('Invalid request!');
     });
     test('Should create a new request to buy product and return with status code 200', async () => {
-      const mUser = {
-        firstName: 'Glenn',
-        lastName: 'Quagmire',
-        email: 'glennQQQ@email.com',
-        schoolName: 'Yale University',
-        password: 'gleN123',
-      };
-      const user = await server.post('/api/auth/signup').send(mUser);
       const userId = user.body.data._id;
       const product = await Product.create(mProduct);
       const productId = product._id;

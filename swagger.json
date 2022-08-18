@@ -320,6 +320,62 @@
         }
       }
     },
+    "/api/products/{id}/request": {
+      "post": {
+        "tags": ["Products"],
+        "summary": "Create a new request",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the product to request",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/productRequestBody"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                            "example": "Invalid request!"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/auth/facebook": {
       "get": {
         "tags": ["Auth"],
@@ -352,25 +408,6 @@
           }
         }
       }
-    }
-  },
-  "/api/products/:id/request": {
-    "post": {
-      "tags": ["Request"],
-      "summary": "Create a new request",
-      "requestBody": {
-        "required": true,
-        "responses": {
-          "200": {
-            "schema": {
-              "$ref": "#/components/schemas/productRequestBody"
-            }
-          }
-        }
-      }
-    },
-    "400": {
-      "description": "Invalid request"
     }
   },
   "components": {
@@ -589,9 +626,6 @@
           "type": "string"
         },
         "provider": {
-          "type": "string"
-        },
-        "displayName": {
           "type": "string"
         },
         "firstName": {

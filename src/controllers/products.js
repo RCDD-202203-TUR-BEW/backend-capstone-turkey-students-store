@@ -65,7 +65,7 @@ exports.requestProduct = async (req, res, next) => {
   if (product) {
     product.requestedBuyers.push(buyerId);
     await product.save();
-    res.status(200).json({ success: true, data: product });
+    return res.status(200).json({ success: true, data: product });
   }
   return res
     .status(400)
