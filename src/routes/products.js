@@ -33,14 +33,6 @@ router.post(
       .not()
       .isEmpty()
       .withMessage('Please select the type of the product!'),
-    //   body('location')
-    //     .isObject()
-    //     .withMessage(
-    //       'Location format is as follows; location{ lat: Number, lng: Number }'
-    //     )
-    //     .not()
-    //     .isEmpty()
-    //     .withMessage('Location cannot be empty!'),
     body('location.lat')
       .not()
       .isEmpty()

@@ -44,7 +44,7 @@ describe('Orders routes', () => {
       const user = await server.post('/api/auth/signup').send(mUser);
       // then, create an order using this user's id as buyer
       const mOrder = {
-        buyer: user.body.data._id,
+        buyer: { _id: user.body.data._id },
         totalPrice: 100,
         orderItems: [],
         notes: 'My books order',

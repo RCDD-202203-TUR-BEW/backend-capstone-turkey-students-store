@@ -10,7 +10,6 @@ exports.getAllProducts = async (req, res, next) => {
 };
 
 exports.createProduct = async (req, res, next) => {
-  console.log(req.body);
   delete req.body.images; // A workaround for issue #58/1
 
   const validationErrors = validationResult(req);

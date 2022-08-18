@@ -603,8 +603,17 @@
                 "example": "62ed149a0785e2f2a4ff07b3"
               },
               "buyer": {
-                "type": "string",
-                "example": "62fa728e15810a408c79f138"
+                "type": "object",
+                "properties": {
+                  "_id": {
+                    "type": "string",
+                    "example": "62fe7d2bbb3858446e7d6c00"
+                  },
+                  "address": {
+                    "type": "string",
+                    "example": "X Apartment Y Street Z Province Istanbul/Turkey"
+                  }
+                }
               },
               "orderDate": {
                 "type": "string",
@@ -624,8 +633,38 @@
                   "type": "object",
                   "properties": {
                     "item": {
-                      "type": "string",
-                      "example": "62fa729915810a408c79f13b"
+                      "type": "object",
+                      "properties": {
+                        "_id": {
+                          "type": "string",
+                          "example": "62fa729915810a408c79f13b"
+                        },
+                        "title": {
+                          "type": "string",
+                          "example": "iPhone 13 Pro"
+                        },
+                        "price": {
+                          "type": "number",
+                          "example": 2500
+                        },
+                        "category": {
+                          "type": "string",
+                          "example": "Electronics"
+                        },
+                        "location": {
+                          "type": "object",
+                          "properties": {
+                            "lat": {
+                              "type": "number",
+                              "example": 33.25
+                            },
+                            "lng": {
+                              "type": "number",
+                              "example": 48.55
+                            }
+                          }
+                        }
+                      }
                     },
                     "quantity": {
                       "type": "number",
