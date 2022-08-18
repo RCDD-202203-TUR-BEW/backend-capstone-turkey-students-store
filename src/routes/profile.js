@@ -53,4 +53,5 @@ router.patch(
   ],
   usersController.updateProfile
 );
+
 module.exports = router;
