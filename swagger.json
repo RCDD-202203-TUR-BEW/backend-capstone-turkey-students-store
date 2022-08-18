@@ -32,7 +32,7 @@
   "paths": {
     "/api/auth/google": {
       "get": {
-        "tags": ["OAuth2"],
+        "tags": ["Auth"],
         "summary": "Authenticates user using google 3rd party authentication service",
         "responses": {
           "200": {
@@ -49,7 +49,7 @@
     },
     "/api/auth/google/callback": {
       "get": {
-        "tags": ["auth"],
+        "tags": ["Auth"],
         "summary": "Login using google",
         "description": "Retrive user profile from Google",
         "responses": {
@@ -326,7 +326,7 @@
     },
     "/api/auth/facebook": {
       "get": {
-        "tags": ["auth"],
+        "tags": ["Auth"],
         "summary": "Facebook login",
         "description": "Provide Facebook login to users",
         "responses": {
@@ -344,7 +344,7 @@
     },
     "/api/auth/facebook/callback": {
       "get": {
-        "tags": ["auth"],
+        "tags": ["Auth"],
         "summary": "Facebook login callback",
         "description": "Retrive user profile from Facebook",
         "responses": {
@@ -665,10 +665,13 @@
         "displayName": {
           "type": "string"
         },
-        "givenName": {
+        "firstName": {
           "type": "string"
         },
-        "familyName": {
+        "lastName": {
+          "type": "string"
+        },
+        "profilePhoto": {
           "type": "string"
         }
       }

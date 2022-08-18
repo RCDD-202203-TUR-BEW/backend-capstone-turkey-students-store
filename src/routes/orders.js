@@ -5,4 +5,7 @@ const ordersController = require('../controllers/orders');
 
 router.get('/', auth.verifyUser, ordersController.getMyOrders);
 
+// DELETE AFTER TESTING
+router.post('/:id', auth.verifyUser, ordersController.giveOrder);
+
 module.exports = router;
