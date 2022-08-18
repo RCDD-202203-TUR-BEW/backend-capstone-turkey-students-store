@@ -98,12 +98,19 @@ describe('Products routes', () => {
     };
 
     let productId;
-    let user;
 
     beforeEach(async () => {
       await Product.deleteMany();
       await User.deleteMany();
-      user = await User.create(mockUser);
+      // user = await User.create(mockUser);
+      const mUser = {
+        firstName: 'Glenn',
+        lastName: 'Quagmire',
+        email: 'glennQQQ@email.com',
+        schoolName: 'Yale University',
+        password: 'gleN123',
+      };
+      const user = await server.post('/api/auth/signup').send(mUser);
       mockProduct.seller = user._id;
       productId = await Product.create(mockProduct);
       // await clearDatabase();
