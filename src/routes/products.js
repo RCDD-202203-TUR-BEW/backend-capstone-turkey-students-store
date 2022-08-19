@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const { body } = require('express-validator');
+const multer = require('multer');
 const productsController = require('../controllers/products');
 const auth = require('../middlewares/authenticate');
 const productsMiddleware = require('../middlewares/products');
@@ -11,9 +12,18 @@ router.post(
   productsController.sellProduct
 );
 
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 }, // max 5 mb image size
+});
+
 router.post(
   '/',
   auth.verifyUser,
+  upload.fields([
+    { name: 'coverImage', maxCount: 1 },
+    { name: 'images', maxCount: 3 },
+  ]),
   [
     body('title')
       .not()
@@ -27,26 +37,10 @@ router.post(
       .withMessage('Description cannot be empty!'),
     body('price').not().isEmpty().withMessage('Price cannot be empty!'),
     body('category').not().isEmpty().withMessage('Please type in a category!'),
-    body('coverImage')
-      .not()
-      .isEmpty()
-      .withMessage('Cover image cannot be empty!'),
-    body('images')
-      .optional()
-      .isArray({ max: 3 })
-      .withMessage('You cannot add more than three additional images!'),
     body('type')
       .not()
       .isEmpty()
       .withMessage('Please select the type of the product!'),
-    body('location')
-      .isObject()
-      .withMessage(
-        'Location format is as follows; location{ lat: Number, lng: Number }'
-      )
-      .not()
-      .isEmpty()
-      .withMessage('Location cannot be empty!'),
     body('location.lat')
       .not()
       .isEmpty()
