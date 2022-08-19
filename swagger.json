@@ -26,6 +26,39 @@
     }
   ],
   "paths": {
+    "/api/auth/facebook": {
+      "get": {
+        "tags": ["auth"],
+        "summary": "Facebook login",
+        "description": "Provide Facebook login to users",
+        "responses": {
+          "200": {
+            "description": "Successful login",
+            "schema": {
+              "$ref": "#/definitions/Profile"
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/auth/facebook/callback": {
+      "get": {
+        "tags": ["auth"],
+        "summary": "Facebook login callback",
+        "description": "Retrive user profile from Facebook",
+        "responses": {
+          "200": {
+            "description": "Fetched user profile",
+            "schema": {
+              "$ref": "#/definitions/Profile"
+            }
+          }
+        }
+      }
+    },
     "/api/auth/google": {
       "get": {
         "tags": ["OAuth2"],
@@ -365,88 +398,6 @@
           }
         }
       },
-      "returnedProduct": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean",
-            "example": true
-          },
-          "data": {
-            "type": "object",
-            "properties": {
-              "_id": {
-                "type": "string",
-                "example": "62ee685e158e683e851eccea"
-              },
-              "title": {
-                "type": "string",
-                "example": "Leyden Cheese"
-              },
-              "description": {
-                "type": "string",
-                "example": "Cumin spiced cheese that originates from the Leiden area in the Netherlands."
-              },
-              "price": {
-                "type": "number",
-                "example": 200
-              },
-              "category": {
-                "type": "string",
-                "example": "Food"
-              },
-              "coverImage": {
-                "type": "string",
-                "example": "http://www.cheese.com/leyden"
-              },
-              "images": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
-              "type": {
-                "type": "string",
-                "enum": ["Product", "Service"]
-              },
-              "status": {
-                "type": "string",
-                "enum": ["Active", "Sold"]
-              },
-              "condition": {
-                "type": "string",
-                "enum": ["New", "Used"]
-              },
-              "location": {
-                "type": "object",
-                "properties": {
-                  "lat": {
-                    "type": "number",
-                    "example": 38.355
-                  },
-                  "lng": {
-                    "type": "number",
-                    "example": 25.369
-                  }
-                }
-              },
-              "seller": {
-                "type": "string",
-                "example": "62ee685e158e683e851ecceF"
-              },
-              "buyer": {
-                "type": "string"
-              },
-              "requestedBuyers": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        }
-      },
       "userRequestBody": {
         "type": "object",
         "properties": {
@@ -613,66 +564,10 @@
       }
     }
   },
-  "definitions": {
-    "Profile": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "provider": {
-          "type": "string"
-        },
-        "firstName": {
-          "type": "string"
-        },
-        "lastName": {
-          "type": "string"
-        },
-        "profilePhoto": {
-          "type": "string"
-        }
-      }
-    }
-  },
   "schemes": ["http"],
   "consumes": ["application/json"],
   "produces": ["application/json"],
-  "paths": {
-    "/api/auth/facebook": {
-      "get": {
-        "tags": ["auth"],
-        "summary": "Facebook login",
-        "description": "Provide Facebook login to users",
-        "responses": {
-          "200": {
-            "description": "Successful login",
-            "schema": {
-              "$ref": "#/definitions/Profile"
-            }
-          },
-          "400": {
-            "description": "Invalid request"
-          }
-        }
-      }
-    },
-    "/api/auth/facebook/callback": {
-      "get": {
-        "tags": ["auth"],
-        "summary": "Facebook login callback",
-        "description": "Retrive user profile from Facebook",
-        "responses": {
-          "200": {
-            "description": "Fetched user profile",
-            "schema": {
-              "$ref": "#/definitions/Profile"
-            }
-          }
-        }
-      }
-    }
-  },
+
   "definitions": {
     "Profile": {
       "type": "object",
