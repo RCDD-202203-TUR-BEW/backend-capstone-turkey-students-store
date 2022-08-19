@@ -7,6 +7,7 @@ const { encryptCookieNodeMiddleware } = require('encrypt-cookie');
 const { expressjwt: jwt } = require('express-jwt');
 const swaggerUi = require('swagger-ui-express');
 const cors = require('cors');
+const session = require('express-session');
 const swaggerDocument = require('../swagger.json');
 const routes = require('./routes');
 const logger = require('./utils/logger');
@@ -29,6 +30,15 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(cookieParser(process.env.SECRET_KEY));
 app.use(encryptCookieNodeMiddleware(process.env.SECRET_KEY));
+
+app.use(
+  session({
+    secret: process.env.SECRET_KEY,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {},
+  })
+);
 
 require('./services/passport.config');
 

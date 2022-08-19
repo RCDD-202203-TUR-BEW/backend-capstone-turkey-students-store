@@ -4,6 +4,7 @@ const { body } = require('express-validator');
 const ErrorResponse = require('../utils/errorResponse');
 const authController = require('../controllers/auth');
 const { verifyUser } = require('../middlewares/authenticate');
+const { twitterAuthJWT } = require('../controllers/auth');
 
 router.get('/facebook', passport.authenticate('facebook'));
 
@@ -39,6 +40,16 @@ router.post('/logout', verifyUser, (req, res) => {
   res.clearCookie('token');
   res.status(205).json({ success: true });
 });
+
+router.get(
+  '/twitter',
+  passport.authenticate('twitter', { scope: ['profile', 'email', 'openid'] })
+);
+router.get(
+  '/twitter/callback',
+  passport.authenticate('twitter', { session: false }),
+  twitterAuthJWT
+);
 
 router.post(
   '/signup',
