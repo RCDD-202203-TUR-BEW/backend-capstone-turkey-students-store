@@ -48,7 +48,7 @@ router.get(
 router.get(
   '/twitter/callback',
   passport.authenticate('twitter', { session: false }),
-  twitterAuthJWT
+  authController.twitterAuthJWT
 );
 
 router.post(
