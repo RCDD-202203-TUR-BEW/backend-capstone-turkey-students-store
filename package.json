@@ -8,7 +8,7 @@
   "scripts": {
     "start": "node src/app.js",
     "watch": "nodemon src/app.js",
-    "test": "yarn validate && jest --detectOpenHandles --forceExit --verbose",
+    "test": "yarn validate && IS_JEST=1 jest --detectOpenHandles --forceExit --verbose",
     "lint": "eslint --ignore-path .gitignore .",
     "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|json)\"",
     "validate": "yarn format && yarn lint",
