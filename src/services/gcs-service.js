@@ -5,7 +5,7 @@ const path = require('path');
 const storage = require('../config/index');
 
 // The ID of your GCS bucket
-const bucketName = 'student_store_recoded';
+const bucketName = 'recoded_studen_store_bucket';
 
 /**
  *
