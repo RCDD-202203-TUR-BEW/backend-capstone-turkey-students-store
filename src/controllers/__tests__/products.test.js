@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const { application } = require('express');
 const app = require('../../app');
 const Product = require('../../models/product');
+const User = require('../../models/user');
 
 const server = request.agent(app);
 
@@ -121,7 +122,6 @@ describe('Products routes', () => {
     });
   });
 
-  // 1st one fixed
   describe('POST /:id/request', () => {
     let user;
     beforeEach(async () => {
@@ -134,17 +134,27 @@ describe('Products routes', () => {
       };
       user = await server.post('/api/auth/signup').send(mUser);
     });
-    test('If product with passed id does not exist, return error with status code 400', async () => {
+    test('If product with passed id does not exist, return error with status code 422', async () => {
       const productId = new mongoose.Types.ObjectId();
       const res = await server.post(`/api/products/${productId}/request`);
-      expect(res.status).toBe(400);
+      expect(res.status).toBe(422);
       expect(res.headers['content-type']).toMatch('application/json');
       expect(res.body.success).toBe(false);
       expect(res.body.data.message).toBe('Invalid request!');
     });
     test('Should create a new request to buy product and return with status code 200', async () => {
+      const mUser = {
+        firstName: 'Peter',
+        lastName: 'Griffin',
+        email: 'peter@email.com',
+        schoolName: 'Princeton University',
+        password: 'petE123',
+      };
       const userId = user.body.data._id;
       const product = await Product.create(mProduct);
+      const sellerUser = await User.create(mUser);
+      product.seller = sellerUser._id;
+      await product.save();
       const productId = product._id;
       const res = await server
         .post(`/api/products/${productId}/request`)
@@ -153,6 +163,18 @@ describe('Products routes', () => {
       expect(res.headers['content-type']).toMatch('application/json');
       expect(res.body.success).toBe(true);
       expect(res.body.data.requestedBuyers[0]).toBe(userId);
+    });
+
+    test('if the seller and the buyer same person, return error with status code 400', async () => {
+      const product = await Product.create(mProduct);
+      product.seller = user.body.data._id;
+      await product.save();
+      const productId = product._id;
+      const res = await server.post(`/api/products/${productId}/request`);
+      expect(res.status).toBe(400);
+      expect(res.headers['content-type']).toMatch('application/json');
+      expect(res.body.success).toBe(false);
+      expect(res.body.error).toBe('Seller and buyer should be different!');
     });
   });
 });

@@ -345,7 +345,7 @@
               }
             }
           },
-          "400": {
+          "422": {
             "description": "Invalid request",
             "content": {
               "application/json": {
@@ -367,6 +367,26 @@
                           }
                         }
                       }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Seller and the buyer cannot be same!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Seller and buyer should be different!"
                     }
                   }
                 }

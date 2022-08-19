@@ -58,18 +58,34 @@ exports.createProduct = async (req, res, next) => {
 
 // check if requestedBuyers doesn't have buyerId already. product.requestedBuyers.find(i => i.toHexString() === buyerId.toHexString())
 exports.requestProduct = async (req, res, next) => {
-  const productId = req.params.id;
-  const buyerId = req.user._id;
-  const product = await Product.findOne({ _id: productId });
-  // check if the product is not null
-  if (product) {
-    product.requestedBuyers.push(buyerId);
-    await product.save();
-    return res.status(200).json({ success: true, data: product });
+  try {
+    const productId = req.params.id;
+    const buyerId = req.user._id;
+    const product = await Product.findOne({ _id: productId });
+
+    // check if the product is not null
+    if (product) {
+      // check if the seller and the buyer same person
+      if (buyerId.toString() === product.seller?.toString()) {
+        return next(
+          new ErrorResponse('Seller and buyer should be different!', 400)
+        );
+      }
+      const checkId = product.requestedBuyers.findIndex(
+        (val) => val.toString() === buyerId.toString()
+      );
+      if (checkId === -1) {
+        product.requestedBuyers.push(buyerId);
+        await product.save();
+      }
+      return res.status(200).json({ success: true, data: product });
+    }
+    return res
+      .status(422)
+      .json({ success: false, data: { message: 'Invalid request!' } });
+  } catch (error) {
+    console.log(error);
   }
-  return res
-    .status(400)
-    .json({ success: false, data: { message: 'Invalid request!' } });
 };
 
 exports.getProduct = async (req, res, next) => {
