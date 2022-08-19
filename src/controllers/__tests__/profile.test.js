@@ -17,6 +17,19 @@ const user = {
   schoolName: 'Yale University',
   password: 'gleN123',
 };
+const mProduct = {
+  title: 'Cheese',
+  description: 'Kars cheese 1000g',
+  price: 175,
+  category: 'Food',
+  coverImage:
+    'https://www.artvinyoresel.com/image/cache/catalog/images%20-%202020-04-30T043931.448-270x270.jpeg',
+  type: 'Product',
+  location: {
+    lat: 33.455,
+    lng: 48.957,
+  },
+};
 afterAll(async () => {
   await closeDatabase();
 });
@@ -43,6 +56,12 @@ describe('Profile routes', () => {
       expect(res.headers['content-type']).toMatch('application/json');
       expect(res.body.success).toBe(true);
       expect(res.body.data).toEqual(expect.objectContaining(expectedResponse));
+    });
+  });
+  describe('GET /products', () => {
+    test('If user is unauthenticated, return error with status code 401', async () => {
+      const res = await server.get('/api/profile/products/').send(mProduct);
+      expect(res.status).toBe(401);
     });
   });
 });
