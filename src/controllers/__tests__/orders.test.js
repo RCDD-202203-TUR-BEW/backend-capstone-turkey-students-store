@@ -35,7 +35,7 @@ describe('Orders routes', () => {
 
   describe('GET /', () => {
     test('If user is unauthenticated, return error with status code 401', async () => {
-      const res = await server.get('/api/order/');
+      const res = await server.get('/api/orders/');
       expect(res.status).toBe(401);
     });
 
@@ -51,7 +51,7 @@ describe('Orders routes', () => {
       };
       const order = await Order.create(mOrder);
       // now test endpoint
-      const res = await server.get('/api/order/');
+      const res = await server.get('/api/orders/');
       expect(res.status).toBe(200);
       expect(res.headers['content-type']).toMatch('application/json');
       expect(res.body.success).toBe(true);
