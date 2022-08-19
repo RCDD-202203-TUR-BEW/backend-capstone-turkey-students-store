@@ -5,7 +5,7 @@ const auth = require('../middlewares/authenticate');
 const productsMiddleware = require('../middlewares/products');
 
 router.get(
-  '/:id/requsted-buyers',
+  '/:id/requested-buyers',
   auth.verifyUser,
   productsMiddleware.verifyOwner,
   productsController.getRequstedBuyers

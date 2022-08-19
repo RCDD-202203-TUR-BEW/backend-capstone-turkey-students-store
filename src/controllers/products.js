@@ -19,9 +19,16 @@ exports.createProduct = async (req, res, next) => {
 
 exports.getRequstedBuyers = async (req, res, next) => {
   const { id } = req.params;
-  const product = await Product.findById(id).populate('requstedBuyers');
-  if (!product) {
-    return next(new ErrorResponse(`Product with id ${id} not found!`, 404));
+  try {
+    const product = await Product.findById(id).populate({
+      path: 'requestedBuyers',
+      select: 'firstName lastName email phoneNumber address',
+    });
+    return res
+      .status(200)
+      .json({ success: true, data: product.requestedBuyers });
+  } catch (error) {
+    console.log(error);
+    next(new ErrorResponse(`Product with id ${id} not found!`, 404));
   }
-  return res.status(200).json({ success: true, data: product.requstedBuyers });
 };

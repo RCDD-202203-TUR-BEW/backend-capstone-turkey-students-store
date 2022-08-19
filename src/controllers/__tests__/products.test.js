@@ -70,4 +70,50 @@ describe('Products routes', () => {
       expect(res.body.data).toEqual(expect.objectContaining(mProduct));
     });
   });
+  describe('GET /:id/requested-buyers', () => {
+    let product;
+    beforeEach(async () => {
+      // create user for authentication
+      const user = {
+        firstName: 'Glenn',
+        lastName: 'Quagmire',
+        email: 'glennaaaQQQ@email.com',
+        schoolName: 'Yale University',
+        password: 'gleN123',
+      };
+      const mUser = await server.post('/api/auth/signup').send(user);
+      // create product fullfilled with seller and requested buyers as this user
+      // mProduct.seller = user._id;
+      mProduct.requestedBuyers = [mUser.body.data._id];
+      product = await server.post('/api/products/').send(mProduct);
+    });
+    test('If product with given id is not found, return error with status code 404', async () => {
+      const res = await server.get(
+        '/api/products/62ff96671c828963807a2041/requested-buyers'
+      );
+      expect(res.status).toBe(404);
+      expect(res.headers['content-type']).toMatch('application/json');
+      expect(res.body.success).toBe(false);
+      expect(res.body.error).toBe(
+        'Product with id 62ff96671c828963807a2041 not found!'
+      );
+    });
+    test('If product with given id is found, verifyUser and verifyOwner is passed, return with status code 200 with populated requested buyers', async () => {
+      const mRequestedBuyers = [
+        {
+          _id: mProduct.requestedBuyers[0],
+          firstName: 'Glenn',
+          lastName: 'Quagmire',
+          email: 'glennaaaQQQ@email.com',
+          fullName: 'Glenn Quagmire',
+        },
+      ];
+      const id = product.body.data._id;
+      const res = await server.get(`/api/products/${id}/requested-buyers`);
+      expect(res.status).toBe(200);
+      expect(res.headers['content-type']).toMatch('application/json');
+      expect(res.body.success).toBe(true);
+      expect(res.body.data[0]).toEqual(mRequestedBuyers[0]);
+    });
+  });
 });
