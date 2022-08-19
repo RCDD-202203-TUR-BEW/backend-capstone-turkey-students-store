@@ -3,7 +3,7 @@ const { body } = require('express-validator');
 const multer = require('multer');
 const productsController = require('../controllers/products');
 const auth = require('../middlewares/authenticate');
-const productsMiddleware = require('../middlewares/products');
+// const productsMiddleware = require('../middlewares/products');
 
 router.post(
   '/:id/requested-buyers/:userId/sell',

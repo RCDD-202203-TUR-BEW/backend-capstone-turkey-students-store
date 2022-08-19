@@ -93,6 +93,9 @@ exports.sellProduct = async (req, res, next) => {
     totalPrice: product.price,
     notes: orderNotes,
   });
-  // const deletedProduct = await Product.findByIdAndDelete(id);
+  if (order.orderItems.quantity === 0) {
+    // eslint-disable-next-line no-undef
+    return next(new ErrorMessage(`Product is sold!`));
+  }
   return res.status(200).json({ success: true, data: order });
 };
