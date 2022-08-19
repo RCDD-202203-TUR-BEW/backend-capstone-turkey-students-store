@@ -9,6 +9,7 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 const { expressjwt: jwt } = require('express-jwt');
 const swaggerUi = require('swagger-ui-express');
+const session = require('express-session');
 
 const swaggerDocument = require('../swagger.json');
 const routes = require('./routes');
@@ -27,6 +28,15 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(cookieParser(process.env.SECRET_KEY));
 app.use(encryptCookieNodeMiddleware(process.env.SECRET_KEY));
+
+app.use(
+  session({
+    secret: process.env.SECRET_KEY,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {},
+  })
+);
 
 require('./middlewares/passport-auth');
 require('./services/passport-twitter');
