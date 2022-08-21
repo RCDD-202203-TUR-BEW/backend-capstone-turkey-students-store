@@ -6,6 +6,7 @@ const multer = require('multer');
 const productsController = require('../controllers/products');
 const ErrorResponse = require('../utils/errorResponse');
 const auth = require('../middlewares/authenticate');
+const productMiddleware = require('../middlewares/product');
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -60,5 +61,10 @@ router.get('/', productsController.getAllProducts);
 
 router.get('/:id', productsController.getProduct);
 
-router.delete('/:id', auth.verifyUser, productsController.removeProduct);
+router.delete(
+  '/:id',
+  auth.verifyUser,
+  productMiddleware.verifyOwner,
+  productsController.removeProduct
+);
 module.exports = router;

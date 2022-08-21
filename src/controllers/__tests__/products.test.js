@@ -142,46 +142,39 @@ describe('Products routes', () => {
   });
 
   describe('delete product', () => {
-    const mockProduct = {
-      title: 'Test product',
-      description: 'Test description',
-      price: 100,
-      category: 'Test category',
-      coverImage: 'Test cover image',
-      images: ['Test image 1', 'Test image 2', 'Test image 3'],
-      type: 'Product',
-      location: 'Test location',
-      status: 'Active',
-      condition: 'New',
-    };
+    let product;
 
-    const mockUser = {
-      firstName: 'Test',
-      lastName: 'User',
-      email: 'testuser@test.com',
-      schoolName: 'Test school',
-      password: 'P@ssw0rd',
-      phoneNumber: 123456789,
-      address: 'Test address',
-    };
-
-    let productId;
+    // beforeEach(async () => {
+    //   await Product.deleteMany();
+    //   await User.deleteMany();
+    //   // user = await User.create(mockUser);
+    //   const mUser = {
+    //     firstName: 'Glenn',
+    //     lastName: 'Quagmire',
+    //     email: 'glennQQQ@email.com',
+    //     schoolName: 'Yale University',
+    //     password: 'gleN123',
+    //   };
+    //   const user = await server.post('/api/auth/signup').send(mUser);
+    //   mProduct.seller = user._id;
+    //   productId = await Product.create(mProduct);
+    //   // await clearDatabase();
+    // });
 
     beforeEach(async () => {
-      await Product.deleteMany();
-      await User.deleteMany();
-      // user = await User.create(mockUser);
-      const mUser = {
+      // create user for authentication
+      const user = {
         firstName: 'Glenn',
         lastName: 'Quagmire',
-        email: 'glennQQQ@email.com',
+        email: 'glennaaaQQQ@email.com',
         schoolName: 'Yale University',
         password: 'gleN123',
       };
-      const user = await server.post('/api/auth/signup').send(mUser);
-      mockProduct.seller = user._id;
-      productId = await Product.create(mockProduct);
-      // await clearDatabase();
+      const mUser = await server.post('/api/auth/signup').send(user);
+      // create product fullfilled with seller and requested buyers as this user
+      // mProduct.seller = user._id;
+      mProduct.seller = mUser.body.data._id;
+      product = await Product.create(mProduct);
     });
 
     // afterAll(async () => {
@@ -195,16 +188,17 @@ describe('Products routes', () => {
         success: true,
         data: 'Product deleted successfully.',
       };
-      const res = await server.delete(`/api/products/${productId._id}`);
+      const res = await server.delete(`/api/products/${product._id}`);
       expect(res.status).toBe(200);
       expect(res.body).toEqual(expectedResponse);
     });
     it('DELETE /api/products/:id - 404', async () => {
       const expectedResponse = {
         success: false,
-        error: 'Product not found',
+        error: 'Product with id 62ff96671c828963807a2041 not found!',
       };
-      const res = await server.delete('/api/products/5e9f8f8f8f8f8f8f8f8f8f8');
+      // 5e9f8f8f8f8f8f8f8f8f8f8 returns 500 error
+      const res = await server.delete('/api/products/62ff96671c828963807a2041');
       expect(res.status).toBe(404);
       expect(res.body).toEqual(expectedResponse);
     });
