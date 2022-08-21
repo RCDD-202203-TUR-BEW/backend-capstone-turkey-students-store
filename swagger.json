@@ -31,7 +31,7 @@
   "paths": {
     "/api/auth/google": {
       "get": {
-        "tags": ["OAuth2"],
+        "tags": ["Auth"],
         "summary": "Authenticates user using google 3rd party authentication service",
         "responses": {
           "200": {
@@ -48,7 +48,7 @@
     },
     "/api/auth/google/callback": {
       "get": {
-        "tags": ["auth"],
+        "tags": ["Auth"],
         "summary": "Login using google",
         "description": "Retrive user profile from Google",
         "responses": {
@@ -168,6 +168,25 @@
       }
     },
     "/api/products/": {
+      "get": {
+        "tags": ["Products"],
+        "description": "Fetch all products from database.",
+        "responses": {
+          "200": {
+            "description": "All products in the system are successfully fetched.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/returnedProduct"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "tags": ["Products"],
         "description": "Add new product.",
@@ -231,6 +250,135 @@
         }
       }
     },
+    "/api/profile/products": {
+      "get": {
+        "tags": ["Users"],
+        "description": "Get all products of a user for sale.",
+        "responses": {
+          "200": {
+            "description": "All products of a user that is for sale are successfully fetched.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/returnedProduct"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized user!"
+          }
+        }
+      }
+    },
+    "/api/products/{id}": {
+      "get": {
+        "tags": ["Products"],
+        "description": "Fetch the product specified by id.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the product to be fetched",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product specified by id is successfully fetched.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/returnedProduct"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Product not found!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Product not found!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Products"],
+        "summary": "Delete a product",
+        "description": "Delete a product",
+        "operationId": "deleteProduct",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of product to delete",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product deleted successfully"
+          },
+          "404": {
+            "description": "Product not found"
+          }
+        }
+      }
+    },
+    "/api/auth/facebook": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Facebook login",
+        "description": "Provide Facebook login to users",
+        "responses": {
+          "200": {
+            "description": "Successful login",
+            "schema": {
+              "$ref": "#/definitions/Profile"
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/auth/facebook/callback": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Facebook login callback",
+        "description": "Retrive user profile from Facebook",
+        "responses": {
+          "200": {
+            "description": "Fetched user profile",
+            "schema": {
+              "$ref": "#/definitions/Profile"
+            }
+          }
+        }
+      }
+    },
     "/api/products/{id}": {
       "delete": {
         "tags": ["Products"],
@@ -287,8 +435,17 @@
             "enum": ["Product", "Service"]
           },
           "location": {
-            "type": "string",
-            "example": "Netherlands"
+            "type": "object",
+            "properties": {
+              "lat": {
+                "type": "number",
+                "example": 38.355
+              },
+              "lng": {
+                "type": "number",
+                "example": 25.369
+              }
+            }
           }
         }
       },
@@ -345,8 +502,17 @@
                 "enum": ["New", "Used"]
               },
               "location": {
-                "type": "string",
-                "example": "Netherlands"
+                "type": "object",
+                "properties": {
+                  "lat": {
+                    "type": "number",
+                    "example": 38.355
+                  },
+                  "lng": {
+                    "type": "number",
+                    "example": 25.369
+                  }
+                }
               },
               "seller": {
                 "type": "string",
@@ -455,6 +621,9 @@
           "type": "string"
         },
         "provider": {
+          "type": "string"
+        },
+        "displayName": {
           "type": "string"
         },
         "firstName": {
