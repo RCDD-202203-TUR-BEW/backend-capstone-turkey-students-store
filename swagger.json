@@ -28,7 +28,7 @@
   "paths": {
     "/api/auth/google": {
       "get": {
-        "tags": ["OAuth2"],
+        "tags": ["Auth"],
         "summary": "Authenticates user using google 3rd party authentication service",
         "responses": {
           "200": {
@@ -45,7 +45,7 @@
     },
     "/api/auth/google/callback": {
       "get": {
-        "tags": ["auth"],
+        "tags": ["Auth"],
         "summary": "Login using google",
         "description": "Retrive user profile from Google",
         "responses": {
@@ -165,6 +165,25 @@
       }
     },
     "/api/products/": {
+      "get": {
+        "tags": ["Products"],
+        "description": "Fetch all products from database.",
+        "responses": {
+          "200": {
+            "description": "All products in the system are successfully fetched.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/returnedProduct"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "tags": ["Products"],
         "description": "Add new product.",
@@ -328,8 +347,17 @@
             "enum": ["Product", "Service"]
           },
           "location": {
-            "type": "string",
-            "example": "Netherlands"
+            "type": "object",
+            "properties": {
+              "lat": {
+                "type": "number",
+                "example": 38.355
+              },
+              "lng": {
+                "type": "number",
+                "example": 25.369
+              }
+            }
           }
         }
       },
@@ -386,8 +414,17 @@
                 "enum": ["New", "Used"]
               },
               "location": {
-                "type": "string",
-                "example": "Netherlands"
+                "type": "object",
+                "properties": {
+                  "lat": {
+                    "type": "number",
+                    "example": 38.355
+                  },
+                  "lng": {
+                    "type": "number",
+                    "example": 25.369
+                  }
+                }
               },
               "seller": {
                 "type": "string",
@@ -496,6 +533,9 @@
           "type": "string"
         },
         "provider": {
+          "type": "string"
+        },
+        "displayName": {
           "type": "string"
         },
         "firstName": {

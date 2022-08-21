@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const { body } = require('express-validator');
+const multer = require('multer');
 const productsController = require('../controllers/products');
 const auth = require('../middlewares/authenticate');
 const productsMiddleware = require('../middlewares/products');
@@ -11,9 +12,18 @@ router.get(
   productsController.getRequstedBuyers
 );
 
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 }, // max 5 mb image size
+});
+
 router.post(
   '/',
   auth.verifyUser,
+  upload.fields([
+    { name: 'coverImage', maxCount: 1 },
+    { name: 'images', maxCount: 3 },
+  ]),
   [
     body('title')
       .not()
@@ -27,26 +37,32 @@ router.post(
       .withMessage('Description cannot be empty!'),
     body('price').not().isEmpty().withMessage('Price cannot be empty!'),
     body('category').not().isEmpty().withMessage('Please type in a category!'),
-    body('coverImage')
-      .not()
-      .isEmpty()
-      .withMessage('Cover image cannot be empty!'),
-    body('images')
-      .optional()
-      .isArray({ max: 3 })
-      .withMessage('You cannot add more than three additional images!'),
     body('type')
       .not()
       .isEmpty()
       .withMessage('Please select the type of the product!'),
-    body('location')
+    body('location.lat')
       .not()
       .isEmpty()
-      .withMessage('Location cannot be empty!')
-      .isLength({ max: 50 })
-      .withMessage('Location cannot be more than 50 characters!'),
+      .withMessage('Latitude cannot be empty!')
+      .isNumeric()
+      .withMessage('Latitude should be a number!')
+      .custom((lat) => lat >= -90 && lat <= 90)
+      .withMessage('Latitude should be between -90 and 90!'),
+    body('location.lng')
+      .not()
+      .isEmpty()
+      .withMessage('Longitude cannot be empty!')
+      .isNumeric()
+      .withMessage('Longitude should be a number!')
+      .custom((lng) => lng >= -180 && lng <= 180)
+      .withMessage('Longitude should be between -180 and 180!'),
   ],
   productsController.createProduct
 );
+
+router.get('/', productsController.getAllProducts);
+
+router.get('/:id', productsController.getProduct);
 
 module.exports = router;
