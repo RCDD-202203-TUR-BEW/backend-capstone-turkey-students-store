@@ -23,6 +23,10 @@
     {
       "name": "Users",
       "description": "API for users in the system"
+    },
+    {
+      "name": "Donations",
+      "description": "API for donation related operations"
     }
   ],
   "paths": {
@@ -348,6 +352,50 @@
             "description": "Fetched user profile",
             "schema": {
               "$ref": "#/definitions/Profile"
+            }
+          }
+        }
+      }
+    },
+    "/api/donation/": {
+      "post": {
+        "tags": ["Donations"],
+        "description": "Make donations by choosing one of the specified amounts",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amount": {
+                    "type": "number",
+                    "example": 25
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Specified amount of donation is made.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "string",
+                      "example": "https://checkout.stripe.com/pay/25-usd-donation"
+                    }
+                  }
+                }
+              }
             }
           }
         }
