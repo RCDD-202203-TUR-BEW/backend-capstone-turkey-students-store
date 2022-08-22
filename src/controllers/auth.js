@@ -101,6 +101,7 @@ exports.signin = async (req, res, next) => {
   res.cookie('token', token, {
     httpOnly: true,
     signed: true,
+    sameSite: 'none',
     maxAge: 14 * 24 * 60 * 60 * 1000, // 14 days
   });
 
