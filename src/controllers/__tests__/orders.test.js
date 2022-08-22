@@ -12,12 +12,12 @@ const {
   clearDatabase,
 } = require('../../db/connection');
 
-const mUser = {
-  firstName: 'Peter',
-  lastName: 'Griffin',
-  email: 'peter@mail.com',
-  schoolName: 'Quahog University',
-  password: 'petE123',
+const user = {
+  firstName: 'Glenn',
+  lastName: 'Quagmire',
+  email: 'glennQQQ@email.com',
+  schoolName: 'Yale University',
+  password: 'gleN123',
 };
 
 afterAll(async () => {
@@ -29,14 +29,11 @@ beforeAll(async () => {
   await clearDatabase();
 });
 
-const mOrder = {
-  buyer: { '62ff339d687607e2ea9d9e02': 'Peter' },
-  totalPrice: 100,
-  orderItems: ['book'],
-  notes: 'My books order',
-};
-
 describe('Orders routes', () => {
+  let mUser;
+  beforeEach(async () => {
+    mUser = await server.post('/api/auth/signup').send(user);
+  });
   afterEach(async () => {
     await clearDatabase();
   });
@@ -46,20 +43,23 @@ describe('Orders routes', () => {
         success: false,
         error: 'Order not found!',
       };
-      await request(app).post('/api/orders/').send(mOrder);
       let mId = new mongoose.Types.ObjectId();
       mId = mId.toString();
-      // find product by mock id
-      const res = await request(app).get(`/api/orders/${mId}`);
+      const res = await server.get(`/api/orders/${mId}`);
       expect(res.status).toBe(404);
       expect(res.headers['content-type']).toMatch('application/json');
       expect(res.body).toEqual(expect.objectContaining(expectedResponseOrder));
     });
-    test('If order with passed id exists, return order with 200 status code', async () => {
+    test('If order found, return with 200 status code', async () => {
+      const mOrder = {
+        buyer: mUser.body.data._id,
+        totalPrice: 100,
+        orderItems: [],
+        notes: 'My books order',
+      };
       const order = await Order.create(mOrder);
       const id = order._id;
-      // find product by id
-      const res = await request(app).get(`/api/orders/${id}`);
+      const res = await server.get(`/api/orders/${id}`);
       expect(res.status).toBe(200);
       expect(res.headers['content-type']).toMatch('application/json');
       expect(res.body.success).toBe(true);

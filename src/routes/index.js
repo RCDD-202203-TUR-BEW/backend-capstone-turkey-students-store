@@ -10,6 +10,6 @@ router.use('/users', usersRoutes);
 router.use('/products', productsRoutes);
 router.use('/auth', authRoutes);
 router.use('/profile', profileRoutes);
-router.use('/order', ordersRoutes);
+router.use('/orders', ordersRoutes);
 
 module.exports = router;
