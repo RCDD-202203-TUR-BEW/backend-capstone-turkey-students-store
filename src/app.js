@@ -23,6 +23,7 @@ const port = process.env.PORT || 3000;
 const allowedOrigins = ['http://localhost:3000'];
 
 const corsOptions = {
+  credentials: true,
   origin(origin, callback) {
     // allow requests with no origin
     // (like mobile apps or curl requests)
