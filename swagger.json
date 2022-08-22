@@ -26,42 +26,9 @@
     }
   ],
   "paths": {
-    "/api/auth/facebook": {
-      "get": {
-        "tags": ["auth"],
-        "summary": "Facebook login",
-        "description": "Provide Facebook login to users",
-        "responses": {
-          "200": {
-            "description": "Successful login",
-            "schema": {
-              "$ref": "#/definitions/Profile"
-            }
-          },
-          "400": {
-            "description": "Invalid request"
-          }
-        }
-      }
-    },
-    "/api/auth/facebook/callback": {
-      "get": {
-        "tags": ["auth"],
-        "summary": "Facebook login callback",
-        "description": "Retrive user profile from Facebook",
-        "responses": {
-          "200": {
-            "description": "Fetched user profile",
-            "schema": {
-              "$ref": "#/definitions/Profile"
-            }
-          }
-        }
-      }
-    },
     "/api/auth/google": {
       "get": {
-        "tags": ["OAuth2"],
+        "tags": ["Auth"],
         "summary": "Authenticates user using google 3rd party authentication service",
         "responses": {
           "200": {
@@ -78,7 +45,7 @@
     },
     "/api/auth/google/callback": {
       "get": {
-        "tags": ["auth"],
+        "tags": ["Auth"],
         "summary": "Login using google",
         "description": "Retrive user profile from Google",
         "responses": {
@@ -304,30 +271,6 @@
         }
       }
     },
-    "/api/orders/orderId": {
-      "get": {
-        "tags": ["Orders"],
-        "description": "Get all orders of a user.",
-        "responses": {
-          "200": {
-            "description": "All orders of a user are successfully fetched.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/returnedOrder"
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized user!"
-          }
-        }
-      }
-    },
     "/api/products/{id}": {
       "get": {
         "tags": ["Products"],
@@ -376,341 +319,340 @@
           }
         }
       }
-    }
-  },
-  "components": {
-    "schemas": {
-      "productRequestBody": {
-        "type": "object",
-        "properties": {
-          "title": {
-            "type": "string",
-            "example": "Leyden Cheese"
-          },
-          "description": {
-            "type": "string",
-            "example": "Cumin spiced cheese that originates from the Leiden area in the Netherlands."
-          },
-          "price": {
-            "type": "number",
-            "example": 200
-          },
-          "category": {
-            "type": "string",
-            "example": "Food"
-          },
-          "coverImage": {
-            "type": "string",
-            "example": "http://www.cheese.com/leyden"
-          },
-          "type": {
-            "type": "string",
-            "enum": ["Product", "Service"]
-          },
-          "location": {
-            "type": "object",
-            "properties": {
-              "lat": {
-                "type": "number",
-                "example": 38.355
-              },
-              "lng": {
-                "type": "number",
-                "example": 25.369
-              }
-            }
-          }
-        }
-      },
-      "userRequestBody": {
-        "type": "object",
-        "properties": {
-          "firstName": {
-            "type": "string",
-            "example": "Peter"
-          },
-          "lastName": {
-            "type": "string",
-            "example": "Griffin"
-          },
-          "email": {
-            "type": "string",
-            "example": "griffin@mail.com"
-          },
-          "schoolName": {
-            "type": "string",
-            "example": "Princeton University"
-          },
-          "password": {
-            "type": "string",
-            "example": "abC123"
-          }
-        },
-        "required": ["firstName", "lastName", "email", "schoolName", "password"]
-      },
-      "returnedUser": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean",
-            "example": true
-          },
-          "data": {
-            "type": "object",
-            "properties": {
-              "_id": {
-                "type": "string",
-                "example": "62ed149a0785e2f2a4ff07b3"
-              },
-              "firstName": {
-                "type": "string",
-                "example": "Peter"
-              },
-              "lastName": {
-                "type": "string",
-                "example": "Griffin"
-              },
-              "fullName": {
-                "type": "string",
-                "example": "Peter Griffin"
-              },
-              "email": {
-                "type": "string",
-                "example": "griffin@mail.com"
-              },
-              "schoolName": {
-                "type": "string",
-                "example": "Princeton University"
-              },
-              "phoneNumber": {
-                "type": "number",
-                "example": 123456798
-              },
-              "address": {
-                "type": "string",
-                "example": "New Jersey"
-              },
-              "createdAt": {
-                "type": "string",
-                "format": "date-time"
-              },
-              "updatedAt": {
-                "type": "string",
-                "format": "date-time"
-              }
-            }
-          }
-        }
-      },
-      "returnedProduct": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean",
-            "example": true
-          },
-          "data": {
-            "type": "object",
-            "properties": {
-              "_id": {
-                "type": "string",
-                "example": "62ee685e158e683e851eccea"
-              },
-              "title": {
-                "type": "string",
-                "example": "Leyden Cheese"
-              },
-              "description": {
-                "type": "string",
-                "example": "Cumin spiced cheese that originates from the Leiden area in the Netherlands."
-              },
-              "price": {
-                "type": "number",
-                "example": 200
-              },
-              "category": {
-                "type": "string",
-                "example": "Food"
-              },
-              "coverImage": {
-                "type": "string",
-                "example": "http://www.cheese.com/leyden"
-              },
-              "images": {
-                "type": "array",
-                "items": {
-                  "type": "string",
-                  "example": "http://www.cheese.com/leyden/img1"
-                }
-              },
-              "type": {
-                "type": "string",
-                "enum": ["Product", "Service"]
-              },
-              "status": {
-                "type": "string",
-                "enum": ["Active", "Sold"]
-              },
-              "condition": {
-                "type": "string",
-                "enum": ["New", "Used"]
-              },
-              "location": {
-                "type": "string",
-                "example": "Netherlands"
-              },
-              "seller": {
-                "type": "string",
-                "example": "62ee685e158e683e851ecceF"
-              },
-              "buyer": {
-                "type": "string",
-                "example": "63ee685e158e683e851ecceF"
-              },
-              "requestedBuyers": {
-                "type": "array",
-                "items": {
-                  "type": "string",
-                  "example": "64ee685e158e683e851ecceF"
-                }
-              },
-              "createdAt": {
-                "type": "string",
-                "format": "date-time"
-              },
-              "updatedAt": {
-                "type": "string",
-                "format": "date-time"
-              }
-            }
-          }
-        }
-      },
-      "returnedOrder": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean",
-            "example": true
-          },
-          "data": {
-            "type": "object",
-            "properties": {
-              "_id": {
-                "type": "string",
-                "example": "62ed149a0785e2f2a4ff07b3"
-              },
-              "buyer": {
-                "type": "object",
-                "properties": {
-                  "_id": {
-                    "type": "string",
-                    "example": "62fe7d2bbb3858446e7d6c00"
-                  },
-                  "address": {
-                    "type": "string",
-                    "example": "X Apartment Y Street Z Province Istanbul/Turkey"
+    },
+    "/api/orders/orderId": {
+      "get": {
+        "tags": ["Orders"],
+        "description": "Get all orders of a user.",
+        "responses": {
+          "200": {
+            "description": "All orders of a user are successfully fetched.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/returnedOrder"
                   }
                 }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized user!"
+          }
+        }
+      }
+    },
+    "/api/profile": {
+      "get": {
+        "tags": ["Profile"],
+        "summary": "Get user profile",
+        "responses": {
+          "200": {
+            "description": "User profile",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/profile"
+                }
               },
-              "orderDate": {
-                "type": "string",
-                "format": "date-time"
-              },
-              "totalPrice": {
-                "type": "number",
-                "example": 200
-              },
-              "orderStatus": {
-                "type": "string",
-                "enum": ["pending", "completed", "cancelled"]
-              },
-              "orderItems": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "item": {
-                      "type": "object",
-                      "properties": {
-                        "_id": {
-                          "type": "string",
-                          "example": "62fa729915810a408c79f13b"
-                        },
-                        "title": {
-                          "type": "string",
-                          "example": "iPhone 13 Pro"
-                        },
-                        "price": {
-                          "type": "number",
-                          "example": 2500
-                        },
-                        "category": {
-                          "type": "string",
-                          "example": "Electronics"
-                        },
-                        "location": {
-                          "type": "object",
-                          "properties": {
-                            "lat": {
-                              "type": "number",
-                              "example": 33.25
-                            },
-                            "lng": {
-                              "type": "number",
-                              "example": 48.55
-                            }
-                          }
-                        }
+              "/api/auth/facebook": {
+                "get": {
+                  "tags": ["Auth"],
+                  "summary": "Facebook login",
+                  "description": "Provide Facebook login to users",
+                  "responses": {
+                    "200": {
+                      "description": "Successful login",
+                      "schema": {
+                        "$ref": "#/definitions/Profile"
                       }
                     },
-                    "quantity": {
-                      "type": "number",
-                      "example": 7
+                    "400": {
+                      "description": "Invalid request"
                     }
                   }
                 }
               },
-              "notes": {
-                "type": "string",
-                "example": "Please send this product asap!"
-              },
-              "createdAt": {
-                "type": "string",
-                "format": "date-time"
-              },
-              "updatedAt": {
-                "type": "string",
-                "format": "date-time"
+              "/api/auth/facebook/callback": {
+                "get": {
+                  "tags": ["Auth"],
+                  "summary": "Facebook login callback",
+                  "description": "Retrive user profile from Facebook",
+                  "responses": {
+                    "200": {
+                      "description": "Fetched user profile",
+                      "schema": {
+                        "$ref": "#/definitions/Profile"
+                      }
+                    }
+                  }
+                }
               }
-            }
+            },
+            "components": {
+              "schemas": {
+                "productRequestBody": {
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "string",
+                      "example": "Leyden Cheese"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "Cumin spiced cheese that originates from the Leiden area in the Netherlands."
+                    },
+                    "price": {
+                      "type": "number",
+                      "example": 200
+                    },
+                    "category": {
+                      "type": "string",
+                      "example": "Food"
+                    },
+                    "coverImage": {
+                      "type": "string",
+                      "example": "http://www.cheese.com/leyden"
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": ["Product", "Service"]
+                    },
+                    "location": {
+                      "type": "object",
+                      "properties": {
+                        "lat": {
+                          "type": "number",
+                          "example": 38.355
+                        },
+                        "lng": {
+                          "type": "number",
+                          "example": 25.369
+                        }
+                      }
+                    }
+                  }
+                },
+                "userRequestBody": {
+                  "type": "object",
+                  "properties": {
+                    "firstName": {
+                      "type": "string",
+                      "example": "Peter"
+                    },
+                    "lastName": {
+                      "type": "string",
+                      "example": "Griffin"
+                    },
+                    "email": {
+                      "type": "string",
+                      "example": "griffin@mail.com"
+                    },
+                    "schoolName": {
+                      "type": "string",
+                      "example": "Princeton University"
+                    },
+                    "password": {
+                      "type": "string",
+                      "example": "abC123"
+                    }
+                  },
+                  "required": [
+                    "firstName",
+                    "lastName",
+                    "email",
+                    "schoolName",
+                    "password"
+                  ]
+                },
+                "returnedUser": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "_id": {
+                          "type": "string",
+                          "example": "62ed149a0785e2f2a4ff07b3"
+                        },
+                        "firstName": {
+                          "type": "string",
+                          "example": "Peter"
+                        },
+                        "lastName": {
+                          "type": "string",
+                          "example": "Griffin"
+                        },
+                        "fullName": {
+                          "type": "string",
+                          "example": "Peter Griffin"
+                        },
+                        "email": {
+                          "type": "string",
+                          "example": "griffin@mail.com"
+                        },
+                        "schoolName": {
+                          "type": "string",
+                          "example": "Princeton University"
+                        },
+                        "phoneNumber": {
+                          "type": "number",
+                          "example": 123456798
+                        },
+                        "address": {
+                          "type": "string",
+                          "example": "New Jersey"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                },
+                "returnedOrder": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "_id": {
+                          "type": "string",
+                          "example": "62ed149a0785e2f2a4ff07b3"
+                        },
+                        "buyer": {
+                          "type": "object",
+                          "properties": {
+                            "_id": {
+                              "type": "string",
+                              "example": "62fe7d2bbb3858446e7d6c00"
+                            },
+                            "address": {
+                              "type": "string",
+                              "example": "X Apartment Y Street Z Province Istanbul/Turkey"
+                            }
+                          }
+                        },
+                        "orderDate": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "totalPrice": {
+                          "type": "number",
+                          "example": 200
+                        },
+                        "orderStatus": {
+                          "type": "string",
+                          "enum": ["pending", "completed", "cancelled"]
+                        },
+                        "orderItems": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "item": {
+                                "type": "object",
+                                "properties": {
+                                  "_id": {
+                                    "type": "string",
+                                    "example": "62fa729915810a408c79f13b"
+                                  },
+                                  "title": {
+                                    "type": "string",
+                                    "example": "iPhone 13 Pro"
+                                  },
+                                  "price": {
+                                    "type": "number",
+                                    "example": 2500
+                                  },
+                                  "category": {
+                                    "type": "string",
+                                    "example": "Electronics"
+                                  },
+                                  "location": {
+                                    "type": "object",
+                                    "properties": {
+                                      "lat": {
+                                        "type": "number",
+                                        "example": 33.25
+                                      },
+                                      "lng": {
+                                        "type": "number",
+                                        "example": 48.55
+                                      }
+                                    }
+                                  }
+                                }
+                              },
+                              "quantity": {
+                                "type": "number",
+                                "example": 7
+                              }
+                            }
+                          }
+                        },
+                        "notes": {
+                          "type": "string",
+                          "example": "Please send this product asap!"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "definitions": {
+              "Profile": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "provider": {
+                    "type": "string"
+                  },
+                  "displayName": {
+                    "type": "string"
+                  },
+                  "firstName": {
+                    "type": "string"
+                  },
+                  "lastName": {
+                    "type": "string"
+                  },
+                  "profilePhoto": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "schemes": ["http"],
+            "consumes": ["application/json"],
+            "produces": ["application/json"]
           }
-        }
-      }
-    }
-  },
-  "schemes": ["http"],
-  "consumes": ["application/json"],
-  "produces": ["application/json"],
-
-  "definitions": {
-    "Profile": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "provider": {
-          "type": "string"
-        },
-        "displayName": {
-          "type": "string"
-        },
-        "givenName": {
-          "type": "string"
-        },
-        "familyName": {
-          "type": "string"
         }
       }
     }
