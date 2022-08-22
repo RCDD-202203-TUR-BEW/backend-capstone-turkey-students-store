@@ -16,6 +16,8 @@ exports.sendFacebookJwt = (req, res) => {
   res.cookie('token', token, {
     httpOnly: true,
     signed: true,
+    sameSite: 'none',
+    secure: process.env.NODE_ENV === 'production',
     maxAge: 14 * 24 * 60 * 60 * 1000, // 14 days
   });
 
@@ -61,6 +63,8 @@ exports.signup = async (req, res, next) => {
   res.cookie('token', token, {
     httpOnly: true,
     signed: true,
+    sameSite: 'none',
+    secure: process.env.NODE_ENV === 'production',
     maxAge: 14 * 24 * 60 * 60 * 1000, // 14 days
   });
 
@@ -121,6 +125,8 @@ exports.googleAuthJWT = (req, res) => {
   res.cookie('token', token, {
     httpOnly: true,
     signed: true,
+    sameSite: 'none',
+    secure: process.env.NODE_ENV === 'production',
     maxAge: 14 * 24 * 60 * 60 * 1000, // 14 days
   });
 
