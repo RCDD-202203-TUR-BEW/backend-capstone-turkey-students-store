@@ -4,8 +4,11 @@ const path = require('path');
 
 // Creates a client
 const storage = new Storage({
-  keyFilename: path.join(__dirname, '../student-store-gcs.json'),
-  projectId: 'student-store-359018',
+  keyFilename: path.join(
+    __dirname,
+    '../recoded-student-store-405a9b1020bb.json'
+  ),
+  projectId: 'recoded-student-store',
 });
 
 module.exports = storage;
