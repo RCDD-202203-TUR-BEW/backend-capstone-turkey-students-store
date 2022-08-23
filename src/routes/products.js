@@ -6,6 +6,14 @@ const multer = require('multer');
 const productsController = require('../controllers/products');
 const ErrorResponse = require('../utils/errorResponse');
 const auth = require('../middlewares/authenticate');
+const productsMiddleware = require('../middlewares/products');
+
+router.get(
+  '/:id/requested-buyers',
+  auth.verifyUser,
+  productsMiddleware.verifyOwner,
+  productsController.getRequstedBuyers
+);
 const productMiddleware = require('../middlewares/product');
 
 const upload = multer({
