@@ -1,6 +1,10 @@
-# STUDENTS STORE
+## <p align="center">STUDENTS STORE</p> 
 
-## About the project
+<p align="center">Our Slogan: "What goes around might be needed back around!"</p>
+
+<p align="center"><img width="235" alt="Screen Shot 2022-08-23 at 21 44 12" src="https://user-images.githubusercontent.com/89161696/186238707-1631d785-1c6c-4cb5-931b-bf328de5da16.png"></p>
+
+# About the project
 
 Student store is a website that brings students in Turkey together to sell, buy or donate their old stuffs locally. The aim of the website is to provide a platform for easy second-handing among university students as their needs. The website is intended for university students in Turkey. On this website, you can find products; second hand or brand new, or you can provide services or benefit from them.
 
@@ -24,15 +28,18 @@ Donation option
 - Listing page
 - Profile info page
 
+________________________________________________________________________________________________________________________________________________________
 
 **Built With**
 
-<img width="706" alt="Screen Shot 2022-08-23 at 13 36 07" src="https://user-images.githubusercontent.com/89161696/186137406-12be4103-9ca5-401d-b030-08e1ae7dea2d.png">
+<img width="745" alt="Screen Shot 2022-08-23 at 21 45 48" src="https://user-images.githubusercontent.com/89161696/186238998-ac3b6260-90b6-4d28-84b6-19e79b62c4b2.png">
+
 
 **Demo
 
 Server (backend) link:** Put heroko link here!
 
+________________________________________________________________________________________________________________________________________________________
 
 **Screenshots**
 
@@ -52,6 +59,8 @@ Server (backend) link:** Put heroko link here!
 
 ![home_page_small](https://user-images.githubusercontent.com/89161696/186228219-c3639c60-018e-474f-bdb8-6500276a0021.png)
 
+________________________________________________________________________________________________________________________________________________________
+
 **TEAM**
 
 Meet our team members through their GitHub profiles!
@@ -60,3 +69,14 @@ Meet our team members through their GitHub profiles!
 |---------------------------------------------------------------------------------------------------------------------------	|---------------------------------------------------------------------------------------------------------------------------	|----------------------------------------------------------------------------------------------------------------------	|--------------------------------------------------------------------------------------------------------------------------	|-----------------------------------------------------------------------------------------------------------------	|-----------------------------------------------------------------------------------------------------------------	|
 | Lead Engineer                                                                                                              	| Junior Engineer                                                                                                           	| Junior Engineer                                                                                                      	| Junior Engineer                                                                                                          	| Junior Engineer                                                                                                 	| Junior Engineer                                                                                                 	|
 | [Muslim Omar ]( https://github.com/muslimomar )                                                                           	| [Cengiz Aksakal ]( https://github.com/cbaksakal )                                                                         	| [Irem Kurt ]( https://github.com/irem-kurt )                                                                         	| [Mohammad Sheikh Ibrahim ]( https://github.com/mohammadibrah )                                                           	| [Melek Arslan ]( https://github.com/melekarslan13 )                                                             	| [Israa Qaba ]( https://github.com/israaQaba )                                                                   	|
+
+
+________________________________________________________________________________________________________________________________________________________
+
+**Contact**
+
+Students Store Team
+
+- e-Mail: 
+- [<img width="67" alt="Screen Shot 2022-08-23 at 21 36 02" src="https://user-images.githubusercontent.com/89161696/186237389-ead5c254-7bd0-44ff-a0d0-fa6b2bc01f34.png">](https://www.linkedin.com/school/re-coded/)
+
