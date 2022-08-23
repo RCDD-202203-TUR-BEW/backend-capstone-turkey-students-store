@@ -110,6 +110,35 @@ exports.requestProduct = async (req, res, next) => {
   });
 };
 
+exports.updateProduct = async (req, res, next) => {
+  // check for validation errors first
+  const validationErrors = validationResult(req);
+  if (!validationErrors.isEmpty()) {
+    return res
+      .status(400)
+      .json({ success: false, errors: validationErrors.array() });
+  }
+  // eslint-disable-next-line no-cond-assign, no-undef
+  const myProduct = await Product.findById(req.params.id);
+  if (!myProduct) {
+    return next(new ErrorResponse('No such product exists!', 404));
+  }
+
+  if (myProduct.seller.toString() !== req.user._id.toString()) {
+    return next(new ErrorResponse('Unauthorized!', 403));
+  }
+
+  const product = await Product.findByIdAndUpdate(
+    req.params.id,
+    {
+      $set: req.body,
+    },
+    { new: true }
+  );
+
+  return res.status(200).json({ success: true, data: product });
+};
+
 exports.getRequstedBuyers = async (req, res, next) => {
   const { id } = req.params;
   const product = await Product.findById(id).populate({
@@ -127,5 +156,4 @@ exports.getProduct = async (req, res, next) => {
   if (!product) {
     return next(new ErrorResponse('Product not found!', 404));
   }
-  return res.status(200).json({ success: true, data: product });
 };
