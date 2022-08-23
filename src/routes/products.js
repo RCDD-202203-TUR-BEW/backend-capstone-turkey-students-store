@@ -1,13 +1,25 @@
-const router = require('express').Router();
+const express = require('express');
+
+const router = express.Router();
 const { body } = require('express-validator');
 const multer = require('multer');
 const productsController = require('../controllers/products');
+const ErrorResponse = require('../utils/errorResponse');
 const auth = require('../middlewares/authenticate');
-// const productsMiddleware = require('../middlewares/products');
+const productMiddleware = require('../middlewares/product');
 
 router.post(
   '/:id/requested-buyers/:userId/sell',
   auth.verifyUser,
+  [
+    body('notes')
+      .optional()
+      .isString()
+      .withMessage('Notes must be a string')
+      .not()
+      .isEmpty()
+      .withMessage('Notes cannot be empty'),
+  ],
   // productsMiddleware.verifyOwner,
   productsController.sellProduct
 );
@@ -65,4 +77,10 @@ router.get('/', productsController.getAllProducts);
 
 router.get('/:id', productsController.getProduct);
 
+router.delete(
+  '/:id',
+  auth.verifyUser,
+  productMiddleware.verifyOwner,
+  productsController.removeProduct
+);
 module.exports = router;

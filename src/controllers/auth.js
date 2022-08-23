@@ -16,6 +16,8 @@ exports.sendFacebookJwt = (req, res) => {
   res.cookie('token', token, {
     httpOnly: true,
     signed: true,
+    sameSite: 'none',
+    secure: process.env.NODE_ENV === 'production',
     maxAge: 14 * 24 * 60 * 60 * 1000, // 14 days
   });
 
@@ -61,6 +63,8 @@ exports.signup = async (req, res, next) => {
   res.cookie('token', token, {
     httpOnly: true,
     signed: true,
+    sameSite: 'none',
+    secure: process.env.NODE_ENV === 'production',
     maxAge: 14 * 24 * 60 * 60 * 1000, // 14 days
   });
 
@@ -101,6 +105,8 @@ exports.signin = async (req, res, next) => {
   res.cookie('token', token, {
     httpOnly: true,
     signed: true,
+    sameSite: 'none',
+    secure: process.env.NODE_ENV === 'production',
     maxAge: 14 * 24 * 60 * 60 * 1000, // 14 days
   });
 
@@ -108,6 +114,26 @@ exports.signin = async (req, res, next) => {
 };
 
 exports.googleAuthJWT = (req, res) => {
+  const payload = {
+    _id: req.user._id,
+  };
+
+  const token = jwt.sign(payload, process.env.SECRET_KEY, {
+    expiresIn: '14 days',
+  });
+
+  res.cookie('token', token, {
+    httpOnly: true,
+    signed: true,
+    sameSite: 'none',
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 14 * 24 * 60 * 60 * 1000, // 14 days
+  });
+
+  return res.status(200).json({ success: true, data: req.user });
+};
+
+exports.twitterAuthJWT = (req, res) => {
   const payload = {
     _id: req.user._id,
   };

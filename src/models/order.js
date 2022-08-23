@@ -11,25 +11,10 @@ const orderSchema = new mongoose.Schema(
       required: true,
       default: Date.now,
     },
-    totalPrice: {
-      type: Number,
-      required: true,
+    product: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Product',
     },
-    orderStatus: {
-      type: String,
-      required: true,
-      default: 'pending',
-      enum: ['pending', 'completed', 'cancelled'],
-    },
-    orderItems: [
-      {
-        item: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
-        quantity: {
-          type: Number,
-          required: true,
-        },
-      },
-    ],
     notes: {
       type: String,
     },

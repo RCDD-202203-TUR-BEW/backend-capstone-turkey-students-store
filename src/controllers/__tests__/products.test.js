@@ -5,6 +5,8 @@ const mongoose = require('mongoose');
 const app = require('../../app');
 const Product = require('../../models/product');
 
+const User = require('../../models/user');
+
 const server = request.agent(app);
 
 const {
@@ -82,7 +84,7 @@ describe('Products routes', () => {
     });
 
     /* TODO: fix this test */
-    /* test('If all required fields are passed, create product, return with status code 201', async () => {
+    test('If all required fields are passed, create product, return with status code 201', async () => {
       const res = await server
         .post('/api/products/')
         .field('title', mProduct.title)
@@ -90,7 +92,8 @@ describe('Products routes', () => {
         .field('price', mProduct.price)
         .field('category', mProduct.category)
         .field('type', mProduct.type)
-        .field('location', mProduct.location)
+        .field('location[lat]', mProduct.location.lat)
+        .field('location[lng]', mProduct.location.lng)
         .attach('coverImage', path.join(__dirname, './uploads/image1.jpg'))
         .set('Content-Type', 'multipart/form-data');
       // copy mProduct and delete cover image
@@ -102,7 +105,7 @@ describe('Products routes', () => {
       expect(res.body.success).toBe(true);
       expect(res.body.data).toEqual(expect.objectContaining(expectedResponse));
       expect(res.body.data.coverImage).toBeDefined();
-    }); */
+    });
   });
 
   describe('GET /:id', () => {
@@ -124,7 +127,6 @@ describe('Products routes', () => {
     });
 
     /* TODO: fix this test */
-    /*
     test('If product with passed id exists, return the product with status code 200', async () => {
       // first create a product
       const product = await Product.create(mProduct);
@@ -136,59 +138,160 @@ describe('Products routes', () => {
       expect(res.body.success).toBe(true);
       expect(res.body.data).toEqual(expect.objectContaining(mProduct));
     });
-*/
   });
-});
 
-let mProduct1;
-const mOrder = {
-  orderItems: [{ item: '62fbbdd7783da691bba410c2', quantity: 1 }],
-  buyer: '62fbbb448c9a38141e94ebfb',
-  totalPrice: 175,
-  notes: '',
-};
+  describe('delete product', () => {
+    let product;
 
-describe('POST/:id/requested-buyers/:userId/sell', () => {
-  beforeEach(async () => {
-    // create user for authentication
-    const user = {
-      firstName: 'Glenn',
-      lastName: 'Quagmire',
-      email: 'glennQQQ@email.com',
-      schoolName: 'Yale University',
-      password: 'gleN123',
-    };
-    const mUser = await server.post('/api/auth/signup').send(user);
-    const product = mProduct;
-    product.seller = mUser._id;
-    mProduct1 = await Product.create(product);
+    // beforeEach(async () => {
+    //   await Product.deleteMany();
+    //   await User.deleteMany();
+    //   // user = await User.create(mockUser);
+    //   const mUser = {
+    //     firstName: 'Glenn',
+    //     lastName: 'Quagmire',
+    //     email: 'glennQQQ@email.com',
+    //     schoolName: 'Yale University',
+    //     password: 'gleN123',
+    //   };
+    //   const user = await server.post('/api/auth/signup').send(mUser);
+    //   mProduct.seller = user._id;
+    //   productId = await Product.create(mProduct);
+    //   // await clearDatabase();
+    // });
+
+    beforeEach(async () => {
+      // create user for authentication
+      const user = {
+        firstName: 'Glenn',
+        lastName: 'Quagmire',
+        email: 'glennaaaQQQ@email.com',
+        schoolName: 'Yale University',
+        password: 'gleN123',
+      };
+      const mUser = await server.post('/api/auth/signup').send(user);
+      // create product fullfilled with seller and requested buyers as this user
+      // mProduct.seller = user._id;
+      mProduct.seller = mUser.body.data._id;
+      product = await Product.create(mProduct);
+    });
+
+    // afterAll(async () => {
+    //   await Product.deleteMany();
+    //   await User.deleteMany();
+    //   await mongoose.connection.close();
+    // });
+
+    it('DELETE /api/products/:id Should delete one product with provided ID', async () => {
+      const expectedResponse = {
+        success: true,
+        data: 'Product deleted successfully.',
+      };
+      const res = await server.delete(`/api/products/${product._id}`);
+      expect(res.status).toBe(200);
+      expect(res.body).toEqual(expectedResponse);
+    });
+    it('DELETE /api/products/:id - 404', async () => {
+      const expectedResponse = {
+        success: false,
+        error: 'Product with id 62ff96671c828963807a2041 not found!',
+      };
+      // 5e9f8f8f8f8f8f8f8f8f8f8 returns 500 error
+      const res = await server.delete('/api/products/62ff96671c828963807a2041');
+      expect(res.status).toBe(404);
+      expect(res.body).toEqual(expectedResponse);
+    });
   });
-  test('If one of the required fields are not passed, return error with status code 400', async () => {
-    // pass a request body without required field 'orderItems'
-    // const mOrderWithoutOrderItems = JSON.parse(JSON.stringify(mOrder));
-    // delete mOrderWithoutOrderItems.orderItems;
-    // send post request
-    const res = await server
-      .post(
-        `/api/products/4949494949494949494/requested-buyers/${mOrder.buyer}/sell`
-      )
-      .send(mOrder);
-    expect(res.status).toBe(404);
-    expect(res.headers['content-type']).toMatch('application/json');
-    expect(res.body.success).toBe(false);
-    expect(res.body.error).toBe('Product not found!');
-  });
-  test('If all required fields are passed, create order, return with status code 200', async () => {
-    const res = await server
-      .post(
-        `/api/products/${mProduct1._id}/requested-buyers/${mOrder.buyer}/sell`
-      )
-      .send(mOrder);
-    expect(res.status).toBe(200);
-    expect(res.headers['content-type']).toMatch('application/json');
-    expect(res.body.success).toBe(true);
-    // expect(res.body.data).toEqual(expect.objectContaining(mOrder));
-    expect(res.body.data.buyer).toBe(mOrder.buyer);
-    expect(res.body.data.totalPrice).toBe(mOrder.totalPrice);
+
+  describe('POST/:id/requested-buyers/:userId/sell', () => {
+    let product;
+    let mUser;
+
+    beforeEach(async () => {
+      // create user for authentication
+      const user = {
+        firstName: 'Glenn',
+        lastName: 'Quagmire',
+        email: 'glennQQQ@email.com',
+        schoolName: 'Yale University',
+        password: 'gleN123',
+      };
+      mUser = await server.post('/api/auth/signup').send(user);
+      const copyOfProduct = JSON.parse(JSON.stringify(mProduct));
+      product = await Product.create(copyOfProduct);
+      product.seller = mUser.body.data._id;
+    });
+
+    test('If user with passed user id does not exist, return error with status code 401', async () => {
+      const mockId = new mongoose.Types.ObjectId();
+      const res = await server.post(
+        `/api/products/${product._id}/requested-buyers/${mockId}/sell`
+      );
+      expect(res.status).toBe(401);
+      expect(res.headers['content-type']).toMatch('application/json');
+      expect(res.body.success).toBe(false);
+      expect(res.body.error).toBe('Access denied!');
+    });
+
+    test('If product with passed id does not exist, return error with status code 422', async () => {
+      const mockId = new mongoose.Types.ObjectId();
+      const res = await server.post(
+        `/api/products/${mockId}/requested-buyers/${mUser.body.data._id}/sell`
+      );
+      expect(res.status).toBe(422);
+      expect(res.headers['content-type']).toMatch('application/json');
+      expect(res.body.success).toBe(false);
+      expect(res.body.error).toBe('Product not found!');
+    });
+
+    test('If product with passed id is sold, return error with status code 400', async () => {
+      product.status = 'Sold';
+      await product.save();
+      const res = await server.post(
+        `/api/products/${product._id}/requested-buyers/${mUser.body.data._id}/sell`
+      );
+      expect(res.status).toBe(400);
+      expect(res.headers['content-type']).toMatch('application/json');
+      expect(res.body.success).toBe(false);
+      expect(res.body.error).toBe('Product already sold!');
+    });
+
+    test('If buyer is not in requested users, return error with status code 404', async () => {
+      const buyer = await User.create({
+        firstName: 'Peter',
+        lastName: 'Griffin',
+        email: 'peter@email.com',
+        schoolName: 'Yale University',
+        password: 'petE123',
+      });
+      const res = await server.post(
+        `/api/products/${product._id}/requested-buyers/${buyer._id}/sell`
+      );
+      expect(res.status).toBe(404);
+      expect(res.headers['content-type']).toMatch('application/json');
+      expect(res.body.success).toBe(false);
+      expect(res.body.error).toBe('Not eligible to buy this product!');
+    });
+
+    test('If product and buyer are valid, sell product to this user and return status code 200', async () => {
+      const buyer = await User.create({
+        firstName: 'Peter',
+        lastName: 'Griffin',
+        email: 'peter@email.com',
+        schoolName: 'Yale University',
+        password: 'petE123',
+      });
+      // add buyer to requested buyers array
+      product.requestedBuyers.push(buyer._id);
+      await product.save();
+
+      const res = await server.post(
+        `/api/products/${product._id}/requested-buyers/${buyer._id}/sell`
+      );
+      expect(res.status).toBe(200);
+      expect(res.headers['content-type']).toMatch('application/json');
+      expect(res.body.success).toBe(true);
+      expect(res.body.message).toBe('Your product was successfully sold');
+    });
   });
 });

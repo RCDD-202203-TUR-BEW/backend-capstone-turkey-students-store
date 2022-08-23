@@ -5,12 +5,33 @@ const ErrorResponse = require('../utils/errorResponse');
 const Product = require('../models/product');
 
 const Order = require('../models/order');
+const User = require('../models/user');
 
 const uploadImage = require('../services/gcs-service');
 
 exports.getAllProducts = async (req, res, next) => {
   const allProducts = await Product.find();
   return res.status(200).json({ success: true, data: allProducts });
+};
+
+// eslint-disable-next-line consistent-return
+exports.removeProduct = async (req, res, next) => {
+  const productId = req.params.id;
+  if (!productId) {
+    next(new ErrorResponse('Product ID is required', 400));
+  }
+  // const product = await Product.findById(productId);
+  // if (!product) {
+  //   next(new ErrorResponse('Product not found', 404));
+  // }
+  try {
+    await Product.deleteOne({ _id: productId });
+    return res
+      .status(200)
+      .json({ success: true, data: 'Product deleted successfully.' });
+  } catch (error) {
+    next(new ErrorResponse('Product not found', 404));
+  }
 };
 
 exports.createProduct = async (req, res, next) => {
@@ -68,34 +89,39 @@ exports.getProduct = async (req, res, next) => {
   return res.status(200).json({ success: true, data: product });
 };
 
-exports.getRequstedBuyers = async (req, res, next) => {
-  const { id } = req.params;
-  const product = await Product.findById(id).populate('requstedBuyers');
-  if (!product) {
-    return next(new ErrorResponse(`Product with id ${id} not found!`, 404));
-  }
-  return res.status(200).json({ success: true, data: product.requstedBuyers });
-};
-
 exports.sellProduct = async (req, res, next) => {
   const { id, userId } = req.params;
   const { notes } = req.body;
   const orderNotes = notes || '';
-  let product;
-  try {
-    product = await Product.findById(id);
-  } catch (err) {
-    return next(new ErrorResponse(`Product not found!`, 404));
+  const product = await Product.findById(id);
+  const user = await User.findOne({ _id: userId });
+  if (!user) {
+    return next(new ErrorResponse('Access denied!', 401));
   }
+  if (!product) {
+    return next(new ErrorResponse('Product not found!', 422));
+  }
+  if (product.status === 'Sold') {
+    return next(new ErrorResponse('Product already sold!', 400));
+  }
+  const buyer = product.requestedBuyers.find(
+    (val) => val.toString() === userId
+  );
+  if (!buyer) {
+    return next(new ErrorResponse('Not eligible to buy this product!', 404));
+  }
+  product.status = 'Sold';
+  product.buyer = userId;
+  await product.save();
+  console.log('PRODUCT:', product);
+
   const order = await Order.create({
-    orderItems: [{ item: product._id, quantity: 1 }],
     buyer: userId,
-    totalPrice: product.price,
+    product: product._id,
     notes: orderNotes,
   });
-  if (order.orderItems.quantity === 0) {
-    // eslint-disable-next-line no-undef
-    return next(new ErrorMessage(`Product is sold!`));
-  }
-  return res.status(200).json({ success: true, data: order });
+
+  return res
+    .status(200)
+    .json({ success: true, message: 'Your product was successfully sold' });
 };
