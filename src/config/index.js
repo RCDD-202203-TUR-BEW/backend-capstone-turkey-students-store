@@ -2,13 +2,11 @@
 const { Storage } = require('@google-cloud/storage');
 const path = require('path');
 
-// Creates a client
 const storage = new Storage({
-  keyFilename: path.join(
-    __dirname,
-    '../recoded-student-store-405a9b1020bb.json'
-  ),
-  projectId: 'recoded-student-store',
+  credentials: {
+    client_email: process.env.GOOGLE_CLOUD_CLIENT_EMAIL,
+    private_key: process.env.GOOGLE_CLOUD_PRIVATE_KEY,
+  },
 });
 
 module.exports = storage;
