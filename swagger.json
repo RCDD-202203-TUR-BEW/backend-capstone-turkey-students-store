@@ -69,6 +69,37 @@
         }
       }
     },
+    "/api/auth/twitter": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Authenticates user using twitter 3rd party authentication service",
+        "responses": {
+          "200": {
+            "description": "Redirects verified user to the home page",
+            "schema": {
+              "$ref": "#/definitions/Profile"
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/auth/twitter/callback": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Login using twitter",
+        "description": "Retrive user profile from Twitter",
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/Profile"
+            }
+          }
+        }
+      }
+    },
     "/api/auth/signup": {
       "post": {
         "tags": ["Auth"],
