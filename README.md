@@ -1,11 +1,32 @@
-**STUDENTS STORE**
+**STUDENTS STORE
+
 **About the project
 
 Student store is a website that brings students in Turkey together to sell, buy or donate their old stuffs locally. The aim of the website is to provide a platform for easy second-handing among university students as their needs. The website is intended for university students in Turkey. On this website, you can find products; second hand or brand new, or you can provide services or benefit from them.
 
 **Features**
 
-**Built With****
+Sign-in and sign-up features for users with;
+-Google, Twitter and Facebook Authentication
+List products or services with images or videos
+Order products or services from other users 
+Donation option
+
+**Functionalities:**
+
+-Homepage
+-Sign in page 
+-Sign up page
+-List of products page
+-Cart
+-Donation page
+-Profile page
+-Orders page
+-Listing page
+-Profile info page
+
+
+**Built With**
 
 <img width="706" alt="Screen Shot 2022-08-23 at 13 36 07" src="https://user-images.githubusercontent.com/89161696/186137406-12be4103-9ca5-401d-b030-08e1ae7dea2d.png">
 
