@@ -151,10 +151,10 @@ describe('Products routes', () => {
       };
       user = await server.post('/api/auth/signup').send(mUser);
     });
-    test('If product with passed id does not exist, return error with status code 422', async () => {
+    test('If product with passed id does not exist, return error with status code 404', async () => {
       const productId = new mongoose.Types.ObjectId();
       const res = await server.post(`/api/products/${productId}/request`);
-      expect(res.status).toBe(422);
+      expect(res.status).toBe(404);
       expect(res.headers['content-type']).toMatch('application/json');
       expect(res.body.success).toBe(false);
       expect(res.body.data.message).toBe('Invalid request!');
@@ -167,7 +167,6 @@ describe('Products routes', () => {
         schoolName: 'Princeton University',
         password: 'petE123',
       };
-      const userId = user.body.data._id;
       const product = await Product.create(mProduct);
       const sellerUser = await User.create(mUser);
       product.seller = sellerUser._id;
@@ -179,7 +178,7 @@ describe('Products routes', () => {
       expect(res.status).toBe(200);
       expect(res.headers['content-type']).toMatch('application/json');
       expect(res.body.success).toBe(true);
-      expect(res.body.data.requestedBuyers[0]).toBe(userId);
+      expect(res.body.message).toBe('Requested has been done');
     });
 
     test('if the seller and the buyer same person, return error with status code 400', async () => {
@@ -191,7 +190,7 @@ describe('Products routes', () => {
       expect(res.status).toBe(400);
       expect(res.headers['content-type']).toMatch('application/json');
       expect(res.body.success).toBe(false);
-      expect(res.body.error).toBe('Seller and buyer should be different!');
+      expect(res.body.error).toBe('You can not request your own product!');
     });
   });
 });

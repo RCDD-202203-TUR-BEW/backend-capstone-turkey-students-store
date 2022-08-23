@@ -345,7 +345,7 @@
               }
             }
           },
-          "422": {
+          "404": {
             "description": "Invalid request",
             "content": {
               "application/json": {

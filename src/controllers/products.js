@@ -3,6 +3,7 @@ const { validationResult } = require('express-validator');
 const ErrorResponse = require('../utils/errorResponse');
 const Product = require('../models/product');
 const uploadImage = require('../services/gcs-service');
+const order = require('../models/order');
 
 exports.getAllProducts = async (req, res, next) => {
   const allProducts = await Product.find();
@@ -56,19 +57,19 @@ exports.createProduct = async (req, res, next) => {
   return res.status(201).json({ success: true, data: product });
 };
 
-// check if requestedBuyers doesn't have buyerId already. product.requestedBuyers.find(i => i.toHexString() === buyerId.toHexString())
 exports.requestProduct = async (req, res, next) => {
   try {
     const productId = req.params.id;
     const buyerId = req.user._id;
     const product = await Product.findOne({ _id: productId });
+    // const sold = await order.findOne
 
     // check if the product is not null
     if (product) {
       // check if the seller and the buyer same person
       if (buyerId.toString() === product.seller?.toString()) {
         return next(
-          new ErrorResponse('Seller and buyer should be different!', 400)
+          new ErrorResponse('You can not request your own product!', 400)
         );
       }
       const checkId = product.requestedBuyers.findIndex(
@@ -78,10 +79,19 @@ exports.requestProduct = async (req, res, next) => {
         product.requestedBuyers.push(buyerId);
         await product.save();
       }
-      return res.status(200).json({ success: true, data: product });
+      return res
+        .status(200)
+        .json({ success: true, message: 'Requested has been done' });
     }
+
+    // if (order.orderStatus.enum === completed) {
+    //   return res
+    //     .status(410)
+    //     .json({ success: false, message: 'Product has been sold out!' });
+    // }
+
     return res
-      .status(422)
+      .status(404)
       .json({ success: false, data: { message: 'Invalid request!' } });
   } catch (error) {
     console.log(error);
