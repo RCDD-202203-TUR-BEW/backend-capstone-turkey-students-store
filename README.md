@@ -17,16 +17,13 @@ Donation option
 
 **Functionalities:**
 
-- Homepage
-- Sign in page 
-- Sign up page
-- List of products page
-- Cart
-- Donation page
-- Profile page
-- Orders page
-- Listing page
-- Profile info page
+- List products
+- CRUD operations for products
+- CRUD operations for user profiles
+- Donation functionality
+- List your orders
+- Authenctication with Google, Facebook, Twitter
+- Authenctication with email and password
 
 ________________________________________________________________________________________________________________________________________________________
 
@@ -34,10 +31,11 @@ ________________________________________________________________________________
 
 <img width="745" alt="Screen Shot 2022-08-23 at 21 45 48" src="https://user-images.githubusercontent.com/89161696/186238998-ac3b6260-90b6-4d28-84b6-19e79b62c4b2.png">
 
+---
 
-**Demo
+**Demo**
 
-Server (backend) link:** Put heroko link here!
+Server (backend) link: [Heroku](https://students-store.herokuapp.com/)
 
 ________________________________________________________________________________________________________________________________________________________
 
@@ -77,6 +75,6 @@ ________________________________________________________________________________
 
 Students Store Team
 
-- e-Mail: 
+- e-Mail: studentstore_recoded@hotmail.com
 - [<img width="67" alt="Screen Shot 2022-08-23 at 21 36 02" src="https://user-images.githubusercontent.com/89161696/186237389-ead5c254-7bd0-44ff-a0d0-fa6b2bc01f34.png">](https://www.linkedin.com/school/re-coded/)
 
