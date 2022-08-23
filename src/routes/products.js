@@ -1,8 +1,20 @@
-const router = require('express').Router();
+const express = require('express');
+
+const router = express.Router();
 const { body } = require('express-validator');
 const multer = require('multer');
 const productsController = require('../controllers/products');
+const ErrorResponse = require('../utils/errorResponse');
 const auth = require('../middlewares/authenticate');
+const productsMiddleware = require('../middlewares/products');
+
+router.get(
+  '/:id/requested-buyers',
+  auth.verifyUser,
+  productsMiddleware.verifyOwner,
+  productsController.getRequstedBuyers
+);
+const productMiddleware = require('../middlewares/product');
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -117,4 +129,10 @@ router.get('/', productsController.getAllProducts);
 
 router.get('/:id', productsController.getProduct);
 
+router.delete(
+  '/:id',
+  auth.verifyUser,
+  productMiddleware.verifyOwner,
+  productsController.removeProduct
+);
 module.exports = router;
