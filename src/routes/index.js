@@ -6,10 +6,11 @@ const productsRoutes = require('./products');
 const profileRoutes = require('./profile');
 const donationRoutes = require('./donations');
 
-router.use('/users', usersRoutes);
+router.use('/profile', profileRoutes);
 router.use('/products', productsRoutes);
+router.use('/users', usersRoutes);
 router.use('/auth', authRoutes);
 router.use('/profile', profileRoutes);
-router.use('/donation', donationRoutes);
+router.use('/donations', donationRoutes);
 
 module.exports = router;

@@ -37,8 +37,12 @@
         "responses": {
           "200": {
             "description": "Redirects verified user to the home page",
-            "schema": {
-              "$ref": "#/definitions/profile"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/Profile"
+                }
+              }
             }
           },
           "400": {
@@ -54,8 +58,12 @@
         "description": "Retrive user profile from Google",
         "responses": {
           "200": {
-            "schema": {
-              "$ref": "#/definitions/Profile"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/Profile"
+                }
+              }
             }
           }
         }
@@ -194,7 +202,7 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "$ref": "#/components/schemas/productRequestBody"
               }
@@ -332,8 +340,12 @@
         "responses": {
           "200": {
             "description": "Successful login",
-            "schema": {
-              "$ref": "#/definitions/Profile"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/Profile"
+                }
+              }
             }
           },
           "400": {
@@ -350,8 +362,30 @@
         "responses": {
           "200": {
             "description": "Fetched user profile",
-            "schema": {
-              "$ref": "#/definitions/Profile"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/Profile"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/profile": {
+      "get": {
+        "tags": ["Profile"],
+        "summary": "Get user profile",
+        "responses": {
+          "200": {
+            "description": "User profile",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/Profile"
+                }
+              }
             }
           }
         }
@@ -360,7 +394,7 @@
     "/api/donation/": {
       "post": {
         "tags": ["Donations"],
-        "description": "Make donations by choosing one of the specified amounts",
+        "description": "Make donations by specified amount",
         "requestBody": {
           "required": true,
           "content": {
@@ -368,6 +402,40 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "token": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "example": "tok_1LZuNCGPwek4o8KsoCayeSgC"
+                      },
+                      "card": {
+                        "type": "object",
+                        "properties": {
+                          "address_city": {
+                            "type": "string",
+                            "example": "Ankara"
+                          },
+                          "address_country": {
+                            "type": "string",
+                            "example": "Turkey"
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "Peter Griffin"
+                          },
+                          "last4": {
+                            "type": "string",
+                            "example": "4242"
+                          }
+                        }
+                      },
+                      "email": {
+                        "type": "string",
+                        "example": "griffin@mail.com"
+                      }
+                    }
+                  },
                   "amount": {
                     "type": "number",
                     "example": 25
@@ -378,8 +446,18 @@
           }
         },
         "responses": {
-          "201": {
+          "200": {
             "description": "Specified amount of donation is made.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/returnedDonation"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error!",
             "content": {
               "application/json": {
                 "schema": {
@@ -387,11 +465,11 @@
                   "properties": {
                     "success": {
                       "type": "boolean",
-                      "example": true
+                      "example": false
                     },
-                    "data": {
+                    "error": {
                       "type": "string",
-                      "example": "https://checkout.stripe.com/pay/25-usd-donation"
+                      "example": "Amount should be greater than zero!"
                     }
                   }
                 }
@@ -425,24 +503,19 @@
           },
           "coverImage": {
             "type": "string",
-            "example": "http://www.cheese.com/leyden"
+            "format": "binary"
           },
           "type": {
             "type": "string",
             "enum": ["Product", "Service"]
           },
-          "location": {
-            "type": "object",
-            "properties": {
-              "lat": {
-                "type": "number",
-                "example": 38.355
-              },
-              "lng": {
-                "type": "number",
-                "example": 25.369
-              }
-            }
+          "location[lat]": {
+            "type": "number",
+            "example": 36.42
+          },
+          "location[lng]": {
+            "type": "number",
+            "example": 26.45
           }
         }
       },
@@ -603,6 +676,39 @@
               "updatedAt": {
                 "type": "string",
                 "format": "date-time"
+              }
+            }
+          }
+        }
+      },
+      "returnedDonation": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string",
+                "example": "62ed149a0785e2f2a4ff07b3"
+              },
+              "amount": {
+                "type": "number",
+                "example": 25
+              },
+              "fullName": {
+                "type": "string",
+                "example": "Peter Griffin"
+              },
+              "email": {
+                "type": "string",
+                "example": "griffin@mail.com"
+              },
+              "cardNumber": {
+                "type": "number"
               }
             }
           }

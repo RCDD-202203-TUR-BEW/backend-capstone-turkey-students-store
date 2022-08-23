@@ -6,13 +6,19 @@ const donationController = require('../controllers/donations');
 
 router.post(
   '/',
-  body('amount')
-    .custom((amount) => amount === 10 || amount === 25 || amount === 50)
-    .withMessage('Invalid donation amount!'),
+  [
+    body('amount')
+      .isNumeric()
+      .withMessage('Amount should be a number!')
+      .custom((val) => val > 0)
+      .withMessage('Amount should be greater than zero!'),
+    body('token.card.name')
+      .not()
+      .isEmpty()
+      .withMessage('Name cannot be empty!'),
+    body('token.email').not().isEmpty().withMessage('Email cannot be empty!'),
+  ],
   donationController.donateMoney
 );
-
-router.get('/payment/success', donationController.paymentSuccess);
-router.get('/payment/failure', donationController.paymentFailure);
 
 module.exports = router;
