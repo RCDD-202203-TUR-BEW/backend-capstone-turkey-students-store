@@ -13,7 +13,6 @@ const connectToMongoAtlas = () => {
 
   db.once('open', () => {
     logger.info('[+] Database connected');
-    logger.info(`[+] Database connected to: ${url}`);
   });
 
   db.on('error', (err) => {
