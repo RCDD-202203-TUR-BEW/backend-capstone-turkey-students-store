@@ -103,7 +103,7 @@ exports.requestProduct = async (req, res, next) => {
       }
       return res
         .status(200)
-        .json({ success: true, message: 'Requested has been done' });
+        .json({ success: true, message: 'Your request to the product has been made' });
     }
 
     return res
