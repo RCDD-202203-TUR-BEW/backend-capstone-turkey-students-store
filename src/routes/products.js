@@ -125,6 +125,7 @@ router.patch(
   productsController.updateProduct
 );
 
+router.post('/:id/request', auth.verifyUser, productsController.requestProduct);
 router.get('/', productsController.getAllProducts);
 
 router.get('/:id', productsController.getProduct);

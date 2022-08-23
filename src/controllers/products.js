@@ -76,6 +76,40 @@ exports.createProduct = async (req, res, next) => {
   return res.status(201).json({ success: true, data: product });
 };
 
+exports.requestProduct = async (req, res, next) => {
+  const productId = req.params.id;
+  const buyerId = req.user._id;
+  const product = await Product.findOne({ _id: productId });
+
+  if (!product) {
+    return res
+      .status(404)
+      .json({ success: true, data: { message: 'Product not found!' } });
+  }
+
+  // If it's Sold out
+  if (product.status === 'Sold') {
+    return next(new ErrorResponse('Product has been sold out!', 410));
+  }
+  // check if the seller and the buyer same person
+  if (buyerId.toString() === product.seller?.toString()) {
+    return next(
+      new ErrorResponse('You can not request your own product!', 400)
+    );
+  }
+  const checkId = product.requestedBuyers.findIndex(
+    (val) => val.toString() === buyerId.toString()
+  );
+  if (checkId === -1) {
+    product.requestedBuyers.push(buyerId);
+    await product.save();
+  }
+  return res.status(200).json({
+    success: true,
+    message: 'Your request to the product has been made',
+  });
+};
+
 exports.updateProduct = async (req, res, next) => {
   // check for validation errors first
   const validationErrors = validationResult(req);
