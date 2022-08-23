@@ -7,11 +7,11 @@ const { expressjwt: jwt } = require('express-jwt');
 const swaggerUi = require('swagger-ui-express');
 const cors = require('cors');
 const session = require('express-session');
+require('dotenv').config();
 const swaggerDocument = require('../swagger.json');
 const routes = require('./routes');
 const logger = require('./utils/logger');
 const errorHandler = require('./middlewares/error');
-require('dotenv').config();
 const { connectToMongoAtlas } = require('./db/connection');
 
 connectToMongoAtlas();
