@@ -83,7 +83,7 @@ exports.getRequstedBuyers = async (req, res, next) => {
     select: 'firstName lastName email phoneNumber address',
   });
   if (!product) {
-    next(new ErrorResponse(`Product with id ${id} not found!`, 404));
+    return next(new ErrorResponse(`Product with id ${id} not found!`, 404));
   }
   return res.status(200).json({ success: true, data: product.requestedBuyers });
 };
