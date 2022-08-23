@@ -23,6 +23,10 @@
     {
       "name": "Users",
       "description": "API for users in the system"
+    },
+    {
+      "name": "Donations",
+      "description": "API for donation related operations"
     }
   ],
   "paths": {
@@ -33,8 +37,12 @@
         "responses": {
           "200": {
             "description": "Redirects verified user to the home page",
-            "schema": {
-              "$ref": "#/definitions/profile"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/Profile"
+                }
+              }
             }
           },
           "400": {
@@ -50,8 +58,12 @@
         "description": "Retrive user profile from Google",
         "responses": {
           "200": {
-            "schema": {
-              "$ref": "#/definitions/Profile"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/Profile"
+                }
+              }
             }
           }
         }
@@ -83,6 +95,54 @@
           "200": {
             "schema": {
               "$ref": "#/definitions/Profile"
+            }
+          }
+        }
+      }
+    },
+    "/api/products/:id": {
+      "patch": {
+        "tags": ["Products"],
+        "summary": "Update product",
+        "description": "Updates existing product and returns new product",
+        "parameters": [
+          {
+            "name": "product id",
+            "in": "query",
+            "type": "string",
+            "format": "number",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns updated product!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/Product"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "No product exists!"
+                    }
+                  }
+                }
+              }
             }
           }
         }
@@ -221,7 +281,7 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "$ref": "#/components/schemas/productRequestBody"
               }
@@ -278,73 +338,54 @@
         }
       }
     },
-    "/api/profile/products": {
+    "/api/products/{id}/requsted-buyers": {
       "get": {
-        "tags": ["Users"],
-        "description": "Get all products of a user for sale.",
+        "tags": ["Products"],
+        "description": "Get all the buyers for a product.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Product ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "All products of a user that is for sale are successfully fetched.",
+            "description": "All the buyers for a product.",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/returnedProduct"
+                  "$ref": "#/components/schemas/returnedBuyers"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Product with {id} not found!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Product with {id} not found!"
+                    }
                   }
                 }
               }
             }
           },
           "401": {
-            "description": "Unauthorized user!"
-          }
-        }
-      }
-    },
-    "/api/products/:id/requested-buyers/:userId/sell": {
-      "post": {
-        "tags": ["Products"],
-        "description": "Request to buy a product.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "id of the product to be requested",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "userId",
-            "in": "path",
-            "description": "id of the user requesting to buy the product",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Product requested to buy successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean",
-                      "example": true
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Product not found!",
+            "description": "User ${req.user.id} is not authorized to access or modify this product details!",
             "content": {
               "application/json": {
                 "schema": {
@@ -356,7 +397,7 @@
                     },
                     "error": {
                       "type": "string",
-                      "example": "Product not found!"
+                      "example": "User ${req.user.id} is not authorized to access or modify this product details!"
                     }
                   }
                 }
@@ -365,289 +406,309 @@
           }
         }
       }
-    },
-    "/api/products/{id}": {
-      "get": {
-        "tags": ["Products"],
-        "description": "Fetch the product specified by id.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "id of the product to be fetched",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Product specified by id is successfully fetched.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/returnedProduct"
-                }
-              }
-            }
+    }
+  },
+  "components": {
+    "schemas": {
+      "productRequestBody": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Leyden Cheese"
           },
-          "404": {
-            "description": "Product not found!",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean",
-                      "example": false
-                    },
-                    "error": {
-                      "type": "string",
-                      "example": "Product not found!"
-                    }
+          "description": {
+            "type": "string",
+            "example": "Cumin spiced cheese that originates from the Leiden area in the Netherlands."
+          },
+          "price": {
+            "type": "number",
+            "example": 200
+          },
+          "category": {
+            "type": "string",
+            "example": "Food"
+          },
+          "coverImage": {
+            "type": "string",
+            "format": "binary"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["Product", "Service"]
+          },
+          "location[lat]": {
+            "type": "number",
+            "example": 36.42
+          },
+          "location[lng]": {
+            "type": "number",
+            "example": 26.45
+          }
+        }
+      },
+      "returnedProduct": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string",
+                "example": "62ee685e158e683e851eccea"
+              },
+              "title": {
+                "type": "string",
+                "example": "Leyden Cheese"
+              },
+              "description": {
+                "type": "string",
+                "example": "Cumin spiced cheese that originates from the Leiden area in the Netherlands."
+              },
+              "price": {
+                "type": "number",
+                "example": 200
+              },
+              "category": {
+                "type": "string",
+                "example": "Food"
+              },
+              "coverImage": {
+                "type": "string",
+                "example": "http://www.cheese.com/leyden"
+              },
+              "images": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "type": {
+                "type": "string",
+                "enum": ["Product", "Service"]
+              },
+              "status": {
+                "type": "string",
+                "enum": ["Active", "Sold"]
+              },
+              "condition": {
+                "type": "string",
+                "enum": ["New", "Used"]
+              },
+              "location": {
+                "type": "object",
+                "properties": {
+                  "lat": {
+                    "type": "number",
+                    "example": 38.355
+                  },
+                  "lng": {
+                    "type": "number",
+                    "example": 25.369
                   }
+                }
+              },
+              "seller": {
+                "type": "string",
+                "example": "62ee685e158e683e851ecceF"
+              },
+              "buyer": {
+                "type": "string"
+              },
+              "requestedBuyers": {
+                "type": "array",
+                "items": {
+                  "type": "string"
                 }
               }
             }
           }
         }
       },
-      "delete": {
-        "tags": ["Products"],
-        "summary": "Delete a product",
-        "description": "Delete a product",
-        "operationId": "deleteProduct",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "ID of product to delete",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Product deleted successfully"
+      "userRequestBody": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "example": "Peter"
           },
-          "404": {
-            "description": "Product not found"
+          "lastName": {
+            "type": "string",
+            "example": "Griffin"
+          },
+          "email": {
+            "type": "string",
+            "example": "griffin@mail.com"
+          },
+          "schoolName": {
+            "type": "string",
+            "example": "Princeton University"
+          },
+          "password": {
+            "type": "string",
+            "example": "abC123"
+          }
+        },
+        "required": ["firstName", "lastName", "email", "schoolName", "password"]
+      },
+      "returnedUser": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string",
+                "example": "62ed149a0785e2f2a4ff07b3"
+              },
+              "firstName": {
+                "type": "string",
+                "example": "Peter"
+              },
+              "lastName": {
+                "type": "string",
+                "example": "Griffin"
+              },
+              "fullName": {
+                "type": "string",
+                "example": "Peter Griffin"
+              },
+              "email": {
+                "type": "string",
+                "example": "griffin@mail.com"
+              },
+              "schoolName": {
+                "type": "string",
+                "example": "Princeton University"
+              },
+              "phoneNumber": {
+                "type": "number",
+                "example": 123456798
+              },
+              "address": {
+                "type": "string",
+                "example": "New Jersey"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
           }
         }
-      }
-    },
-    "/api/profile": {
-      "get": {
-        "tags": ["Profile"],
-        "summary": "Get user profile",
-        "responses": {
-          "200": {
-            "description": "User profile",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/definitions/profile"
-                }
+      },
+      "returnedDonation": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string",
+                "example": "62ed149a0785e2f2a4ff07b3"
               },
-              "/api/auth/facebook": {
-                "get": {
-                  "tags": ["Auth"],
-                  "summary": "Facebook login",
-                  "description": "Provide Facebook login to users",
-                  "responses": {
-                    "200": {
-                      "description": "Successful login",
-                      "schema": {
-                        "$ref": "#/definitions/Profile"
-                      }
-                    },
-                    "400": {
-                      "description": "Invalid request"
-                    }
-                  }
-                }
+              "amount": {
+                "type": "number",
+                "example": 25
               },
-              "/api/auth/facebook/callback": {
-                "get": {
-                  "tags": ["Auth"],
-                  "summary": "Facebook login callback",
-                  "description": "Retrive user profile from Facebook",
-                  "responses": {
-                    "200": {
-                      "description": "Fetched user profile",
-                      "schema": {
-                        "$ref": "#/definitions/Profile"
-                      }
-                    }
-                  }
-                }
+              "fullName": {
+                "type": "string",
+                "example": "Peter Griffin"
+              },
+              "email": {
+                "type": "string",
+                "example": "griffin@mail.com"
+              },
+              "cardNumber": {
+                "type": "number"
               }
-            },
-            "components": {
-              "schemas": {
-                "productRequestBody": {
-                  "type": "object",
-                  "properties": {
-                    "title": {
-                      "type": "string",
-                      "example": "Leyden Cheese"
-                    },
-                    "description": {
-                      "type": "string",
-                      "example": "Cumin spiced cheese that originates from the Leiden area in the Netherlands."
-                    },
-                    "price": {
-                      "type": "number",
-                      "example": 200
-                    },
-                    "category": {
-                      "type": "string",
-                      "example": "Food"
-                    },
-                    "coverImage": {
-                      "type": "string",
-                      "example": "http://www.cheese.com/leyden"
-                    },
-                    "type": {
-                      "type": "string",
-                      "enum": ["Product", "Service"]
-                    },
-                    "location": {
-                      "type": "object",
-                      "properties": {
-                        "lat": {
-                          "type": "number",
-                          "example": 38.355
-                        },
-                        "lng": {
-                          "type": "number",
-                          "example": 25.369
-                        }
-                      }
-                    }
-                  }
-                },
-                "userRequestBody": {
-                  "type": "object",
-                  "properties": {
-                    "firstName": {
-                      "type": "string",
-                      "example": "Peter"
-                    },
-                    "lastName": {
-                      "type": "string",
-                      "example": "Griffin"
-                    },
-                    "email": {
-                      "type": "string",
-                      "example": "griffin@mail.com"
-                    },
-                    "schoolName": {
-                      "type": "string",
-                      "example": "Princeton University"
-                    },
-                    "password": {
-                      "type": "string",
-                      "example": "abC123"
-                    }
-                  },
-                  "required": [
-                    "firstName",
-                    "lastName",
-                    "email",
-                    "schoolName",
-                    "password"
-                  ]
-                },
-                "returnedUser": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean",
-                      "example": true
-                    },
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "_id": {
-                          "type": "string",
-                          "example": "62ed149a0785e2f2a4ff07b3"
-                        },
-                        "firstName": {
-                          "type": "string",
-                          "example": "Peter"
-                        },
-                        "lastName": {
-                          "type": "string",
-                          "example": "Griffin"
-                        },
-                        "fullName": {
-                          "type": "string",
-                          "example": "Peter Griffin"
-                        },
-                        "email": {
-                          "type": "string",
-                          "example": "griffin@mail.com"
-                        },
-                        "schoolName": {
-                          "type": "string",
-                          "example": "Princeton University"
-                        },
-                        "phoneNumber": {
-                          "type": "number",
-                          "example": 123456798
-                        },
-                        "address": {
-                          "type": "string",
-                          "example": "New Jersey"
-                        },
-                        "createdAt": {
-                          "type": "string",
-                          "format": "date-time"
-                        },
-                        "updatedAt": {
-                          "type": "string",
-                          "format": "date-time"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            "definitions": {
-              "Profile": {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "type": "string"
-                  },
-                  "provider": {
-                    "type": "string"
-                  },
-                  "displayName": {
-                    "type": "string"
-                  },
-                  "firstName": {
-                    "type": "string"
-                  },
-                  "lastName": {
-                    "type": "string"
-                  },
-                  "profilePhoto": {
-                    "type": "string"
-                  }
-                }
-              }
-            },
-            "schemes": ["http"],
-            "consumes": ["application/json"],
-            "produces": ["application/json"]
+            }
           }
         }
       }
     }
-  }
+  },
+  "definitions": {
+    "Profile": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "provider": {
+          "type": "string"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "profilePhoto": {
+          "type": "string"
+        }
+      }
+    },
+    "Product": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "example": "book"
+        },
+        "description": {
+          "type": "string"
+        },
+        "price": {
+          "type": "number"
+        },
+        "category": {
+          "type": "string"
+        },
+        "coverImage": {
+          "type": "string"
+        },
+        "images": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "condition": {
+          "type": "string"
+        },
+        "seller": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "schemes": ["http"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"]
 }
