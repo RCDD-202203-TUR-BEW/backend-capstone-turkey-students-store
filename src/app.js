@@ -19,7 +19,11 @@ connectToMongoAtlas();
 const app = express();
 
 const port = process.env.PORT || 3000;
-const allowedOrigins = ['http://localhost:3000', 'http://localhost:5000'];
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:5000',
+  'https://students-store.herokuapp.com',
+];
 
 const corsOptions = {
   credentials: true,
