@@ -1,7 +1,6 @@
 const express = require('express');
 require('express-async-errors');
 const passport = require('passport');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const cookieParser = require('cookie-parser');
 const { encryptCookieNodeMiddleware } = require('encrypt-cookie');
 const { expressjwt: jwt } = require('express-jwt');
@@ -14,7 +13,6 @@ const logger = require('./utils/logger');
 const errorHandler = require('./middlewares/error');
 require('dotenv').config();
 const { connectToMongoAtlas } = require('./db/connection');
-const User = require('./models/user');
 
 connectToMongoAtlas();
 
