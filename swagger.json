@@ -348,8 +348,9 @@
               }
             }
           }
-        }},
-       "delete": {
+        }
+      },
+      "delete": {
         "tags": ["Products"],
         "summary": "Delete a product",
         "description": "Delete a product",
@@ -372,7 +373,6 @@
           }
         }
       }
-
     },
     "/api/profile": {
       "get": {
