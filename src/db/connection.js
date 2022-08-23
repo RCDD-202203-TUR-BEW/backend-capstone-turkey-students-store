@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const logger = require('../utils/logger');
 
-// const url = process.env.DB_URL;
 // Use a separate test db when running jest
 const isJest = process.env.IS_JEST;
 let url = process.env.DB_URL;

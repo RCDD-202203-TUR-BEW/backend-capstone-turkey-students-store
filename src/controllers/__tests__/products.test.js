@@ -5,6 +5,8 @@ const mongoose = require('mongoose');
 const app = require('../../app');
 const Product = require('../../models/product');
 
+const User = require('../../models/user');
+
 const server = request.agent(app);
 
 const {
@@ -82,7 +84,7 @@ describe('Products routes', () => {
     });
 
     /* TODO: fix this test */
-    /* test('If all required fields are passed, create product, return with status code 201', async () => {
+    test('If all required fields are passed, create product, return with status code 201', async () => {
       const res = await server
         .post('/api/products/')
         .field('title', mProduct.title)
@@ -90,7 +92,8 @@ describe('Products routes', () => {
         .field('price', mProduct.price)
         .field('category', mProduct.category)
         .field('type', mProduct.type)
-        .field('location', mProduct.location)
+        .field('location[lat]', mProduct.location.lat)
+        .field('location[lng]', mProduct.location.lng)
         .attach('coverImage', path.join(__dirname, './uploads/image1.jpg'))
         .set('Content-Type', 'multipart/form-data');
       // copy mProduct and delete cover image
@@ -102,7 +105,7 @@ describe('Products routes', () => {
       expect(res.body.success).toBe(true);
       expect(res.body.data).toEqual(expect.objectContaining(expectedResponse));
       expect(res.body.data.coverImage).toBeDefined();
-    }); */
+    });
   });
 
   describe('GET /:id', () => {
@@ -124,7 +127,6 @@ describe('Products routes', () => {
     });
 
     /* TODO: fix this test */
-    /*
     test('If product with passed id exists, return the product with status code 200', async () => {
       // first create a product
       const product = await Product.create(mProduct);
@@ -136,7 +138,69 @@ describe('Products routes', () => {
       expect(res.body.success).toBe(true);
       expect(res.body.data).toEqual(expect.objectContaining(mProduct));
     });
-*/
+  });
+
+  describe('delete product', () => {
+    let product;
+
+    // beforeEach(async () => {
+    //   await Product.deleteMany();
+    //   await User.deleteMany();
+    //   // user = await User.create(mockUser);
+    //   const mUser = {
+    //     firstName: 'Glenn',
+    //     lastName: 'Quagmire',
+    //     email: 'glennQQQ@email.com',
+    //     schoolName: 'Yale University',
+    //     password: 'gleN123',
+    //   };
+    //   const user = await server.post('/api/auth/signup').send(mUser);
+    //   mProduct.seller = user._id;
+    //   productId = await Product.create(mProduct);
+    //   // await clearDatabase();
+    // });
+
+    beforeEach(async () => {
+      // create user for authentication
+      const user = {
+        firstName: 'Glenn',
+        lastName: 'Quagmire',
+        email: 'glennaaaQQQ@email.com',
+        schoolName: 'Yale University',
+        password: 'gleN123',
+      };
+      const mUser = await server.post('/api/auth/signup').send(user);
+      // create product fullfilled with seller and requested buyers as this user
+      // mProduct.seller = user._id;
+      mProduct.seller = mUser.body.data._id;
+      product = await Product.create(mProduct);
+    });
+
+    // afterAll(async () => {
+    //   await Product.deleteMany();
+    //   await User.deleteMany();
+    //   await mongoose.connection.close();
+    // });
+
+    it('DELETE /api/products/:id Should delete one product with provided ID', async () => {
+      const expectedResponse = {
+        success: true,
+        data: 'Product deleted successfully.',
+      };
+      const res = await server.delete(`/api/products/${product._id}`);
+      expect(res.status).toBe(200);
+      expect(res.body).toEqual(expectedResponse);
+    });
+    it('DELETE /api/products/:id - 404', async () => {
+      const expectedResponse = {
+        success: false,
+        error: 'Product with id 62ff96671c828963807a2041 not found!',
+      };
+      // 5e9f8f8f8f8f8f8f8f8f8f8 returns 500 error
+      const res = await server.delete('/api/products/62ff96671c828963807a2041');
+      expect(res.status).toBe(404);
+      expect(res.body).toEqual(expectedResponse);
+    });
   });
   describe('GET /:id/requested-buyers', () => {
     let product;
