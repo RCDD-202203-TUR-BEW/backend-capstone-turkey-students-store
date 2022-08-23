@@ -4,8 +4,7 @@ const donationSchema = new mongoose.Schema(
   {
     amount: Number,
     fullName: String,
-    email: String,
-    cardNumber: Number,
+    email: String
   },
   { timestamps: true }
 );
