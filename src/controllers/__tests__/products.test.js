@@ -202,4 +202,60 @@ describe('Products routes', () => {
       expect(res.body).toEqual(expectedResponse);
     });
   });
+  describe('GET /:id/requested-buyers', () => {
+    let product;
+    beforeEach(async () => {
+      // create user for authentication
+      const user = {
+        firstName: 'Glenn',
+        lastName: 'Quagmire',
+        email: 'glennaaaQQQ@email.com',
+        schoolName: 'Yale University',
+        password: 'gleN123',
+      };
+      const user1 = {
+        firstName: 'Glenn',
+        lastName: 'Quagmire',
+        email: 'glennmmmQQQ@email.com',
+        schoolName: 'Yale University',
+        password: 'gleN123',
+      };
+      // create requested buyer
+      const mRequestedBuyer = await server.post('/api/auth/signup').send(user);
+      // create seller
+      const mUser = await server.post('/api/auth/signup').send(user1);
+      // create product fullfilled with seller and requested buyers
+      mProduct.requestedBuyers = [mRequestedBuyer.body.data._id];
+      mProduct.seller = mUser.body.data._id;
+      product = await Product.create(mProduct);
+    });
+    test('If product with given id is not found, return error with status code 404', async () => {
+      const res = await server.get(
+        '/api/products/62ff96671c828963807a2041/requested-buyers'
+      );
+      expect(res.status).toBe(404);
+      expect(res.headers['content-type']).toMatch('application/json');
+      expect(res.body.success).toBe(false);
+      expect(res.body.error).toBe(
+        'Product with id 62ff96671c828963807a2041 not found!'
+      );
+    });
+    test('If product with given id is found, verifyUser and verifyOwner is passed, return with status code 200 with populated requested buyers', async () => {
+      const mRequestedBuyers = [
+        {
+          _id: mProduct.requestedBuyers[0],
+          firstName: 'Glenn',
+          lastName: 'Quagmire',
+          email: 'glennaaaQQQ@email.com',
+          fullName: 'Glenn Quagmire',
+        },
+      ];
+      const id = product._id.toString();
+      const res = await server.get(`/api/products/${id}/requested-buyers`);
+      expect(res.status).toBe(200);
+      expect(res.headers['content-type']).toMatch('application/json');
+      expect(res.body.success).toBe(true);
+      expect(res.body.data[0]).toEqual(mRequestedBuyers[0]);
+    });
+  });
 });
