@@ -213,10 +213,19 @@ describe('Products routes', () => {
         schoolName: 'Yale University',
         password: 'gleN123',
       };
-      const mUser = await server.post('/api/auth/signup').send(user);
-      // create product fullfilled with seller and requested buyers as this user
-      // mProduct.seller = user._id;
-      mProduct.requestedBuyers = [mUser.body.data._id];
+      const user1 = {
+        firstName: 'Glenn',
+        lastName: 'Quagmire',
+        email: 'glennmmmQQQ@email.com',
+        schoolName: 'Yale University',
+        password: 'gleN123',
+      };
+      // create requested buyer
+      const mRequestedBuyer = await server.post('/api/auth/signup').send(user);
+      // create seller
+      const mUser = await server.post('/api/auth/signup').send(user1);
+      // create product fullfilled with seller and requested buyers
+      mProduct.requestedBuyers = [mRequestedBuyer.body.data._id];
       mProduct.seller = mUser.body.data._id;
       product = await Product.create(mProduct);
     });
