@@ -29,6 +29,22 @@ const mProduct = {
   },
 };
 
+const mSoldProduct = {
+  title: 'Cheese',
+  description: 'Kars cheese 1000g',
+  price: 175,
+  category: 'Food',
+  coverImage:
+    'https://www.artvinyoresel.com/image/cache/catalog/images%20-%202020-04-30T043931.448-270x270.jpeg',
+  type: 'Product',
+  location: {
+    lat: 22.355,
+    lng: 38.399,
+  },
+  status: 'Sold',
+  condition: 'Used',
+};
+
 afterAll(async () => {
   await closeDatabase();
 });
@@ -139,6 +155,7 @@ describe('Products routes', () => {
       expect(res.body.data).toEqual(expect.objectContaining(mProduct));
     });
   });
+
   describe('POST /:id/request', () => {
     let user;
     beforeEach(async () => {
@@ -150,6 +167,16 @@ describe('Products routes', () => {
         password: 'gleN123',
       };
       user = await server.post('/api/auth/signup').send(mUser);
+    });
+
+    test('If product is sold out, return error with status code 410', async () => {
+      const product = await Product.create(mSoldProduct);
+      const productId = product._id;
+      const res = await server.post(`/api/products/${productId}/request`);
+      expect(res.status).toBe(410);
+      expect(res.headers['content-type']).toMatch('application/json');
+      expect(res.body.success).toBe(false);
+      expect(res.body.error).toBe('Product has been sold out!');
     });
     test('If product with passed id does not exist, return error with status code 404', async () => {
       const productId = new mongoose.Types.ObjectId();
@@ -180,7 +207,6 @@ describe('Products routes', () => {
       expect(res.body.success).toBe(true);
       expect(res.body.message).toBe('Requested has been done');
     });
-
     test('if the seller and the buyer same person, return error with status code 400', async () => {
       const product = await Product.create(mProduct);
       product.seller = user.body.data._id;

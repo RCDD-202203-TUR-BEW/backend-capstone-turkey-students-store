@@ -3,11 +3,30 @@ const { validationResult } = require('express-validator');
 const ErrorResponse = require('../utils/errorResponse');
 const Product = require('../models/product');
 const uploadImage = require('../services/gcs-service');
-const order = require('../models/order');
 
 exports.getAllProducts = async (req, res, next) => {
   const allProducts = await Product.find();
   return res.status(200).json({ success: true, data: allProducts });
+};
+
+// eslint-disable-next-line consistent-return
+exports.removeProduct = async (req, res, next) => {
+  const productId = req.params.id;
+  if (!productId) {
+    next(new ErrorResponse('Product ID is required', 400));
+  }
+  // const product = await Product.findById(productId);
+  // if (!product) {
+  //   next(new ErrorResponse('Product not found', 404));
+  // }
+  try {
+    await Product.deleteOne({ _id: productId });
+    return res
+      .status(200)
+      .json({ success: true, data: 'Product deleted successfully.' });
+  } catch (error) {
+    next(new ErrorResponse('Product not found', 404));
+  }
 };
 
 exports.createProduct = async (req, res, next) => {
@@ -62,10 +81,12 @@ exports.requestProduct = async (req, res, next) => {
     const productId = req.params.id;
     const buyerId = req.user._id;
     const product = await Product.findOne({ _id: productId });
-    // const sold = await order.findOne
-
     // check if the product is not null
     if (product) {
+      // If it's Sold out
+      if (product.status === 'Sold') {
+        return next(new ErrorResponse('Product has been sold out!', 410));
+      }
       // check if the seller and the buyer same person
       if (buyerId.toString() === product.seller?.toString()) {
         return next(
@@ -83,12 +104,6 @@ exports.requestProduct = async (req, res, next) => {
         .status(200)
         .json({ success: true, message: 'Requested has been done' });
     }
-
-    // if (order.orderStatus.enum === completed) {
-    //   return res
-    //     .status(410)
-    //     .json({ success: false, message: 'Product has been sold out!' });
-    // }
 
     return res
       .status(404)
