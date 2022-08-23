@@ -1,8 +1,8 @@
 const router = require('express').Router();
 
 const usersRoutes = require('./users');
-const authRoutes = require('./auth');
 const productsRoutes = require('./products');
+const authRoutes = require('./auth');
 const profileRoutes = require('./profile');
 const donationRoutes = require('./donations');
 

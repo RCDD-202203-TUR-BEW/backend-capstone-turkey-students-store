@@ -9,6 +9,26 @@ exports.getAllProducts = async (req, res, next) => {
   return res.status(200).json({ success: true, data: allProducts });
 };
 
+// eslint-disable-next-line consistent-return
+exports.removeProduct = async (req, res, next) => {
+  const productId = req.params.id;
+  if (!productId) {
+    next(new ErrorResponse('Product ID is required', 400));
+  }
+  // const product = await Product.findById(productId);
+  // if (!product) {
+  //   next(new ErrorResponse('Product not found', 404));
+  // }
+  try {
+    await Product.deleteOne({ _id: productId });
+    return res
+      .status(200)
+      .json({ success: true, data: 'Product deleted successfully.' });
+  } catch (error) {
+    next(new ErrorResponse('Product not found', 404));
+  }
+};
+
 exports.createProduct = async (req, res, next) => {
   delete req.body.images; // A workaround for issue #58/1
 
