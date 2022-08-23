@@ -108,7 +108,7 @@ exports.requestProduct = async (req, res, next) => {
 
     return res
       .status(404)
-      .json({ success: false, data: { message: 'Invalid request!' } });
+      .json({ success: true, data: { message: 'Product not found!' } });
   } catch (error) {
     console.log(error);
   }
