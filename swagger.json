@@ -366,7 +366,7 @@
         }
       }
     },
-    "/api/products/{id}/requsted-buyers": {
+    "/api/products/{id}/requested-buyers": {
       "get": {
         "tags": ["Products"],
         "description": "Get all the buyers for a product.",
