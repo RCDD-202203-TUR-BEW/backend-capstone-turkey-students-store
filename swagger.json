@@ -30,6 +30,30 @@
     }
   ],
   "paths": {
+    "/api/orders/orderId": {
+      "get": {
+        "tags": ["Orders"],
+        "description": "Get all orders of a user.",
+        "responses": {
+          "200": {
+            "description": "All orders of a user are successfully fetched.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/returnedOrder"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized user!"
+          }
+        }
+      }
+    },
     "/api/auth/google": {
       "get": {
         "tags": ["Auth"],
@@ -95,6 +119,54 @@
           "200": {
             "schema": {
               "$ref": "#/definitions/Profile"
+            }
+          }
+        }
+      }
+    },
+    "/api/products/:id": {
+      "patch": {
+        "tags": ["Products"],
+        "summary": "Update product",
+        "description": "Updates existing product and returns new product",
+        "parameters": [
+          {
+            "name": "product id",
+            "in": "query",
+            "type": "string",
+            "format": "number",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns updated product!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/Product"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "No product exists!"
+                    }
+                  }
+                }
+              }
             }
           }
         }
@@ -290,39 +362,15 @@
         }
       }
     },
-    "/api/profile/products": {
-      "get": {
-        "tags": ["Users"],
-        "description": "Get all products of a user for sale.",
-        "responses": {
-          "200": {
-            "description": "All products of a user that is for sale are successfully fetched.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/returnedProduct"
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized user!"
-          }
-        }
-      }
-    },
-    "/api/products/{id}": {
+    "/api/products/{id}/requsted-buyers": {
       "get": {
         "tags": ["Products"],
-        "description": "Fetch the product specified by id.",
+        "description": "Get all the buyers for a product.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
-            "description": "id of the product to be fetched",
+            "description": "Product ID",
             "required": true,
             "schema": {
               "type": "string"
@@ -331,17 +379,17 @@
         ],
         "responses": {
           "200": {
-            "description": "Product specified by id is successfully fetched.",
+            "description": "All the buyers for a product.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/returnedProduct"
+                  "$ref": "#/components/schemas/returnedBuyers"
                 }
               }
             }
           },
           "404": {
-            "description": "Product not found!",
+            "description": "Product with {id} not found!",
             "content": {
               "application/json": {
                 "schema": {
@@ -353,7 +401,27 @@
                     },
                     "error": {
                       "type": "string",
-                      "example": "Product not found!"
+                      "example": "Product with {id} not found!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User ${req.user.id} is not authorized to access or modify this product details!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "User ${req.user.id} is not authorized to access or modify this product details!"
                     }
                   }
                 }
@@ -363,132 +431,58 @@
         }
       }
     },
-    "/api/auth/facebook": {
-      "get": {
-        "tags": ["Auth"],
-        "summary": "Facebook login",
-        "description": "Provide Facebook login to users",
+    "/api/products/{id}/request": {
+      "post": {
+        "tags": ["Products"],
+        "summary": "Create a new request",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the product to request",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Successful login",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/definitions/Profile"
+                  "$ref": "#/components/schemas/productRequestBody"
                 }
               }
             }
           },
-          "400": {
-            "description": "Invalid request"
-          }
-        }
-      }
-    },
-    "/api/auth/facebook/callback": {
-      "get": {
-        "tags": ["Auth"],
-        "summary": "Facebook login callback",
-        "description": "Retrive user profile from Facebook",
-        "responses": {
-          "200": {
-            "description": "Fetched user profile",
+          "404": {
+            "description": "Invalid request",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/definitions/Profile"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/profile": {
-      "get": {
-        "tags": ["Profile"],
-        "summary": "Get user profile",
-        "responses": {
-          "200": {
-            "description": "User profile",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/definitions/Profile"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/donation/": {
-      "post": {
-        "tags": ["Donations"],
-        "description": "Make donations by specified amount",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "token": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "string",
-                        "example": "tok_1LZuNCGPwek4o8KsoCayeSgC"
-                      },
-                      "card": {
-                        "type": "object",
-                        "properties": {
-                          "address_city": {
-                            "type": "string",
-                            "example": "Ankara"
-                          },
-                          "address_country": {
-                            "type": "string",
-                            "example": "Turkey"
-                          },
-                          "name": {
-                            "type": "string",
-                            "example": "Peter Griffin"
-                          },
-                          "last4": {
-                            "type": "string",
-                            "example": "4242"
-                          }
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "Invalid request!"
                         }
-                      },
-                      "email": {
-                        "type": "string",
-                        "example": "griffin@mail.com"
                       }
                     }
-                  },
-                  "amount": {
-                    "type": "number",
-                    "example": 25
                   }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Specified amount of donation is made.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/returnedDonation"
                 }
               }
             }
           },
           "400": {
-            "description": "Validation error!",
+            "description": "You can not request your own product!",
             "content": {
               "application/json": {
                 "schema": {
@@ -500,7 +494,27 @@
                     },
                     "error": {
                       "type": "string",
-                      "example": "Amount should be greater than zero!"
+                      "example": "You can not request your own product!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Product has been sold out!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Product has been sold out!"
                     }
                   }
                 }
@@ -768,6 +782,146 @@
         },
         "profilePhoto": {
           "type": "string"
+        }
+      }
+    },
+    "returnedOrder": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": true
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "_id": {
+              "type": "string",
+              "example": "62ed149a0785e2f2a4ff07b3"
+            },
+            "buyer": {
+              "type": "object",
+              "properties": {
+                "_id": {
+                  "type": "string",
+                  "example": "62fe7d2bbb3858446e7d6c00"
+                },
+                "address": {
+                  "type": "string",
+                  "example": "X Apartment Y Street Z Province Istanbul/Turkey"
+                }
+              }
+            },
+            "orderDate": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "totalPrice": {
+              "type": "number",
+              "example": 200
+            },
+            "orderStatus": {
+              "type": "string",
+              "enum": ["pending", "completed", "cancelled"]
+            },
+            "orderItems": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "item": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string",
+                        "example": "62fa729915810a408c79f13b"
+                      },
+                      "title": {
+                        "type": "string",
+                        "example": "iPhone 13 Pro"
+                      },
+                      "price": {
+                        "type": "number",
+                        "example": 2500
+                      },
+                      "category": {
+                        "type": "string",
+                        "example": "Electronics"
+                      },
+                      "location": {
+                        "type": "object",
+                        "properties": {
+                          "lat": {
+                            "type": "number",
+                            "example": 33.25
+                          },
+                          "lng": {
+                            "type": "number",
+                            "example": 48.55
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "quantity": {
+                    "type": "number",
+                    "example": 7
+                  }
+                }
+              }
+            },
+            "notes": {
+              "type": "string",
+              "example": "Please send this product asap!"
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "updatedAt": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        }
+      },
+      "Product": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "book"
+          },
+          "description": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          },
+          "category": {
+            "type": "string"
+          },
+          "coverImage": {
+            "type": "string"
+          },
+          "images": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "condition": {
+            "type": "string"
+          },
+          "seller": {
+            "type": "string"
+          }
         }
       }
     }
