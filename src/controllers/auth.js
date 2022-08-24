@@ -20,7 +20,7 @@ const setTokenCookie = (userId, res) => {
   };
 
   if (process.env.NODE_ENV === 'production') {
-    cookieOptions.secure = true;
+    cookieOptions.secure = false;
     cookieOptions.sameSite = 'none';
   }
 
