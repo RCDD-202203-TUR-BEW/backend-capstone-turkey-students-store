@@ -885,42 +885,43 @@
           }
         }
       },
-    "Product": {
-      "type": "object",
-      "properties": {
-        "title": {
-          "type": "string",
-          "example": "book"
-        },
-        "description": {
-          "type": "string"
-        },
-        "price": {
-          "type": "number"
-        },
-        "category": {
-          "type": "string"
-        },
-        "coverImage": {
-          "type": "string"
-        },
-        "images": {
-          "type": "string"
-        },
-        "type": {
-          "type": "string"
-        },
-        "location": {
-          "type": "string"
-        },
-        "status": {
-          "type": "string"
-        },
-        "condition": {
-          "type": "string"
-        },
-        "seller": {
-          "type": "string"
+      "Product": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "book"
+          },
+          "description": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          },
+          "category": {
+            "type": "string"
+          },
+          "coverImage": {
+            "type": "string"
+          },
+          "images": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "condition": {
+            "type": "string"
+          },
+          "seller": {
+            "type": "string"
+          }
         }
       }
     }

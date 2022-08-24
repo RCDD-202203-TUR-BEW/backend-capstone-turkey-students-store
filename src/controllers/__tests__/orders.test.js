@@ -53,8 +53,6 @@ describe('Orders routes', () => {
     test('If order found, return with 200 status code', async () => {
       const mOrder = {
         buyer: mUser.body.data._id,
-        totalPrice: 100,
-        orderItems: [],
         notes: 'My books order',
       };
       const order = await Order.create(mOrder);
