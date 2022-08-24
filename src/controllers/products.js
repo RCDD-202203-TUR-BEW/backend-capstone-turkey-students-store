@@ -84,7 +84,7 @@ exports.requestProduct = async (req, res, next) => {
   if (!product) {
     return res
       .status(404)
-      .json({ success: true, data: { message: 'Product not found!' } });
+      .json({ success: false, data: { message: 'Product not found!' } });
   }
 
   // If it's Sold out

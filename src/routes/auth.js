@@ -35,10 +35,9 @@ router.get('/profile', verifyUser, (req, res) => {
   res.json({ success: true, data: req.user });
 });
 
-/* TODO: add documentation for logout */
 router.post('/logout', verifyUser, (req, res) => {
   res.clearCookie('token');
-  res.status(205).json({ success: true });
+  res.status(200).json({ success: true });
 });
 
 router.get(

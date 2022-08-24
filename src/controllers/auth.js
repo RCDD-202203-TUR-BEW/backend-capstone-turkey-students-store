@@ -4,22 +4,31 @@ const { validationResult } = require('express-validator');
 const ErrorResponse = require('../utils/errorResponse');
 const User = require('../models/user');
 
-exports.sendFacebookJwt = (req, res) => {
+const setTokenCookie = (userId, res) => {
   const payload = {
-    _id: req.user._id,
+    _id: userId,
   };
 
   const token = jwt.sign(payload, process.env.SECRET_KEY, {
     expiresIn: '14 days',
   });
 
-  res.cookie('token', token, {
+  const cookieOptions = {
     httpOnly: true,
     signed: true,
-    sameSite: 'none',
-    secure: process.env.NODE_ENV === 'production',
     maxAge: 14 * 24 * 60 * 60 * 1000, // 14 days
-  });
+  };
+
+  if (process.env.NODE_ENV === 'production') {
+    cookieOptions.secure = true;
+    cookieOptions.sameSite = 'none';
+  }
+
+  res.cookie('token', token, cookieOptions);
+};
+
+exports.sendFacebookJwt = (req, res) => {
+  setTokenCookie(req.user._id, res);
 
   return res.status(200).json({ success: true, data: req.user });
 };
@@ -52,21 +61,7 @@ exports.signup = async (req, res, next) => {
     password: hashedPassword,
   });
 
-  // create jwt
-  const payload = {
-    _id: user._id,
-  };
-  const token = jwt.sign(payload, process.env.SECRET_KEY, {
-    expiresIn: '14 days',
-  });
-
-  res.cookie('token', token, {
-    httpOnly: true,
-    signed: true,
-    sameSite: 'none',
-    secure: process.env.NODE_ENV === 'production',
-    maxAge: 14 * 24 * 60 * 60 * 1000, // 14 days
-  });
+  setTokenCookie(user._id, res);
 
   return res.status(201).json({ success: true, data: user });
 };
@@ -94,59 +89,19 @@ exports.signin = async (req, res, next) => {
     return next(new ErrorResponse('Invalid email or password!', 401));
   }
 
-  // login successful, create jwt
-  const payload = {
-    _id: user._id,
-  };
-  const token = jwt.sign(payload, process.env.SECRET_KEY, {
-    expiresIn: '14 days',
-  });
-
-  res.cookie('token', token, {
-    httpOnly: true,
-    signed: true,
-    sameSite: 'none',
-    secure: process.env.NODE_ENV === 'production',
-    maxAge: 14 * 24 * 60 * 60 * 1000, // 14 days
-  });
+  setTokenCookie(user._id, res);
 
   return res.status(200).json({ success: true, data: user });
 };
 
 exports.googleAuthJWT = (req, res) => {
-  const payload = {
-    _id: req.user._id,
-  };
-
-  const token = jwt.sign(payload, process.env.SECRET_KEY, {
-    expiresIn: '14 days',
-  });
-
-  res.cookie('token', token, {
-    httpOnly: true,
-    signed: true,
-    sameSite: 'none',
-    secure: process.env.NODE_ENV === 'production',
-    maxAge: 14 * 24 * 60 * 60 * 1000, // 14 days
-  });
+  setTokenCookie(req.user._id, res);
 
   return res.status(200).json({ success: true, data: req.user });
 };
 
 exports.twitterAuthJWT = (req, res) => {
-  const payload = {
-    _id: req.user._id,
-  };
-
-  const token = jwt.sign(payload, process.env.SECRET_KEY, {
-    expiresIn: '14 days',
-  });
-
-  res.cookie('token', token, {
-    httpOnly: true,
-    signed: true,
-    maxAge: 14 * 24 * 60 * 60 * 1000, // 14 days
-  });
+  setTokenCookie(req.user._id, res);
 
   return res.status(200).json({ success: true, data: req.user });
 };
