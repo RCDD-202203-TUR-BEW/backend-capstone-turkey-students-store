@@ -24,7 +24,7 @@ const setTokenCookie = (userId, res) => {
     cookieOptions.sameSite = 'none';
   }
 
-  res.cookie('token', token);
+  res.cookie('token', token, cookieOptions);
 };
 
 exports.sendFacebookJwt = (req, res) => {
