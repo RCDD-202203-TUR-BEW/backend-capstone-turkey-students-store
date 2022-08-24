@@ -63,9 +63,9 @@ app.use(passport.initialize());
 
 app.use('/api', routes);
 
-app.use(errorHandler);
-
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+app.use(errorHandler);
 
 if (process.env.NODE_ENV !== 'test') {
   app.listen(port, () => {
