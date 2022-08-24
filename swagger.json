@@ -34,10 +34,21 @@
     }
   ],
   "paths": {
-    "/api/orders/orderId": {
+    "/api/orders/{id}": {
       "get": {
         "tags": ["Orders"],
         "description": "Get all orders of a user.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the order to request",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "All orders of a user are successfully fetched.",
@@ -128,18 +139,43 @@
         }
       }
     },
-    "/api/products/:id": {
+    "/api/products/{id}": {
       "patch": {
         "tags": ["Products"],
         "summary": "Update product",
         "description": "Updates existing product and returns new product",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "Football"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Adidas XY3150 football"
+                  },
+                  "price": {
+                    "type": "number",
+                    "example": 80
+                  }
+                }
+              }
+            }
+          }
+        },
         "parameters": [
           {
-            "name": "product id",
-            "in": "query",
-            "type": "string",
-            "format": "number",
-            "required": true
+            "name": "id",
+            "in": "path",
+            "description": "id of the product to be modified",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -148,7 +184,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/definitions/Product"
+                  "$ref": "#/components/schemas/returnedProduct"
                 }
               }
             }
