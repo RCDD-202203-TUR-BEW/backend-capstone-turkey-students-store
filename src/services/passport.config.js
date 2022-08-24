@@ -1,6 +1,7 @@
 const passport = require('passport');
 const FacebookStrategy = require('passport-facebook').Strategy;
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const TwitterStrategy = require('passport-twitter').Strategy;
 const User = require('../models/user');
 
 passport.use(
@@ -56,6 +57,34 @@ passport.use(
             profilePhoto: profile.photos[0].value,
             provider: 'google',
             providerId: `google-${profile.id}`,
+          });
+        }
+        cb(null, user);
+      } catch (error) {
+        cb(error, null);
+      }
+    }
+  )
+);
+
+passport.use(
+  new TwitterStrategy(
+    {
+      consumerKey: process.env.TWITTER_CONSUMER_KEY,
+      consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
+      callbackURL: process.env.TWITTER_CALLBACK_URL,
+      includeEmail: true,
+    },
+    async (token, tokenSecret, profile, cb) => {
+      try {
+        let user = await User.findOne({ providerId: `twitter-${profile.id}` });
+        if (!user) {
+          user = await User.create({
+            email: profile.emails[0].value,
+            firstName: profile.displayName.split(' ')[0],
+            lastName: profile.displayName.split(' ')[1],
+            provider: 'twitter',
+            providerId: `twitter-${profile.id}`,
           });
         }
         cb(null, user);
