@@ -13,13 +13,18 @@ const setTokenCookie = (userId, res) => {
     expiresIn: '14 days',
   });
 
-  res.cookie('token', token, {
+  const cookieOptions = {
     httpOnly: true,
     signed: true,
-    sameSite: 'none',
-    // secure: process.env.NODE_ENV === 'production',
     maxAge: 14 * 24 * 60 * 60 * 1000, // 14 days
-  });
+  };
+
+  if (process.env.NODE_ENV === 'production') {
+    cookieOptions.secure = true;
+    cookieOptions.sameSite = 'none';
+  }
+
+  res.cookie('token', token);
 };
 
 exports.sendFacebookJwt = (req, res) => {
