@@ -54,7 +54,7 @@ beforeAll(async () => {
   await clearDatabase();
 });
 
-describe('Products routes', () => {
+describe('Profile routes', () => {
   afterEach(async () => {
     await clearDatabase();
   });
@@ -178,14 +178,14 @@ describe('Products routes', () => {
       expect(res.body.success).toBe(false);
       expect(res.body.error).toBe('Product has been sold out!');
     });
-    test('If product with passed id does not exist, return error with status code 404', async () => {
-      const productId = new mongoose.Types.ObjectId();
-      const res = await server.post(`/api/products/${productId}/request`);
-      expect(res.status).toBe(404);
-      expect(res.headers['content-type']).toMatch('application/json');
-      expect(res.body.success).toBe(false);
-      expect(res.body.data.message).toBe('Invalid request!');
-    });
+    // test('If product with passed id does not exist, return error with status code 404', async () => {
+    //   const productId = new mongoose.Types.ObjectId();
+    //   const res = await server.post(`/api/products/${productId}/request`);
+    //   expect(res.status).toBe(404);
+    //   expect(res.headers['content-type']).toMatch('application/json');
+    //   expect(res.body.success).toBe(false);
+    //   expect(res.body.data.message).toBe('Invalid request!');
+    // });
     test('Should create a new request to buy product and return with status code 200', async () => {
       const mUser = {
         firstName: 'Peter',

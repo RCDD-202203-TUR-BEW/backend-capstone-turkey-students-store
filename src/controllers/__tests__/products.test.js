@@ -99,7 +99,6 @@ describe('Products routes', () => {
       // copy mProduct and delete cover image
       const expectedResponse = JSON.parse(JSON.stringify(mProduct));
       delete expectedResponse.coverImage;
-
       expect(res.status).toBe(201);
       expect(res.headers['content-type']).toMatch('application/json');
       expect(res.body.success).toBe(true);

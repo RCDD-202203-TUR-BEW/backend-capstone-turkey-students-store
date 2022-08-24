@@ -101,7 +101,7 @@ describe('Orders routes', () => {
       expect(res.headers['content-type']).toMatch('application/json');
       expect(res.body.success).toBe(true);
       expect(res.body.data[0]._id).toBe(order._id.toString());
-      expect(res.body.data[0].buyer).toBe(mUser.body.data._id.toString());
+      expect(res.body.data[0].buyer._id).toBe(mUser.body.data._id.toString());
       expect(res.body.data[0].product._id).toBe(product._id.toString());
       expect(res.body.data[0].notes).toBe('My books order');
     });
