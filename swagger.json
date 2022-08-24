@@ -27,6 +27,10 @@
     {
       "name": "Donations",
       "description": "API for donation related operations"
+    },
+    {
+      "name": "Orders",
+      "description": "API for order operations"
     }
   ],
   "paths": {
@@ -523,6 +527,59 @@
           }
         }
       }
+    },
+    "/api/profile/products": {
+      "get": {
+        "tags": ["Users"],
+        "description": "Get all products of a user for sale.",
+        "responses": {
+          "200": {
+            "description": "All products of a user that is for sale are successfully fetched.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/returnedProduct"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized user!"
+          }
+        }
+      }
+    },
+    "/api/profile": {
+      "get": {
+        "tags": ["Profile"],
+        "summary": "Get user profile",
+        "responses": {
+          "200": {
+            "description": "User profile",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/Profile"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "tags": ["Auth"],
+        "description": "Logs out currently signed user",
+        "responses": {
+          "205": {
+            "description": "User logged out successfully."
+          }
+        }
+      }
     }
   },
   "components": {
@@ -758,6 +815,121 @@
             }
           }
         }
+      },
+      "returnedOrder": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "_id": {
+                  "type": "string",
+                  "example": "62ed149a0785e2f2a4ff07b3"
+                },
+                "buyer": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string",
+                      "example": "62fe7d2bbb3858446e7d6c00"
+                    },
+                    "address": {
+                      "type": "string",
+                      "example": "X Apartment Y Street Z Province Istanbul/Turkey"
+                    }
+                  }
+                },
+                "orderDate": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "notes": {
+                  "type": "string",
+                  "example": "Please send this product asap!"
+                },
+                "product": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string",
+                      "example": "62fa729915810a408c79f13b"
+                    },
+                    "title": {
+                      "type": "string",
+                      "example": "iPhone 13 Pro"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "New iPhone 13 Pro!"
+                    },
+                    "price": {
+                      "type": "number",
+                      "example": 2500
+                    },
+                    "category": {
+                      "type": "string",
+                      "example": "Electronics"
+                    },
+                    "coverImage": {
+                      "type": "string",
+                      "example": "https://storage.googleapis.com/recoded_studen_store_bucket/g-935e6968-474e-4cdd-a48c-0dab2ccc0385.jpg"
+                    },
+                    "images": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": "https://student_store.com/images/image1"
+                      }
+                    },
+                    "type": {
+                      "type": "string",
+                      "example": "Product"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Sold"
+                    },
+                    "condition": {
+                      "type": "string",
+                      "example": "Used"
+                    },
+                    "seller": {
+                      "type": "string",
+                      "example": "62ee685e158e683e851ecceF"
+                    },
+                    "location": {
+                      "type": "object",
+                      "properties": {
+                        "lat": {
+                          "type": "number",
+                          "example": 33.25
+                        },
+                        "lng": {
+                          "type": "number",
+                          "example": 48.55
+                        }
+                      }
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
   },
@@ -782,146 +954,6 @@
         },
         "profilePhoto": {
           "type": "string"
-        }
-      }
-    },
-    "returnedOrder": {
-      "type": "object",
-      "properties": {
-        "success": {
-          "type": "boolean",
-          "example": true
-        },
-        "data": {
-          "type": "object",
-          "properties": {
-            "_id": {
-              "type": "string",
-              "example": "62ed149a0785e2f2a4ff07b3"
-            },
-            "buyer": {
-              "type": "object",
-              "properties": {
-                "_id": {
-                  "type": "string",
-                  "example": "62fe7d2bbb3858446e7d6c00"
-                },
-                "address": {
-                  "type": "string",
-                  "example": "X Apartment Y Street Z Province Istanbul/Turkey"
-                }
-              }
-            },
-            "orderDate": {
-              "type": "string",
-              "format": "date-time"
-            },
-            "totalPrice": {
-              "type": "number",
-              "example": 200
-            },
-            "orderStatus": {
-              "type": "string",
-              "enum": ["pending", "completed", "cancelled"]
-            },
-            "orderItems": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "item": {
-                    "type": "object",
-                    "properties": {
-                      "_id": {
-                        "type": "string",
-                        "example": "62fa729915810a408c79f13b"
-                      },
-                      "title": {
-                        "type": "string",
-                        "example": "iPhone 13 Pro"
-                      },
-                      "price": {
-                        "type": "number",
-                        "example": 2500
-                      },
-                      "category": {
-                        "type": "string",
-                        "example": "Electronics"
-                      },
-                      "location": {
-                        "type": "object",
-                        "properties": {
-                          "lat": {
-                            "type": "number",
-                            "example": 33.25
-                          },
-                          "lng": {
-                            "type": "number",
-                            "example": 48.55
-                          }
-                        }
-                      }
-                    }
-                  },
-                  "quantity": {
-                    "type": "number",
-                    "example": 7
-                  }
-                }
-              }
-            },
-            "notes": {
-              "type": "string",
-              "example": "Please send this product asap!"
-            },
-            "createdAt": {
-              "type": "string",
-              "format": "date-time"
-            },
-            "updatedAt": {
-              "type": "string",
-              "format": "date-time"
-            }
-          }
-        }
-      },
-      "Product": {
-        "type": "object",
-        "properties": {
-          "title": {
-            "type": "string",
-            "example": "book"
-          },
-          "description": {
-            "type": "string"
-          },
-          "price": {
-            "type": "number"
-          },
-          "category": {
-            "type": "string"
-          },
-          "coverImage": {
-            "type": "string"
-          },
-          "images": {
-            "type": "string"
-          },
-          "type": {
-            "type": "string"
-          },
-          "location": {
-            "type": "string"
-          },
-          "status": {
-            "type": "string"
-          },
-          "condition": {
-            "type": "string"
-          },
-          "seller": {
-            "type": "string"
-          }
         }
       }
     }
