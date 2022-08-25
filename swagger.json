@@ -25,11 +25,50 @@
       "description": "API for users in the system"
     },
     {
-      "name": "Profiles",
-      "description": "API for users in the system"
+      "name": "Donations",
+      "description": "API for donation related operations"
+    },
+    {
+      "name": "Orders",
+      "description": "API for order operations"
     }
   ],
   "paths": {
+    "/api/orders/{id}": {
+      "get": {
+        "tags": ["Orders"],
+        "description": "Get all orders of a user.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the order to request",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All orders of a user are successfully fetched.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/returnedOrder"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized user!"
+          }
+        }
+      }
+    },
     "/api/auth/google": {
       "get": {
         "tags": ["Auth"],
@@ -37,8 +76,12 @@
         "responses": {
           "200": {
             "description": "Redirects verified user to the home page",
-            "schema": {
-              "$ref": "#/definitions/profile"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/Profile"
+                }
+              }
             }
           },
           "400": {
@@ -54,6 +97,41 @@
         "description": "Retrive user profile from Google",
         "responses": {
           "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/Profile"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/twitter": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Authenticates user using twitter 3rd party authentication service",
+        "responses": {
+          "200": {
+            "description": "Redirects verified user to the home page",
+            "schema": {
+              "$ref": "#/definitions/Profile"
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/auth/twitter/callback": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Login using twitter",
+        "description": "Retrive user profile from Twitter",
+        "responses": {
+          "200": {
             "schema": {
               "$ref": "#/definitions/Profile"
             }
@@ -61,18 +139,52 @@
         }
       }
     },
-    "/api/profile/": {
+    "/api/products/{id}": {
       "patch": {
-        "tags": ["Profiles"],
-        "summary": "Update profile",
-        "description": "Updates existing logged in profile and returns new profile",
+        "tags": ["Products"],
+        "summary": "Update product",
+        "description": "Updates existing product and returns new product",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "Football"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Adidas XY3150 football"
+                  },
+                  "price": {
+                    "type": "number",
+                    "example": 80
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the product to be modified",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Returns updated profile!",
+            "description": "Returns updated product!",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/definitions/Profile"
+                  "$ref": "#/components/schemas/returnedProduct"
                 }
               }
             }
@@ -90,7 +202,7 @@
                     },
                     "error": {
                       "type": "string",
-                      "example": "Email already exists!"
+                      "example": "No product exists!"
                     }
                   }
                 }
@@ -233,7 +345,7 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "$ref": "#/components/schemas/productRequestBody"
               }
@@ -290,6 +402,168 @@
         }
       }
     },
+    "/api/products/{id}/requested-buyers": {
+      "get": {
+        "tags": ["Products"],
+        "description": "Get all the buyers for a product.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Product ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All the buyers for a product.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/returnedBuyers"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Product with {id} not found!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Product with {id} not found!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User ${req.user.id} is not authorized to access or modify this product details!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "User ${req.user.id} is not authorized to access or modify this product details!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/products/{id}/request": {
+      "post": {
+        "tags": ["Products"],
+        "summary": "Create a new request",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the product to request",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/productRequestBody"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "Invalid request!"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "You can not request your own product!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "You can not request your own product!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Product has been sold out!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Product has been sold out!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/profile/products": {
       "get": {
         "tags": ["Users"],
@@ -314,34 +588,42 @@
         }
       }
     },
-    "/api/products/{id}": {
+    "/api/profile": {
       "get": {
-        "tags": ["Products"],
-        "description": "Fetch the product specified by id.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "id of the product to be fetched",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "tags": ["Profile"],
+        "summary": "Get user profile",
         "responses": {
           "200": {
-            "description": "Product specified by id is successfully fetched.",
+            "description": "User profile",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/returnedProduct"
+                  "$ref": "#/definitions/Profile"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/profile/": {
+      "patch": {
+        "tags": ["Profiles"],
+        "summary": "Update profile",
+        "description": "Updates existing logged in profile and returns new profile",
+        "responses": {
+          "200": {
+            "description": "Returns updated profile!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/Profile"
                 }
               }
             }
           },
-          "404": {
-            "description": "Product not found!",
+          "400": {
+            "description": "Validation error!",
             "content": {
               "application/json": {
                 "schema": {
@@ -353,7 +635,7 @@
                     },
                     "error": {
                       "type": "string",
-                      "example": "Product not found!"
+                      "example": "Email already exists!"
                     }
                   }
                 }
@@ -363,35 +645,13 @@
         }
       }
     },
-    "/api/auth/facebook": {
-      "get": {
+    "/api/auth/logout": {
+      "post": {
         "tags": ["Auth"],
-        "summary": "Facebook login",
-        "description": "Provide Facebook login to users",
+        "description": "Logs out currently signed user",
         "responses": {
-          "200": {
-            "description": "Successful login",
-            "schema": {
-              "$ref": "#/definitions/Profile"
-            }
-          },
-          "400": {
-            "description": "Invalid request"
-          }
-        }
-      }
-    },
-    "/api/auth/facebook/callback": {
-      "get": {
-        "tags": ["Auth"],
-        "summary": "Facebook login callback",
-        "description": "Retrive user profile from Facebook",
-        "responses": {
-          "200": {
-            "description": "Fetched user profile",
-            "schema": {
-              "$ref": "#/definitions/Profile"
-            }
+          "205": {
+            "description": "User logged out successfully."
           }
         }
       }
@@ -420,24 +680,19 @@
           },
           "coverImage": {
             "type": "string",
-            "example": "http://www.cheese.com/leyden"
+            "format": "binary"
           },
           "type": {
             "type": "string",
             "enum": ["Product", "Service"]
           },
-          "location": {
-            "type": "object",
-            "properties": {
-              "lat": {
-                "type": "number",
-                "example": 38.355
-              },
-              "lng": {
-                "type": "number",
-                "example": 25.369
-              }
-            }
+          "location[lat]": {
+            "type": "number",
+            "example": 36.42
+          },
+          "location[lng]": {
+            "type": "number",
+            "example": 26.45
           }
         }
       },
@@ -602,6 +857,154 @@
             }
           }
         }
+      },
+      "returnedDonation": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string",
+                "example": "62ed149a0785e2f2a4ff07b3"
+              },
+              "amount": {
+                "type": "number",
+                "example": 25
+              },
+              "fullName": {
+                "type": "string",
+                "example": "Peter Griffin"
+              },
+              "email": {
+                "type": "string",
+                "example": "griffin@mail.com"
+              },
+              "cardNumber": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      },
+      "returnedOrder": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "_id": {
+                  "type": "string",
+                  "example": "62ed149a0785e2f2a4ff07b3"
+                },
+                "buyer": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string",
+                      "example": "62fe7d2bbb3858446e7d6c00"
+                    },
+                    "address": {
+                      "type": "string",
+                      "example": "X Apartment Y Street Z Province Istanbul/Turkey"
+                    }
+                  }
+                },
+                "orderDate": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "notes": {
+                  "type": "string",
+                  "example": "Please send this product asap!"
+                },
+                "product": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string",
+                      "example": "62fa729915810a408c79f13b"
+                    },
+                    "title": {
+                      "type": "string",
+                      "example": "iPhone 13 Pro"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "New iPhone 13 Pro!"
+                    },
+                    "price": {
+                      "type": "number",
+                      "example": 2500
+                    },
+                    "category": {
+                      "type": "string",
+                      "example": "Electronics"
+                    },
+                    "coverImage": {
+                      "type": "string",
+                      "example": "https://storage.googleapis.com/recoded_studen_store_bucket/g-935e6968-474e-4cdd-a48c-0dab2ccc0385.jpg"
+                    },
+                    "images": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": "https://student_store.com/images/image1"
+                      }
+                    },
+                    "type": {
+                      "type": "string",
+                      "example": "Product"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Sold"
+                    },
+                    "condition": {
+                      "type": "string",
+                      "example": "Used"
+                    },
+                    "seller": {
+                      "type": "string",
+                      "example": "62ee685e158e683e851ecceF"
+                    },
+                    "location": {
+                      "type": "object",
+                      "properties": {
+                        "lat": {
+                          "type": "number",
+                          "example": 33.25
+                        },
+                        "lng": {
+                          "type": "number",
+                          "example": 48.55
+                        }
+                      }
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
   },
@@ -645,7 +1048,6 @@
       }
     }
   },
-
   "schemes": ["http"],
   "consumes": ["application/json"],
   "produces": ["application/json"]

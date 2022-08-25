@@ -32,4 +32,4 @@ yarn-error.log*
 logs
 
 # google cloud storage service
-src/student-store-gcs.json
+recoded-student-store-405a9b1020bb.json

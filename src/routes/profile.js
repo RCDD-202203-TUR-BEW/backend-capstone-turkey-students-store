@@ -1,11 +1,12 @@
 const router = require('express').Router();
 const { body } = require('express-validator');
 const ErrorResponse = require('../utils/errorResponse');
-
 const usersController = require('../controllers/profile');
 const { verifyUser } = require('../middlewares/authenticate');
+const profileController = require('../controllers/profile');
+const auth = require('../middlewares/authenticate');
 
-router.get('/', verifyUser, usersController.getMyProfile);
+router.get('/', verifyUser, profileController.getMyProfile);
 router.patch(
   '/',
   verifyUser,
