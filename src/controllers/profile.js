@@ -40,15 +40,7 @@ exports.updateProfile = async (req, res, next) => {
   user = await User.findByIdAndUpdate(
     req.user._id,
     {
-      $set: {
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        email: req.body.email,
-        schoolName: req.body.schoolName,
-        password: req.body.password,
-        phoneNumber: req.body.phoneNumber,
-        address: req.body.address,
-      },
+      $set: req.body,
     },
     { new: true }
   );
