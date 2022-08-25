@@ -196,7 +196,6 @@ describe('Products routes', () => {
         success: false,
         error: 'Product with id 62ff96671c828963807a2041 not found!',
       };
-      // 5e9f8f8f8f8f8f8f8f8f8f8 returns 500 error
       const res = await server.delete('/api/products/62ff96671c828963807a2041');
       expect(res.status).toBe(404);
       expect(res.body).toEqual(expectedResponse);
