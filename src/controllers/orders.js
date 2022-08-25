@@ -1,6 +1,13 @@
 const Order = require('../models/order');
 const ErrorResponse = require('../utils/errorResponse');
 
+exports.getMyOrders = async (req, res, next) => {
+  const myOrders = await Order.find({ buyer: req.user._id })
+    .populate('product', '-requestedBuyers')
+    .populate({ options: { lean: true }, select: 'address', path: 'buyer' });
+  return res.status(200).json({ success: true, data: myOrders });
+};
+
 exports.getOrder = async (req, res, next) => {
   const order = await Order.findOne({
     _id: req.params.id,

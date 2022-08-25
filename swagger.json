@@ -616,6 +616,30 @@
           }
         }
       }
+    },
+    "/api/orders": {
+      "get": {
+        "tags": ["Orders"],
+        "description": "Fetch all the orders of the logged user.",
+        "responses": {
+          "200": {
+            "description": "All orders of the logged user are successfully fetched.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/returnedOrder"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized user!"
+          }
+        }
+      }
     }
   },
   "components": {

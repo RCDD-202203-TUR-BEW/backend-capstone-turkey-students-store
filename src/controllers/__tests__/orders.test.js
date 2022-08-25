@@ -3,6 +3,7 @@ const request = require('supertest');
 const mongoose = require('mongoose');
 const app = require('../../app');
 const Order = require('../../models/order');
+const Product = require('../../models/product');
 
 const server = request.agent(app);
 
@@ -62,6 +63,47 @@ describe('Orders routes', () => {
       expect(res.headers['content-type']).toMatch('application/json');
       expect(res.body.success).toBe(true);
       expect(res.body.data).toEqual(expect.objectContaining(mOrder));
+    });
+  });
+
+  describe('GET /', () => {
+    test('If user is unauthenticated, return error with status code 401', async () => {
+      const res = await request(app).get('/api/orders/');
+      expect(res.status).toBe(401);
+    });
+
+    test('Fetch all orders of the logged user, return with 200 status code', async () => {
+      // first, create a product
+      const mProduct = {
+        title: 'Cheese',
+        description: 'Kars cheese 1000g',
+        price: 175,
+        category: 'Food',
+        coverImage:
+          'https://www.artvinyoresel.com/image/cache/catalog/images%20-%202020-04-30T043931.448-270x270.jpeg',
+        type: 'Product',
+        location: {
+          lat: 22.355,
+          lng: 38.399,
+        },
+      };
+      const product = await Product.create(mProduct);
+      // then, create an order using this user's id as buyer
+      const mOrder = {
+        buyer: mUser.body.data._id,
+        product: product._id,
+        notes: 'My books order',
+      };
+      const order = await Order.create(mOrder);
+      // now test endpoint
+      const res = await server.get('/api/orders/');
+      expect(res.status).toBe(200);
+      expect(res.headers['content-type']).toMatch('application/json');
+      expect(res.body.success).toBe(true);
+      expect(res.body.data[0]._id).toBe(order._id.toString());
+      expect(res.body.data[0].buyer._id).toBe(mUser.body.data._id.toString());
+      expect(res.body.data[0].product._id).toBe(product._id.toString());
+      expect(res.body.data[0].notes).toBe('My books order');
     });
   });
 });
