@@ -27,7 +27,7 @@ const uploadImage = (imageFile) =>
   new Promise((resolve, reject) => {
     const { buffer, mimetype, originalname } = imageFile;
     // make sure filename ends with .jpg
-    const fileName = `.${getExtension(originalname)}`;
+    const fileName = `.${getExtension(originalname).toLowerCase()}`;
 
     // The new ID for your GCS file
     const destFileName = `g-${uuidv4()}${fileName}`;

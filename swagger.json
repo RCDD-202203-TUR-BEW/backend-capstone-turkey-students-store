@@ -398,6 +398,46 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "No cover image has been uploaded!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Cover image cannot be empty!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid file format!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Only png, jpg, and jpeg image formats are allowed!"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -725,6 +765,13 @@
           "coverImage": {
             "type": "string",
             "format": "binary"
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "binary"
+            }
           },
           "type": {
             "type": "string",
