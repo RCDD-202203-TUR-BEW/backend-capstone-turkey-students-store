@@ -608,7 +608,7 @@
     },
     "/api/profile/": {
       "patch": {
-        "tags": ["Profiles"],
+        "tags": ["Profile"],
         "summary": "Update profile",
         "description": "Updates existing logged in profile and returns new profile",
         "responses": {
