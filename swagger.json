@@ -646,6 +646,65 @@
         }
       }
     },
+    "/api/profile/": {
+      "patch": {
+        "tags": ["Profile"],
+        "summary": "Update profile",
+        "description": "Updates existing logged in profile and returns new profile",
+        "responses": {
+          "200": {
+            "description": "Returns updated profile!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/Profile"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Email already exists!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Old password is not correct!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Your old password is not correct please enter again!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/auth/logout": {
       "post": {
         "tags": ["Auth"],
@@ -1045,22 +1104,44 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "string"
+          "type": "string",
+          "example": "62ed149a0785e2f2a4ff07b3"
         },
         "provider": {
-          "type": "string"
-        },
-        "displayName": {
-          "type": "string"
+          "type": "string",
+          "example": "google"
         },
         "firstName": {
-          "type": "string"
+          "type": "string",
+          "example": "Melek"
         },
         "lastName": {
-          "type": "string"
+          "type": "string",
+          "example": "Arslan"
         },
         "profilePhoto": {
-          "type": "string"
+          "type": "string",
+          "example": "http://www.cheese.com/leyden.jpeg"
+        },
+        "email": {
+          "type": "string",
+          "example": "melekarslan.ie@gmail.com"
+        },
+        "schoolName": {
+          "type": "string",
+          "example": "Bilkent"
+        },
+        "password": {
+          "type": "string",
+          "example": "ma2345"
+        },
+        "phoneNumber": {
+          "type": "number",
+          "example": "543508765"
+        },
+        "address": {
+          "type": "string",
+          "example": "İstanbul"
         }
       }
     }
