@@ -184,7 +184,6 @@ exports.sellProduct = async (req, res, next) => {
   product.status = 'Sold';
   product.buyer = userId;
   await product.save();
-  console.log('PRODUCT:', product);
 
   const order = await Order.create({
     buyer: userId,

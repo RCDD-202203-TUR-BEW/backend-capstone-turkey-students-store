@@ -641,7 +641,7 @@
         }
       }
     },
-    "/api/products/:id/requested-buyers/:userId/sell": {
+    "/api/products/{id}/requested-buyers/{userId}/sell": {
       "post": {
         "tags": ["Products"],
         "description": "Sell a product.",
@@ -667,7 +667,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Product sold.",
+            "description": "Your product was successfully sold",
             "content": {
               "application/json": {
                 "schema": {
@@ -677,7 +677,7 @@
             }
           },
           "404": {
-            "description": "Product with {id} not found!",
+            "description": "Allow to buy a product!",
             "content": {
               "application/json": {
                 "schema": {
@@ -689,7 +689,7 @@
                     },
                     "error": {
                       "type": "string",
-                      "example": "Product with {id} not found!"
+                      "example": "Not eligible to buy this product!"
                     }
                   }
                 }
@@ -697,7 +697,7 @@
             }
           },
           "401": {
-            "description": "User ${req.user.id} is not authorized to access or modify this product details!",
+            "description": "User with given id is not found in database!",
             "content": {
               "application/json": {
                 "schema": {
@@ -709,7 +709,47 @@
                     },
                     "error": {
                       "type": "string",
-                      "example": "User ${req.user.id} is not authorized to access or modify this product details!"
+                      "example": "Access denied!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Product with this id not found!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Product not found!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "You can not sell this product!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Product already sold!"
                     }
                   }
                 }
