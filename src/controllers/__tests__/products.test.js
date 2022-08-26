@@ -2,6 +2,7 @@
 const request = require('supertest');
 const mongoose = require('mongoose');
 const { application } = require('express');
+const path = require('path');
 const app = require('../../app');
 const Product = require('../../models/product');
 const User = require('../../models/user');
@@ -84,8 +85,7 @@ describe('Products routes', () => {
       expect(res.body.errors[0].msg).toBe('Product name cannot be empty!');
     });
 
-    /* TODO: fix this test */
-    /* test('If all required fields are passed, create product, return with status code 201', async () => {
+    test('If cover image is not passed, return error with status code 404', async () => {
       const res = await server
         .post('/api/products/')
         .field('title', mProduct.title)
@@ -93,7 +93,69 @@ describe('Products routes', () => {
         .field('price', mProduct.price)
         .field('category', mProduct.category)
         .field('type', mProduct.type)
-        .field('location', mProduct.location)
+        .field('location.lat', mProduct.location.lat)
+        .field('location.lng', mProduct.location.lng)
+        .set('Content-Type', 'multipart/form-data');
+      expect(res.status).toBe(404);
+      expect(res.headers['content-type']).toMatch('application/json');
+      expect(res.body.success).toBe(false);
+      expect(res.body.error).toBe('Cover image cannot be empty!');
+    });
+
+    test('If passed file is not an image with png, jpg or jpeg formats, return error with status code 422', async () => {
+      const res = await server
+        .post('/api/products/')
+        .field('title', mProduct.title)
+        .field('description', mProduct.description)
+        .field('price', mProduct.price)
+        .field('category', mProduct.category)
+        .field('type', mProduct.type)
+        .field('location.lat', mProduct.location.lat)
+        .field('location.lng', mProduct.location.lng)
+        .attach('coverImage', path.join(__dirname, './uploads/random.txt'))
+        .set('Content-Type', 'multipart/form-data');
+      expect(res.status).toBe(422);
+      expect(res.headers['content-type']).toMatch('application/json');
+      expect(res.body.success).toBe(false);
+      expect(res.body.error).toBe(
+        'Only png, jpg, and jpeg image formats are allowed!'
+      );
+    });
+
+    test('If more than three additional images are uploaded, return error with status code 400', async () => {
+      const res = await server
+        .post('/api/products/')
+        .field('title', mProduct.title)
+        .field('description', mProduct.description)
+        .field('price', mProduct.price)
+        .field('category', mProduct.category)
+        .field('type', mProduct.type)
+        .field('location.lat', mProduct.location.lat)
+        .field('location.lng', mProduct.location.lng)
+        .attach('coverImage', path.join(__dirname, './uploads/image1.jpg'))
+        .attach('images', path.join(__dirname, './uploads/image1.jpg'))
+        .attach('images', path.join(__dirname, './uploads/image1.jpg'))
+        .attach('images', path.join(__dirname, './uploads/image1.jpg'))
+        .attach('images', path.join(__dirname, './uploads/image1.jpg'))
+        .set('Content-Type', 'multipart/form-data');
+      expect(res.status).toBe(400);
+      expect(res.headers['content-type']).toMatch('application/json');
+      expect(res.body.success).toBe(false);
+      expect(res.body.error).toBe(
+        'You can upload up to one cover image and three additional images (max size: 5MB)!'
+      );
+    });
+
+    test('If all required fields are passed and validated, create product, return with status code 201', async () => {
+      const res = await server
+        .post('/api/products/')
+        .field('title', mProduct.title)
+        .field('description', mProduct.description)
+        .field('price', mProduct.price)
+        .field('category', mProduct.category)
+        .field('type', mProduct.type)
+        .field('location.lat', mProduct.location.lat)
+        .field('location.lng', mProduct.location.lng)
         .attach('coverImage', path.join(__dirname, './uploads/image1.jpg'))
         .set('Content-Type', 'multipart/form-data');
       // copy mProduct and delete cover image
@@ -104,7 +166,7 @@ describe('Products routes', () => {
       expect(res.body.success).toBe(true);
       expect(res.body.data).toEqual(expect.objectContaining(expectedResponse));
       expect(res.body.data.coverImage).toBeDefined();
-    }); */
+    });
   });
 
   describe('GET /:id', () => {

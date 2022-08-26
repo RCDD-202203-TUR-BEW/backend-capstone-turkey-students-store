@@ -1,7 +1,7 @@
 const express = require('express');
 
 const router = express.Router();
-const { body } = require('express-validator');
+const { body, matchedData } = require('express-validator');
 const multer = require('multer');
 const productsController = require('../controllers/products');
 const ErrorResponse = require('../utils/errorResponse');
@@ -19,15 +19,41 @@ const productMiddleware = require('../middlewares/product');
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 5 * 1024 * 1024 }, // max 5 mb image size
-});
+  fileFilter: (req, file, callback) => {
+    // check whether file is an image in formats png, jpeg or jpg
+    if (!file.mimetype.match(/^image\/(png|jpeg|jpg)$/)) {
+      return callback(
+        new Error('Only png, jpg, and jpeg image formats are allowed!')
+      );
+    }
+    callback(null, true);
+  },
+}).fields([
+  { name: 'coverImage', maxCount: 1 },
+  { name: 'images', maxCount: 3 },
+]);
 
 router.post(
   '/',
   auth.verifyUser,
-  upload.fields([
-    { name: 'coverImage', maxCount: 1 },
-    { name: 'images', maxCount: 3 },
-  ]),
+  (req, res, next) => {
+    upload(req, res, (err) => {
+      if (err instanceof multer.MulterError) {
+        // A Multer error occurred when uploading.
+        return next(
+          new ErrorResponse(
+            'You can upload up to one cover image and three additional images (max size: 5MB)!',
+            400
+          )
+        );
+      }
+      if (err) {
+        // An unknown error occurred when uploading.
+        return next(new ErrorResponse(err.message, 422));
+      }
+      next();
+    });
+  },
   [
     body('title')
       .not()
@@ -44,7 +70,9 @@ router.post(
     body('type')
       .not()
       .isEmpty()
-      .withMessage('Please select the type of the product!'),
+      .withMessage('Type cannot be empty!')
+      .isIn(['Product', 'Service'])
+      .withMessage('Please choose one of the following [Product, Service]!'),
     body('location.lat')
       .not()
       .isEmpty()
@@ -61,9 +89,15 @@ router.post(
       .withMessage('Longitude should be a number!')
       .custom((lng) => lng >= -180 && lng <= 180)
       .withMessage('Longitude should be between -180 and 180!'),
+    (req, res, next) => {
+      const validData = matchedData(req, { includeOptionals: false });
+      req.body = validData;
+      next();
+    },
   ],
   productsController.createProduct
 );
+
 router.patch(
   '/:id',
   auth.verifyUser,
@@ -84,7 +118,6 @@ router.patch(
       .optional()
       .isLength({ min: 1 })
       .withMessage('category should not be empty!'),
-
     body('coverImage')
       .optional()
       .isLength({ min: 1 })
@@ -121,6 +154,11 @@ router.patch(
       .optional()
       .isIn(['New', 'Used'])
       .withMessage('Please select New or Used'),
+    (req, res, next) => {
+      const validData = matchedData(req, { includeOptionals: false });
+      req.body = validData;
+      next();
+    },
   ],
   productsController.updateProduct
 );
