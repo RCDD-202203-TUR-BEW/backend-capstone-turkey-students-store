@@ -11,7 +11,6 @@ router.use('/profile', profileRoutes);
 router.use('/products', productsRoutes);
 router.use('/users', usersRoutes);
 router.use('/auth', authRoutes);
-router.use('/profile', profileRoutes);
 router.use('/orders', ordersRoutes);
 router.use('/donations', donationRoutes);
 
