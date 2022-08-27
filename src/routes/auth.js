@@ -31,14 +31,7 @@ router.get(
   authController.googleAuthJWT
 );
 
-router.get('/profile', verifyUser, (req, res) => {
-  res.json({ success: true, data: req.user });
-});
-
-router.post('/logout', verifyUser, (req, res) => {
-  res.clearCookie('token');
-  res.status(200).json({ success: true });
-});
+router.post('/logout', verifyUser, authController.logout);
 
 router.get(
   '/twitter',
