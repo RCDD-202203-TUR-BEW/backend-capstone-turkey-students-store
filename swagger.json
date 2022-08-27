@@ -739,6 +739,124 @@
           }
         }
       }
+    },
+    "/api/products/{id}/requested-buyers/{userId}/sell": {
+      "post": {
+        "tags": ["Products"],
+        "description": "Sell a product.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Product ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "User ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Your product was successfully sold",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/returnedProduct"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The user is not among the requested buyers!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "The selected user is not among the products' requesters"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User with given id is not found in database!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "User with given id is not found in database!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Product with this id not found!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Product not found!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "You can not sell this product!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Product already sold!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {

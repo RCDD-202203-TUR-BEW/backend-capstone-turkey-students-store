@@ -174,4 +174,19 @@ router.delete(
   productMiddleware.verifyOwner,
   productsController.removeProduct
 );
+router.post(
+  '/:id/requested-buyers/:userId/sell',
+  auth.verifyUser,
+  [
+    body('notes')
+      .optional()
+      .isString()
+      .withMessage('Notes must be a string')
+      .not()
+      .isEmpty()
+      .withMessage('Notes cannot be empty'),
+  ],
+  // productsMiddleware.verifyOwner,
+  productsController.sellProduct
+);
 module.exports = router;

@@ -3,6 +3,8 @@ const { validationResult } = require('express-validator');
 const ErrorResponse = require('../utils/errorResponse');
 const Product = require('../models/product');
 const uploadImage = require('../services/gcs-service');
+const User = require('../models/user');
+const Order = require('../models/order');
 
 exports.getAllProducts = async (req, res, next) => {
   const allProducts = await Product.find();
@@ -157,4 +159,45 @@ exports.getProduct = async (req, res, next) => {
   if (!product) {
     return next(new ErrorResponse('Product not found!', 404));
   }
+};
+
+exports.sellProduct = async (req, res, next) => {
+  const { id, userId } = req.params;
+  const { notes } = req.body;
+  const orderNotes = notes || '';
+  const product = await Product.findOne({ _id: id, seller: req.user._id });
+  const user = await User.findOne({ _id: userId });
+  if (!user) {
+    return next(new ErrorResponse(`User with ${userId} does not exist!`, 401));
+  }
+  if (!product) {
+    return next(new ErrorResponse('Product not found!', 422));
+  }
+  if (product.status === 'Sold') {
+    return next(new ErrorResponse('Product already sold!', 400));
+  }
+  const buyer = product.requestedBuyers.find(
+    (val) => val.toString() === userId
+  );
+  if (!buyer) {
+    return next(
+      new ErrorResponse(
+        "The selected user is not among the products' requesters",
+        404
+      )
+    );
+  }
+  product.status = 'Sold';
+  product.buyer = userId;
+  await product.save();
+
+  const order = await Order.create({
+    buyer: userId,
+    product: product._id,
+    notes: orderNotes,
+  });
+
+  return res
+    .status(200)
+    .json({ success: true, message: 'Your product was successfully sold' });
 };
