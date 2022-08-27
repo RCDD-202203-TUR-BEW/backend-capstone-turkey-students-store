@@ -464,7 +464,6 @@ describe('Products routes', () => {
       const res = await server.post(
         `/api/products/${mockId}/requested-buyers/${mUser.body.data._id}/sell`
       );
-      console.log('RES: ', res.body);
       expect(res.status).toBe(422);
       expect(res.headers['content-type']).toMatch('application/json');
       expect(res.body.success).toBe(false);
@@ -494,7 +493,6 @@ describe('Products routes', () => {
       const res = await server.post(
         `/api/products/${product._id}/requested-buyers/${buyer._id}/sell`
       );
-      console.log('RES: ', res.body);
       expect(res.status).toBe(404);
       expect(res.headers['content-type']).toMatch('application/json');
       expect(res.body.success).toBe(false);

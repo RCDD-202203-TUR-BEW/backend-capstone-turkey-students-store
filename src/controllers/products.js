@@ -113,7 +113,6 @@ exports.requestProduct = async (req, res, next) => {
 };
 
 exports.updateProduct = async (req, res, next) => {
-  console.log('BODY:', req.body);
   // check for validation errors first
   const validationErrors = validationResult(req);
   if (!validationErrors.isEmpty()) {
