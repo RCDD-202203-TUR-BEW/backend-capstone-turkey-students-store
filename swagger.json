@@ -677,7 +677,7 @@
             }
           },
           "404": {
-            "description": "Allow to buy a product!",
+            "description": "The user is not among the requested buyers!",
             "content": {
               "application/json": {
                 "schema": {
@@ -689,7 +689,7 @@
                     },
                     "error": {
                       "type": "string",
-                      "example": "Not eligible to buy this product!"
+                      "example": "The selected user is not among the products' requesters"
                     }
                   }
                 }
@@ -709,7 +709,7 @@
                     },
                     "error": {
                       "type": "string",
-                      "example": "Access denied!"
+                      "example": "User with given id is not found in database!"
                     }
                   }
                 }

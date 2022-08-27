@@ -363,10 +363,25 @@ describe('Products routes', () => {
         schoolName: 'Yale University',
         password: 'gleN123',
       };
+
+      const mockProduct = {
+        title: 'Cheese',
+        description: 'Kars cheese 1000g',
+        price: 175,
+        category: 'Food',
+        coverImage:
+          'https://www.artvinyoresel.com/image/cache/catalog/images%20-%202020-04-30T043931.448-270x270.jpeg',
+        type: 'Product',
+        location: {
+          lat: 22.355,
+          lng: 38.399,
+        },
+      };
       mUser = await server.post('/api/auth/signup').send(user);
-      const copyOfProduct = JSON.parse(JSON.stringify(mProduct));
+      const copyOfProduct = JSON.parse(JSON.stringify(mockProduct));
       product = await Product.create(copyOfProduct);
       product.seller = mUser.body.data._id;
+      await product.save();
     });
 
     test('If user with passed user id does not exist, return error with status code 401', async () => {
@@ -377,7 +392,9 @@ describe('Products routes', () => {
       expect(res.status).toBe(401);
       expect(res.headers['content-type']).toMatch('application/json');
       expect(res.body.success).toBe(false);
-      expect(res.body.error).toBe('Access denied!');
+      expect(res.body.error).toBe(
+        `User with ${mockId.toString()} does not exist!`
+      );
     });
 
     test('If product with passed id does not exist, return error with status code 422', async () => {
@@ -385,6 +402,7 @@ describe('Products routes', () => {
       const res = await server.post(
         `/api/products/${mockId}/requested-buyers/${mUser.body.data._id}/sell`
       );
+      console.log('RES: ', res.body);
       expect(res.status).toBe(422);
       expect(res.headers['content-type']).toMatch('application/json');
       expect(res.body.success).toBe(false);
@@ -403,7 +421,7 @@ describe('Products routes', () => {
       expect(res.body.error).toBe('Product already sold!');
     });
 
-    test('If buyer is not in requested users, return error with status code 404', async () => {
+    test('If buyer is not in requested buyers, return error with status code 404', async () => {
       const buyer = await User.create({
         firstName: 'Peter',
         lastName: 'Griffin',
@@ -414,10 +432,13 @@ describe('Products routes', () => {
       const res = await server.post(
         `/api/products/${product._id}/requested-buyers/${buyer._id}/sell`
       );
+      console.log('RES: ', res.body);
       expect(res.status).toBe(404);
       expect(res.headers['content-type']).toMatch('application/json');
       expect(res.body.success).toBe(false);
-      expect(res.body.error).toBe('Not eligible to buy this product!');
+      expect(res.body.error).toBe(
+        "The selected user is not among the products' requesters"
+      );
     });
 
     test('If product and buyer are valid, sell product to this user and return status code 200', async () => {

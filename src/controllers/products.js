@@ -164,10 +164,10 @@ exports.sellProduct = async (req, res, next) => {
   const { id, userId } = req.params;
   const { notes } = req.body;
   const orderNotes = notes || '';
-  const product = await Product.findById(id);
+  const product = await Product.findOne({ _id: id, seller: req.user._id });
   const user = await User.findOne({ _id: userId });
   if (!user) {
-    return next(new ErrorResponse('Access denied!', 401));
+    return next(new ErrorResponse(`User with ${userId} does not exist!`, 401));
   }
   if (!product) {
     return next(new ErrorResponse('Product not found!', 422));
@@ -179,7 +179,12 @@ exports.sellProduct = async (req, res, next) => {
     (val) => val.toString() === userId
   );
   if (!buyer) {
-    return next(new ErrorResponse('Not eligible to buy this product!', 404));
+    return next(
+      new ErrorResponse(
+        "The selected user is not among the products' requesters",
+        404
+      )
+    );
   }
   product.status = 'Sold';
   product.buyer = userId;
