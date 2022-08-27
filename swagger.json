@@ -13,12 +13,16 @@
   "basePath": "/",
   "tags": [
     {
+      "name": "Auth",
+      "description": "API for auth endpoints"
+    },
+    {
       "name": "Products",
       "description": "API for products endpoints"
     },
     {
-      "name": "Auth",
-      "description": "API for auth endpoints"
+      "name": "Orders",
+      "description": "API for order operations"
     },
     {
       "name": "Users",
@@ -27,194 +31,13 @@
     {
       "name": "Donations",
       "description": "API for donation related operations"
-    },
-    {
-      "name": "Orders",
-      "description": "API for order operations"
     }
   ],
   "paths": {
-    "/api/orders/{id}": {
-      "get": {
-        "tags": ["Orders"],
-        "description": "Get all orders of a user.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "id of the order to request",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "All orders of a user are successfully fetched.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/returnedOrder"
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized user!"
-          }
-        }
-      }
-    },
-    "/api/auth/google": {
-      "get": {
-        "tags": ["Auth"],
-        "summary": "Authenticates user using google 3rd party authentication service",
-        "responses": {
-          "200": {
-            "description": "Redirects verified user to the home page",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/definitions/Profile"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid request"
-          }
-        }
-      }
-    },
-    "/api/auth/google/callback": {
-      "get": {
-        "tags": ["Auth"],
-        "summary": "Login using google",
-        "description": "Retrive user profile from Google",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/definitions/Profile"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/auth/twitter": {
-      "get": {
-        "tags": ["Auth"],
-        "summary": "Authenticates user using twitter 3rd party authentication service",
-        "responses": {
-          "200": {
-            "description": "Redirects verified user to the home page",
-            "schema": {
-              "$ref": "#/definitions/Profile"
-            }
-          },
-          "400": {
-            "description": "Invalid request"
-          }
-        }
-      }
-    },
-    "/api/auth/twitter/callback": {
-      "get": {
-        "tags": ["Auth"],
-        "summary": "Login using twitter",
-        "description": "Retrive user profile from Twitter",
-        "responses": {
-          "200": {
-            "schema": {
-              "$ref": "#/definitions/Profile"
-            }
-          }
-        }
-      }
-    },
-    "/api/products/{id}": {
-      "patch": {
-        "tags": ["Products"],
-        "summary": "Update product",
-        "description": "Updates existing product and returns new product",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "title": {
-                    "type": "string",
-                    "example": "Football"
-                  },
-                  "description": {
-                    "type": "string",
-                    "example": "Adidas XY3150 football"
-                  },
-                  "price": {
-                    "type": "number",
-                    "example": 80
-                  }
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "id of the product to be modified",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Returns updated product!",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/returnedProduct"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Validation error!",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean",
-                      "example": false
-                    },
-                    "error": {
-                      "type": "string",
-                      "example": "No product exists!"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/auth/signup": {
       "post": {
         "tags": ["Auth"],
+        "summary": "Classic user sign-up functionality using database",
         "description": "Register user for the system",
         "requestBody": {
           "required": true,
@@ -263,6 +86,7 @@
     "/api/auth/signin": {
       "post": {
         "tags": ["Auth"],
+        "summary": "Classic user sign-in functionality using database",
         "description": "Log the user in with credentials.",
         "requestBody": {
           "required": true,
@@ -319,9 +143,78 @@
         }
       }
     },
+    "/api/auth/google": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Authenticates user by Google 3rd party authentication service",
+        "responses": {
+          "200": {
+            "description": "Redirects verified user to the home page",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/Profile"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/auth/facebook": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Authenticates user by Facebook 3rd party authentication service",
+        "description": "Provide Facebook login to users",
+        "responses": {
+          "200": {
+            "description": "Successful login",
+            "schema": {
+              "$ref": "#/definitions/Profile"
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/auth/twitter": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Authenticates user by Twitter 3rd party authentication service",
+        "responses": {
+          "200": {
+            "description": "Redirects verified user to the home page",
+            "schema": {
+              "$ref": "#/definitions/Profile"
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Log out currently signed in user",
+        "description": "Logs out currently signed user",
+        "responses": {
+          "205": {
+            "description": "User logged out successfully."
+          }
+        }
+      }
+    },
     "/api/products/": {
       "get": {
         "tags": ["Products"],
+        "summary": "Get all products that are for sale",
         "description": "Fetch all products from database.",
         "responses": {
           "200": {
@@ -341,6 +234,7 @@
       },
       "post": {
         "tags": ["Products"],
+        "summary": "List a new product",
         "description": "Add new product.",
         "requestBody": {
           "required": true,
@@ -442,15 +336,16 @@
         }
       }
     },
-    "/api/products/{id}/requested-buyers": {
+    "/api/products/{id}": {
       "get": {
         "tags": ["Products"],
-        "description": "Get all the buyers for a product.",
+        "summary": "Get product with given id",
+        "description": "Fetch the product specified by id.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
-            "description": "Product ID",
+            "description": "id of the product to be fetched",
             "required": true,
             "schema": {
               "type": "string"
@@ -459,17 +354,17 @@
         ],
         "responses": {
           "200": {
-            "description": "All the buyers for a product.",
+            "description": "Product specified by id is successfully fetched.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/returnedBuyers"
+                  "$ref": "#/components/schemas/returnedProduct"
                 }
               }
             }
           },
           "404": {
-            "description": "Product with {id} not found!",
+            "description": "Product not found!",
             "content": {
               "application/json": {
                 "schema": {
@@ -481,27 +376,135 @@
                     },
                     "error": {
                       "type": "string",
-                      "example": "Product with {id} not found!"
+                      "example": "Product not found!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Products"],
+        "summary": "Update product with given id",
+        "description": "Updates existing product and returns new product",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "Football"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Adidas XY3150 football"
+                  },
+                  "price": {
+                    "type": "number",
+                    "example": 80
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the product to be modified",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns updated product!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/returnedProduct"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "No product exists!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Products"],
+        "summary": "Delete product with given id",
+        "description": "Delete a product",
+        "operationId": "deleteProduct",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of product to delete",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "string",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "string",
+                      "example": "Product deleted successfully."
                     }
                   }
                 }
               }
             }
           },
-          "401": {
-            "description": "User ${req.user.id} is not authorized to access or modify this product details!",
+          "404": {
+            "description": "Product not found!",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
                     "success": {
-                      "type": "boolean",
+                      "type": "string",
                       "example": false
                     },
                     "error": {
                       "type": "string",
-                      "example": "User ${req.user.id} is not authorized to access or modify this product details!"
+                      "example": "Product not found!"
                     }
                   }
                 }
@@ -514,7 +517,7 @@
     "/api/products/{id}/request": {
       "post": {
         "tags": ["Products"],
-        "summary": "Create a new request",
+        "summary": "Create a new request to buy the product with given id",
         "parameters": [
           {
             "name": "id",
@@ -604,66 +607,69 @@
         }
       }
     },
-    "/api/profile/products": {
+    "/api/products/{id}/requested-buyers": {
       "get": {
-        "tags": ["Users"],
-        "description": "Get all products of a user for sale.",
+        "tags": ["Products"],
+        "summary": "Get the users who requested the product with given id",
+        "description": "Get all the buyers for a product.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Product ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "All products of a user that is for sale are successfully fetched.",
+            "description": "All the buyers for a product.",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/returnedProduct"
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "_id": {
+                            "type": "string",
+                            "example": "630a63c3fd4adfdbd8ba9d62"
+                          },
+                          "firstName": {
+                            "type": "string",
+                            "example": "Glenn"
+                          },
+                          "lastName": {
+                            "type": "string",
+                            "example": "Quagmire"
+                          },
+                          "email": {
+                            "type": "string",
+                            "example": "glenn@email.com"
+                          },
+                          "fullName": {
+                            "type": "string",
+                            "example": "Glenn Quagmire"
+                          }
+                        }
+                      }
+                    }
                   }
                 }
               }
             }
           },
-          "401": {
-            "description": "Unauthorized user!"
-          }
-        }
-      }
-    },
-    "/api/profile": {
-      "get": {
-        "tags": ["Profile"],
-        "summary": "Get user profile",
-        "responses": {
-          "200": {
-            "description": "User profile",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/definitions/Profile"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/profile/": {
-      "patch": {
-        "tags": ["Profile"],
-        "summary": "Update profile",
-        "description": "Updates existing logged in profile and returns new profile",
-        "responses": {
-          "200": {
-            "description": "Returns updated profile!",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/definitions/Profile"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Validation error!",
+          "404": {
+            "description": "Product with {id} not found!",
             "content": {
               "application/json": {
                 "schema": {
@@ -675,7 +681,7 @@
                     },
                     "error": {
                       "type": "string",
-                      "example": "Email already exists!"
+                      "example": "Product with {id} not found!"
                     }
                   }
                 }
@@ -683,7 +689,7 @@
             }
           },
           "401": {
-            "description": "Old password is not correct!",
+            "description": "User ${req.user.id} is not authorized to access or modify this product details!",
             "content": {
               "application/json": {
                 "schema": {
@@ -695,47 +701,12 @@
                     },
                     "error": {
                       "type": "string",
-                      "example": "Your old password is not correct please enter again!"
+                      "example": "User ${req.user.id} is not authorized to access or modify this product details!"
                     }
                   }
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "/api/auth/logout": {
-      "post": {
-        "tags": ["Auth"],
-        "description": "Logs out currently signed user",
-        "responses": {
-          "205": {
-            "description": "User logged out successfully."
-          }
-        }
-      }
-    },
-    "/api/orders": {
-      "get": {
-        "tags": ["Orders"],
-        "description": "Fetch all the orders of the logged user.",
-        "responses": {
-          "200": {
-            "description": "All orders of the logged user are successfully fetched.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/returnedOrder"
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized user!"
           }
         }
       }
@@ -743,6 +714,7 @@
     "/api/products/{id}/requested-buyers/{userId}/sell": {
       "post": {
         "tags": ["Products"],
+        "summary": "Sell product with given id to the specified user",
         "description": "Sell a product.",
         "parameters": [
           {
@@ -849,6 +821,283 @@
                     "error": {
                       "type": "string",
                       "example": "Product already sold!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/orders": {
+      "get": {
+        "tags": ["Orders"],
+        "summary": "Get all orders of signed in user",
+        "description": "Fetch all the orders of the logged user.",
+        "responses": {
+          "200": {
+            "description": "All orders of the logged user are successfully fetched.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/returnedOrder"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized user!"
+          }
+        }
+      }
+    },
+    "/api/orders/{id}": {
+      "get": {
+        "tags": ["Orders"],
+        "summary": "Get specified order of signed in user with given id",
+        "description": "Fetch the order with given id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the order to request",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All orders of a user are successfully fetched.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/returnedOrder"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized user!"
+          }
+        }
+      }
+    },
+    "/api/profile/": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Get signed in user's profile",
+        "responses": {
+          "200": {
+            "description": "User profile",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/Profile"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Users"],
+        "summary": "Update profile of signed in user",
+        "description": "Updates existing logged in profile and returns new profile",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "firstName": {
+                    "type": "string",
+                    "example": "Michael"
+                  },
+                  "lastName": {
+                    "type": "string",
+                    "example": "Jackson"
+                  },
+                  "oldPassword": {
+                    "type": "string",
+                    "example": "mikE123"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "michA123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns updated profile!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/Profile"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Email already exists!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Old password is not correct!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Your old password is not correct please enter again!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/profile/products": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Get signed in user's listings",
+        "description": "Get all products of a user for sale.",
+        "responses": {
+          "200": {
+            "description": "All products of a user that is for sale are successfully fetched.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/returnedProduct"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized user!"
+          }
+        }
+      }
+    },
+    "/api/donations/": {
+      "post": {
+        "tags": ["Donations"],
+        "summary": "Make a donation",
+        "description": "Make donations by specified amount",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "example": "tok_1LZuNCGPwek4o8KsoCayeSgC"
+                      },
+                      "card": {
+                        "type": "object",
+                        "properties": {
+                          "address_city": {
+                            "type": "string",
+                            "example": "Ankara"
+                          },
+                          "address_country": {
+                            "type": "string",
+                            "example": "Turkey"
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "Peter Griffin"
+                          },
+                          "last4": {
+                            "type": "string",
+                            "example": "4242"
+                          }
+                        }
+                      },
+                      "email": {
+                        "type": "string",
+                        "example": "griffin@mail.com"
+                      },
+                      "amount": {
+                        "type": "number",
+                        "example": 25
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Specified amount of donation is made.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/returnedDonation"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Amount should be greater than zero!"
                     }
                   }
                 }
@@ -1092,9 +1341,6 @@
               "email": {
                 "type": "string",
                 "example": "griffin@mail.com"
-              },
-              "cardNumber": {
-                "type": "number"
               }
             }
           }
@@ -1248,10 +1494,6 @@
         "schoolName": {
           "type": "string",
           "example": "Bilkent"
-        },
-        "password": {
-          "type": "string",
-          "example": "ma2345"
         },
         "phoneNumber": {
           "type": "number",
