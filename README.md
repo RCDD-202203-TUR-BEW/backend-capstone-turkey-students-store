@@ -8,14 +8,14 @@
 
 Student store is a website that brings students in Turkey together to sell, buy or donate their old stuffs locally. The aim of the website is to provide a platform for easy second-handing among university students as their needs. The website is intended for university students in Turkey. On this website, you can find products; second hand or brand new, or you can provide services or benefit from them.
 
-**Features**
+### Features
 
 Sign-in and sign-up features for users with Google, Twitter and Facebook Authentication
 List products or services with images or videos
 Order products or services from other users 
 Donation option
 
-**Functionalities:**
+### Functionalities
 
 - List products
 - CRUD operations for products
@@ -27,42 +27,43 @@ Donation option
 
 ________________________________________________________________________________________________________________________________________________________
 
-**Built With**
+### Built With
 
 <img width="745" alt="Screen Shot 2022-08-23 at 21 45 48" src="https://user-images.githubusercontent.com/89161696/186238998-ac3b6260-90b6-4d28-84b6-19e79b62c4b2.png">
 
 ---
 
-**Demo**
+### Demo
 
 Server (backend) link: [Heroku](https://students-store.herokuapp.com/)
 
 ________________________________________________________________________________________________________________________________________________________
 
-**Screenshots**
+### Screenshots
 
-**System Architecture Diagram**
-
-
+### System Architecture Diagram
 
 ![Group 1Architecture](https://user-images.githubusercontent.com/44938318/187095949-c558fa5c-1425-40e1-a8f1-e92d311554cb.png)
 
+### Endpoints
 
-**Database Diagram**
+![Group 2Endpoints](https://user-images.githubusercontent.com/44938318/187096010-d8e2a05c-867e-4e51-96ef-2b897389aac6.png)
 
-<img width="467" alt="Screen Shot 2022-08-23 at 20 22 44" src="https://user-images.githubusercontent.com/89161696/186224371-0105984e-18f9-4e2f-a571-66418712bc37.png">
+### Database Diagram
 
-**OpenAPI Docs**
+![Group 1db_schema](https://user-images.githubusercontent.com/44938318/187096069-28a1b522-e8d4-4f08-9e97-f134154d89b0.png)
+
+### OpenAPI Docs
 
 ![swagger_ui](https://user-images.githubusercontent.com/89161696/186225450-9805d45b-701a-4df9-ae70-93ef78faca79.PNG)
 
-**Homepage**
+### Homepage
 
 ![home_page_small](https://user-images.githubusercontent.com/89161696/186228219-c3639c60-018e-474f-bdb8-6500276a0021.png)
 
 ________________________________________________________________________________________________________________________________________________________
 
-**TEAM**
+### TEAM
 
 Meet our team members through their GitHub profiles!
 
@@ -74,7 +75,7 @@ Meet our team members through their GitHub profiles!
 
 ________________________________________________________________________________________________________________________________________________________
 
-**Contact**
+### Contact
 
 Students Store Team
 
