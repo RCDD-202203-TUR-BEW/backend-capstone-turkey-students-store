@@ -43,7 +43,10 @@ ________________________________________________________________________________
 
 **System Architecture Diagram**
 
-<img width="862" alt="Screen Shot 2022-08-23 at 13 25 40" src="https://user-images.githubusercontent.com/89161696/186135353-1fc4bb8e-50fc-4fd3-a56a-5748e16386ce.png">
+
+
+![Group 1Architecture](https://user-images.githubusercontent.com/44938318/187095949-c558fa5c-1425-40e1-a8f1-e92d311554cb.png)
+
 
 **Database Diagram**
 
