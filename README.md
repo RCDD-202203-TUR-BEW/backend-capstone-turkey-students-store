@@ -51,7 +51,7 @@ ________________________________________________________________________________
 
 ### Database Diagram
 
-![Group 1db_schema](https://user-images.githubusercontent.com/44938318/187096069-28a1b522-e8d4-4f08-9e97-f134154d89b0.png)
+![Group 1db_schema](https://user-images.githubusercontent.com/44938318/187171731-0deb2a62-3ea8-4a46-805e-db799f99af00.png)
 
 ### OpenAPI Docs
 
