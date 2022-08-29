@@ -158,6 +158,7 @@ exports.getProduct = async (req, res, next) => {
   if (!product) {
     return next(new ErrorResponse('Product not found!', 404));
   }
+  return res.status(200).json({ success: true, data: product });
 };
 
 exports.sellProduct = async (req, res, next) => {

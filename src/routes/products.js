@@ -7,13 +7,6 @@ const productsController = require('../controllers/products');
 const ErrorResponse = require('../utils/errorResponse');
 const auth = require('../middlewares/authenticate');
 const productsMiddleware = require('../middlewares/products');
-
-router.get(
-  '/:id/requested-buyers',
-  auth.verifyUser,
-  productsMiddleware.verifyOwner,
-  productsController.getRequstedBuyers
-);
 const productMiddleware = require('../middlewares/product');
 
 const upload = multer({
@@ -165,7 +158,6 @@ router.patch(
 
 router.post('/:id/request', auth.verifyUser, productsController.requestProduct);
 router.get('/', productsController.getAllProducts);
-
 router.get('/:id', productsController.getProduct);
 
 router.delete(
@@ -174,6 +166,7 @@ router.delete(
   productMiddleware.verifyOwner,
   productsController.removeProduct
 );
+
 router.post(
   '/:id/requested-buyers/:userId/sell',
   auth.verifyUser,
@@ -189,4 +182,12 @@ router.post(
   // productsMiddleware.verifyOwner,
   productsController.sellProduct
 );
+
+router.get(
+  '/:id/requested-buyers',
+  auth.verifyUser,
+  productsMiddleware.verifyOwner,
+  productsController.getRequstedBuyers
+);
+
 module.exports = router;
