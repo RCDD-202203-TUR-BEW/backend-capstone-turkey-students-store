@@ -7,7 +7,7 @@ const User = require('../models/user');
 const Order = require('../models/order');
 
 exports.getAllProducts = async (req, res, next) => {
-  const allProducts = await Product.find();
+  const allProducts = await Product.find({ status: 'Active' });
   return res.status(200).json({ success: true, data: allProducts });
 };
 
@@ -122,7 +122,7 @@ exports.updateProduct = async (req, res, next) => {
   }
   // eslint-disable-next-line no-cond-assign, no-undef
   const myProduct = await Product.findById(req.params.id);
-  if (!myProduct) {
+  if (!myProduct || myProduct.status === 'Sold') {
     return next(new ErrorResponse('No such product exists!', 404));
   }
 
