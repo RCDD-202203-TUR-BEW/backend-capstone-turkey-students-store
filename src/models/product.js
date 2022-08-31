@@ -30,8 +30,7 @@ const productSchema = new mongoose.Schema(
       required: [true, 'Please type in a category!'],
     },
     coverImage: {
-      type: String,
-      required: [true, 'Cover image cannot be empty!'],
+      type: String
     },
     images: {
       type: [String],
