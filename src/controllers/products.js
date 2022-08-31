@@ -47,10 +47,14 @@ exports.createProduct = async (req, res, next) => {
   }
 
   // cover image exists, upload cover image
-  const coverImageUrl = await uploadImage(req.files.coverImage[0]);
 
-  // set cover image
-  req.body.coverImage = coverImageUrl;
+  try {
+    const coverImageUrl = await uploadImage(req.files.coverImage[0]);
+    // set cover image
+    req.body.coverImage = coverImageUrl;
+  } catch (e) {
+    console.log(e);
+  }
 
   // if additional images exist, upload those images too
   let imageUrls = [];
@@ -66,10 +70,15 @@ exports.createProduct = async (req, res, next) => {
       const results = await Promise.all(unresolvedPromises);
       return results;
     };
-    imageUrls = (await uploadMultipleImages()) ?? [];
+
+    try {
+      imageUrls = (await uploadMultipleImages()) ?? [];
+    } catch (e) {
+      console.log(e);
+    }
 
     // set images
-    req.body.images = imageUrls;
+    req.body.images = imageUrls || [];
   }
   // set seller as this user; get user's id from token -> req.user
   req.body.seller = req.user._id;
