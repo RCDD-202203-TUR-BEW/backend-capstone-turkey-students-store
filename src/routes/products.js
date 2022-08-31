@@ -3,24 +3,14 @@ const express = require('express');
 const router = express.Router();
 const { body, matchedData } = require('express-validator');
 const multer = require('multer');
-const path = require('path');
 const productsController = require('../controllers/products');
 const ErrorResponse = require('../utils/errorResponse');
 const auth = require('../middlewares/authenticate');
 const productsMiddleware = require('../middlewares/products');
 const productMiddleware = require('../middlewares/product');
 
-const storage = multer.diskStorage({
-  destination(req, file, cb) {
-    cb(null, path.join(__dirname, '..', '/uploads'));
-  },
-  filename(req, file, cb) {
-    cb(null, file.originalname);
-  },
-});
-
 const upload = multer({
-  storage,
+  storage: multer.memoryStorage(),
   limits: { fileSize: 5 * 1024 * 1024 }, // max 5 mb image size
   fileFilter: (req, file, callback) => {
     // check whether file is an image in formats png, jpeg or jpg
