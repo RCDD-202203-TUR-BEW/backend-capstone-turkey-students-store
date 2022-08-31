@@ -9,8 +9,17 @@ const auth = require('../middlewares/authenticate');
 const productsMiddleware = require('../middlewares/products');
 const productMiddleware = require('../middlewares/product');
 
+const storage = multer.diskStorage({
+  destination(req, file, cb) {
+    cb(null, './tmp');
+  },
+  filename(req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+
 const upload = multer({
-  storage: multer.memoryStorage(),
+  storage,
   limits: { fileSize: 5 * 1024 * 1024 }, // max 5 mb image size
   fileFilter: (req, file, callback) => {
     // check whether file is an image in formats png, jpeg or jpg
